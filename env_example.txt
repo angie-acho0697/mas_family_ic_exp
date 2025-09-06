@@ -1,0 +1,15 @@
+# LLM Provider Configuration
+# Using Google Gemini (Free tier available)
+
+# Google Gemini API Key (Required)
+GOOGLE_API_KEY=your_google_api_key_here
+
+# Current LLM Provider (set to google for Gemini)
+LLM_PROVIDER=google
+
+# Alternative providers (uncomment if you want to use a different one):
+# OPENAI_API_KEY=your_openai_api_key_here
+# ANTHROPIC_API_KEY=your_anthropic_key_here
+# OLLAMA_BASE_URL=http://localhost:11434
+# OLLAMA_MODEL=llama3.1
+# HUGGINGFACE_API_KEY=your_huggingface_key_here
