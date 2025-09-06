@@ -901,15 +901,15 @@ class FamilyInheritanceExperiment:
                 )
                 self.metrics_tracker.conversation_logs.append(log)
             
-                    logger.info(f"📁 Experiment state loaded from {self.state_file}")
-                    logger.info(f"📅 Resuming from Month {self.timeline.current_month}, Week {self.timeline.current_week}")
-                    logger.info(f"📊 Loaded {len(self.scenario_history)} previous scenarios")
-                    
-                    # Restore the current month's state file path for saving
-                    self.state_file = current_state_file
-                    logger.info(f"📁 Will save current month's state to: {self.state_file}")
-                    
-                    return True
+            logger.info(f"📁 Experiment state loaded from {self.state_file}")
+            logger.info(f"📅 Resuming from Month {self.timeline.current_month}, Week {self.timeline.current_week}")
+            logger.info(f"📊 Loaded {len(self.scenario_history)} previous scenarios")
+            
+            # Restore the current month's state file path for saving
+            self.state_file = current_state_file
+            logger.info(f"📁 Will save current month's state to: {self.state_file}")
+            
+            return True
             
         except Exception as e:
             logger.error(f"❌ Failed to load experiment state: {e}")
