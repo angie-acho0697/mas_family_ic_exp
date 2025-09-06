@@ -1,6 +1,6 @@
-# MAS Family Inheritance Experiment
+# Multi Agent System Family Inheritance Experiment
 
-A sophisticated multi-agent simulation using CrewAI to study family dynamics, decision-making patterns, and coalition formation in a high-stakes inheritance scenario.
+A multi-agent simulation using CrewAI to study family dynamics, decision-making patterns, and coalition formation in a high-stakes inheritance scenario.
 
 ## Experiment Overview
 
