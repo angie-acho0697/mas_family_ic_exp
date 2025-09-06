@@ -1,0 +1,21 @@
+2025-09-06 20:07:19,311 - INFO - 📄 Log file: output\logs\experiment_log_month_1_20250906_200719.txt
+2025-09-06 20:07:19,311 - INFO - 🔍 Checking requirements...
+2025-09-06 20:07:19,311 - INFO - 📋 LLM Provider: google
+2025-09-06 20:07:19,311 - INFO - ✅ Google API Key found: AIzaSyDDV3...
+2025-09-06 20:07:28,337 - INFO - ✅ crewai is installed
+2025-09-06 20:07:28,345 - INFO - ✅ langchain is installed
+2025-09-06 20:07:29,064 - INFO - ✅ pandas is installed
+2025-09-06 20:07:29,064 - INFO - ✅ python-dotenv is installed
+2025-09-06 20:07:29,064 - INFO - ✅ All required packages are installed
+2025-09-06 20:07:29,075 - INFO - ✅ Using GOOGLE as LLM provider
+2025-09-06 20:07:29,075 - INFO - 🔑 Set Google Gemini API key for CrewAI compatibility
+2025-09-06 20:07:29,075 - INFO - 📦 Importing experiment modules...
+2025-09-06 20:07:29,092 - ERROR - ❌ Experiment failed: unexpected indent (main.py, line 904)
+2025-09-06 20:07:29,092 - ERROR - Full error details:
+2025-09-06 20:07:29,096 - ERROR - Traceback (most recent call last):
+  File "C:\Projects\projects\mas_family_ic_exp\run_experiment.py", line 189, in main
+    from experiment.main import FamilyInheritanceExperiment
+  File "C:\Projects\projects\mas_family_ic_exp\src\experiment\main.py", line 904
+    logger.info(f"📁 Experiment state loaded from {self.state_file}")
+IndentationError: unexpected indent
+

@@ -831,8 +831,12 @@ class FamilyInheritanceExperiment:
         
         # Use the most recent state file
         latest_month, latest_state_file = max(state_files, key=lambda x: x[0])
-        self.state_file = latest_state_file
+        # Store the current month's state file path before loading
+        current_state_file = self.state_file
         logger.info(f"📁 Loading state from Month {latest_month}: {latest_state_file}")
+        
+        # Temporarily set state file to the previous month's file for loading
+        self.state_file = latest_state_file
         
         try:
             with open(self.state_file, 'r') as f:
@@ -897,13 +901,20 @@ class FamilyInheritanceExperiment:
                 )
                 self.metrics_tracker.conversation_logs.append(log)
             
-            logger.info(f"📁 Experiment state loaded from {self.state_file}")
-            logger.info(f"📅 Resuming from Month {self.timeline.current_month}, Week {self.timeline.current_week}")
-            logger.info(f"📊 Loaded {len(self.scenario_history)} previous scenarios")
-            return True
+                    logger.info(f"📁 Experiment state loaded from {self.state_file}")
+                    logger.info(f"📅 Resuming from Month {self.timeline.current_month}, Week {self.timeline.current_week}")
+                    logger.info(f"📊 Loaded {len(self.scenario_history)} previous scenarios")
+                    
+                    # Restore the current month's state file path for saving
+                    self.state_file = current_state_file
+                    logger.info(f"📁 Will save current month's state to: {self.state_file}")
+                    
+                    return True
             
         except Exception as e:
             logger.error(f"❌ Failed to load experiment state: {e}")
+            # Restore the current month's state file path even if loading failed
+            self.state_file = current_state_file
             return False
     
     def get_last_completed_month(self):

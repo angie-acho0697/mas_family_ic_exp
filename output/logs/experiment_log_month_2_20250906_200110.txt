@@ -1,0 +1,285 @@
+2025-09-06 20:01:10,511 - INFO - 📄 Log file: output\logs\experiment_log_month_2_20250906_200110.txt
+2025-09-06 20:01:10,511 - INFO - 🔍 Checking requirements...
+2025-09-06 20:01:10,511 - INFO - 📋 LLM Provider: google
+2025-09-06 20:01:10,511 - INFO - ✅ Google API Key found: AIzaSyDDV3...
+2025-09-06 20:01:19,700 - INFO - ✅ crewai is installed
+2025-09-06 20:01:19,700 - INFO - ✅ langchain is installed
+2025-09-06 20:01:20,643 - INFO - ✅ pandas is installed
+2025-09-06 20:01:20,643 - INFO - ✅ python-dotenv is installed
+2025-09-06 20:01:20,643 - INFO - ✅ All required packages are installed
+2025-09-06 20:01:20,643 - INFO - ✅ Using GOOGLE as LLM provider
+2025-09-06 20:01:20,644 - INFO - 🔑 Set Google Gemini API key for CrewAI compatibility
+2025-09-06 20:01:20,644 - INFO - 📦 Importing experiment modules...
+2025-09-06 20:01:20,646 - INFO - 🏗️  Creating experiment instance...
+2025-09-06 20:01:20,646 - INFO - ✅ Experiment instance created successfully
+2025-09-06 20:01:20,662 - INFO - ⚙️  Setting up crew...
+2025-09-06 20:01:51,505 - INFO - Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2025-09-06 20:01:51,851 - INFO - Collection found or created: Collection(name=short_term)
+2025-09-06 20:01:52,183 - INFO - Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2025-09-06 20:01:52,399 - INFO - Collection found or created: Collection(name=entities)
+2025-09-06 20:01:52,413 - INFO - ✅ Crew setup completed
+2025-09-06 20:01:52,416 - INFO - 🚀 Starting Month 2 execution...
+2025-09-06 20:01:52,417 - INFO - ------------------------------------------------------------
+2025-09-06 20:01:52,418 - INFO - 🚀 Running Month 2 of MAS Family Inheritance Experiment
+2025-09-06 20:01:52,418 - INFO - ============================================================
+2025-09-06 20:01:52,418 - INFO - 📁 Loading previous experiment state...
+2025-09-06 20:01:52,419 - INFO - 📁 Loading state from Month 1: output\state\experiment_state_month_1.json
+2025-09-06 20:01:52,421 - INFO - 📁 Experiment state loaded from output\state\experiment_state_month_1.json
+2025-09-06 20:01:52,421 - INFO - 📅 Resuming from Month 1, Week 3
+2025-09-06 20:01:52,422 - INFO - 📊 Loaded 2 previous scenarios
+2025-09-06 20:01:52,423 - INFO - 🤖 Using LLM Provider: GOOGLE
+2025-09-06 20:01:52,423 - INFO - 📝 Model: gemini-1.5-flash
+2025-09-06 20:01:52,423 - INFO - ⏳ Rate Limiting: 8 requests/minute, 80 requests/hour (conservative limits)
+2025-09-06 20:01:52,424 - INFO - ============================================================
+2025-09-06 20:01:52,424 - INFO - 🔧 Configured CrewAI to use Google Gemini
+2025-09-06 20:01:52,424 - INFO - 🔑 Set Google Gemini API key for CrewAI compatibility
+2025-09-06 20:01:52,425 - INFO - 
+📅 Starting Month 2
+2025-09-06 20:01:52,425 - INFO - ----------------------------------------
+2025-09-06 20:01:52,425 - INFO - 
+📚 Loading ALL previous months (1-1) context for agents...
+2025-09-06 20:01:52,426 - INFO -    Found 2 total scenarios from Months 1-1
+2025-09-06 20:01:52,427 - INFO -    Updating relationship dynamics from Months 1-1
+2025-09-06 20:01:52,429 - INFO - 📋 Found 1 events for Month 2
+2025-09-06 20:01:52,431 - INFO - 🔄 Running scenario: Viral Fame Opportunity
+2025-09-06 20:01:52,433 - INFO - 
+============================================================
+2025-09-06 20:01:52,434 - INFO - Running Scenario: Viral Fame Opportunity
+2025-09-06 20:01:52,434 - INFO - Month 2, Week 2
+2025-09-06 20:01:52,435 - INFO - ============================================================
+2025-09-06 20:02:20,732 - INFO - 🚀 Starting CrewAI task execution...
+2025-09-06 20:02:21,046 - ERROR - Error during short_term search: APIStatusError.__init__() missing 2 required keyword-only arguments: 'response' and 'body'
+2025-09-06 20:02:21,244 - ERROR - Error during entities search: APIStatusError.__init__() missing 2 required keyword-only arguments: 'response' and 'body'
+2025-09-06 20:02:21,270 - INFO - 
+LiteLLM completion() model= gemini-1.5-flash; provider = gemini
+2025-09-06 20:02:29,682 - INFO - Wrapper: Completed Call, calling success_handler
+2025-09-06 20:02:29,898 - ERROR - Error during short_term save: APIStatusError.__init__() missing 2 required keyword-only arguments: 'response' and 'body'
+2025-09-06 20:02:31,271 - INFO - 
+LiteLLM completion() model= gemini-1.5-flash; provider = gemini
+2025-09-06 20:02:32,072 - INFO - Wrapper: Completed Call, calling success_handler
+2025-09-06 20:02:32,310 - ERROR - Error during short_term search: APIStatusError.__init__() missing 2 required keyword-only arguments: 'response' and 'body'
+2025-09-06 20:02:32,523 - ERROR - Error during entities search: APIStatusError.__init__() missing 2 required keyword-only arguments: 'response' and 'body'
+2025-09-06 20:02:32,537 - INFO - 
+LiteLLM completion() model= gemini-1.5-flash; provider = gemini
+2025-09-06 20:02:40,214 - INFO - Wrapper: Completed Call, calling success_handler
+2025-09-06 20:02:40,472 - ERROR - Error during short_term save: APIStatusError.__init__() missing 2 required keyword-only arguments: 'response' and 'body'
+2025-09-06 20:02:40,478 - INFO - 
+LiteLLM completion() model= gemini-1.5-flash; provider = gemini
+2025-09-06 20:02:47,094 - INFO - Wrapper: Completed Call, calling success_handler
+2025-09-06 20:02:47,346 - ERROR - Error during entities save: APIStatusError.__init__() missing 2 required keyword-only arguments: 'response' and 'body'
+2025-09-06 20:02:47,581 - ERROR - Error during entities save: APIStatusError.__init__() missing 2 required keyword-only arguments: 'response' and 'body'
+2025-09-06 20:02:47,760 - ERROR - Error during entities save: APIStatusError.__init__() missing 2 required keyword-only arguments: 'response' and 'body'
+2025-09-06 20:02:47,932 - ERROR - Error during entities save: APIStatusError.__init__() missing 2 required keyword-only arguments: 'response' and 'body'
+2025-09-06 20:02:48,148 - ERROR - Error during entities save: APIStatusError.__init__() missing 2 required keyword-only arguments: 'response' and 'body'
+2025-09-06 20:02:48,328 - ERROR - Error during entities save: APIStatusError.__init__() missing 2 required keyword-only arguments: 'response' and 'body'
+2025-09-06 20:02:48,521 - ERROR - Error during entities save: APIStatusError.__init__() missing 2 required keyword-only arguments: 'response' and 'body'
+2025-09-06 20:02:48,715 - ERROR - Error during entities save: APIStatusError.__init__() missing 2 required keyword-only arguments: 'response' and 'body'
+2025-09-06 20:02:48,914 - ERROR - Error during entities save: APIStatusError.__init__() missing 2 required keyword-only arguments: 'response' and 'body'
+2025-09-06 20:02:49,130 - ERROR - Error during entities save: APIStatusError.__init__() missing 2 required keyword-only arguments: 'response' and 'body'
+2025-09-06 20:02:49,307 - ERROR - Error during entities save: APIStatusError.__init__() missing 2 required keyword-only arguments: 'response' and 'body'
+2025-09-06 20:02:49,843 - ERROR - Error during entities save: APIStatusError.__init__() missing 2 required keyword-only arguments: 'response' and 'body'
+2025-09-06 20:02:50,072 - ERROR - Error during entities save: APIStatusError.__init__() missing 2 required keyword-only arguments: 'response' and 'body'
+2025-09-06 20:02:50,272 - ERROR - Error during entities save: APIStatusError.__init__() missing 2 required keyword-only arguments: 'response' and 'body'
+2025-09-06 20:02:50,495 - ERROR - Error during entities save: APIStatusError.__init__() missing 2 required keyword-only arguments: 'response' and 'body'
+2025-09-06 20:02:50,707 - ERROR - Error during entities save: APIStatusError.__init__() missing 2 required keyword-only arguments: 'response' and 'body'
+2025-09-06 20:02:51,006 - ERROR - Error during short_term search: APIStatusError.__init__() missing 2 required keyword-only arguments: 'response' and 'body'
+2025-09-06 20:02:51,249 - ERROR - Error during entities search: APIStatusError.__init__() missing 2 required keyword-only arguments: 'response' and 'body'
+2025-09-06 20:02:51,260 - INFO - 
+LiteLLM completion() model= gemini-1.5-flash; provider = gemini
+2025-09-06 20:02:58,660 - INFO - Wrapper: Completed Call, calling success_handler
+2025-09-06 20:02:58,936 - ERROR - Error during short_term save: APIStatusError.__init__() missing 2 required keyword-only arguments: 'response' and 'body'
+2025-09-06 20:02:58,973 - INFO - 
+LiteLLM completion() model= gemini-1.5-flash; provider = gemini
+2025-09-06 20:03:00,288 - INFO - Wrapper: Completed Call, calling success_handler
+2025-09-06 20:03:00,522 - ERROR - Error during short_term search: APIStatusError.__init__() missing 2 required keyword-only arguments: 'response' and 'body'
+2025-09-06 20:03:00,754 - ERROR - Error during entities search: APIStatusError.__init__() missing 2 required keyword-only arguments: 'response' and 'body'
+2025-09-06 20:03:00,918 - INFO - 
+LiteLLM completion() model= gemini-1.5-flash; provider = gemini
+2025-09-06 20:03:09,555 - INFO - Wrapper: Completed Call, calling success_handler
+2025-09-06 20:03:09,848 - ERROR - Error during short_term save: APIStatusError.__init__() missing 2 required keyword-only arguments: 'response' and 'body'
+2025-09-06 20:03:09,861 - INFO - 
+LiteLLM completion() model= gemini-1.5-flash; provider = gemini
+2025-09-06 20:03:10,881 - INFO - Wrapper: Completed Call, calling success_handler
+2025-09-06 20:03:10,935 - INFO - 
+================================================================================
+2025-09-06 20:03:10,935 - INFO - 🤖 CREWAI CONVERSATION & DECISIONS
+2025-09-06 20:03:10,935 - INFO - ================================================================================
+2025-09-06 20:03:10,936 - INFO - 📋 Scenario: Viral Fame Opportunity
+2025-09-06 20:03:10,936 - INFO - 📅 Month 2, Week 2
+2025-09-06 20:03:10,936 - INFO - --------------------------------------------------------------------------------
+2025-09-06 20:03:10,936 - INFO - 💬 FULL CONVERSATION OUTPUT:
+2025-09-06 20:03:10,936 - INFO - --------------------------------------------------------------------------------
+2025-09-06 20:03:10,936 - INFO - **Final Coordinated Decision Document: Viral Fame Opportunity**
+
+**1. Summary of Perspectives:**
+
+* **C1 (Initial Assessment):** Focused on risk mitigation and strategic planning, emphasizing a rapid response to capitalize on the viral opportunity while establishing clear communication and brand identity.  Highlighted potential for rapid growth, but also the risks of overwhelm and negative publicity.
+
+* **C2 (Business Analysis):** Emphasized a high-end, exclusive approach targeting affluent clientele.  Prioritized securing additional funding through sponsorships, investments, and collaborations, alongside a robust revenue generation strategy focused on luxury events and merchandise.
+
+* **C3 (Creative Vision):** Proposed innovative strategies to leverage the viral attention, including interactive art installations, exclusive online experiences, and curated merchandise, aiming to create a memorable and shareable experience.  Stressed the importance of maintaining artistic integrity and a cohesive family approach.
+
+* **C4 (Execution & Resource Management):**  Synthesized the above analyses, prioritizing immediate action and tangible results.  Recognized the need for compromise while advocating for decisive leadership and resource allocation to maximize immediate returns.
+
+
+**2. Areas of Agreement and Disagreement:**
+
+**Agreement:** All cousins agree that the viral fame presents a significant opportunity for the gallery.  There is consensus on the need for a strategic plan, effective communication, and a strong brand identity.  Everyone agrees on the importance of risk mitigation and generating revenue.
+
+**Disagreement:**  The primary point of disagreement lies in the *approach* to capitalizing on this opportunity.  C2 favors a more exclusive, high-end strategy, while C3 prioritizes creative innovation and audience engagement. C1 focuses on mitigating risks and building a strong foundation. C4 is focused on efficient execution and immediate results.  There is also some debate on the level of initial investment and the pace of expansion.
+
+
+**3. Compromises and Solutions:**
+
+To achieve unanimous agreement, the following compromises are proposed:
+
+* **Phased Approach:** We will adopt a phased approach, starting with immediate actions to capitalize on the current viral momentum (C1 & C4's emphasis), followed by a more strategic, long-term plan (C2 & C3's emphasis).
+
+* **Hybrid Strategy:**  The final strategy will incorporate elements of both the high-end, exclusive approach (C2) and the creative, engaging approach (C3).  This means focusing on both attracting high-net-worth individuals and creating memorable experiences for a broader audience.
+
+* **Resource Allocation:** The initial $5000 will be allocated as follows: $2000 for high-quality photography/videography (C2); $1500 for targeted social media advertising (C2); $1000 for initial website and online presence upgrades; $500 for immediate crisis communication setup.
+
+* **Funding Diversification:**  We will actively pursue various funding sources, including sponsorships, investments, and collaborations (C2), while also exploring grant opportunities and crowdfunding (if necessary).
+
+* **Collaborative Decision-Making:**  A clear decision-making process will be established, ensuring all cousins have a voice and feel valued.  Regular meetings will be held to discuss progress and address any concerns.
+
+
+**4. Final Unanimous Decision:**
+
+We will leverage the current viral fame to launch the art gallery with a hybrid strategy incorporating both high-end exclusivity and creative engagement.  This phased approach will begin with immediate actions to capitalize on the current momentum, followed by a more strategic, long-term plan.  A collaborative decision-making process will be employed, ensuring all cousins feel valued and their expertise is utilized.
+
+
+**5. Detailed Resource Allocation Plan:**
+
+**Phase 1 (Weeks 1-4):  Capitalizing on Viral Momentum**
+
+* **Time:** 100 hours (25 hours/cousin)
+* **Money:** $5000 (initial investment)
+* **Focus:**  High-quality content creation, targeted social media advertising, website upgrades, crisis communication setup, initial media outreach.
+
+**Phase 2 (Weeks 5-12):  Building Long-Term Strategy**
+
+* **Time:** 200 hours (50 hours/cousin)
+* **Money:**  To be secured through sponsorships, investments, grants, or other funding mechanisms.  Projected budget: $25,000-$50,000
+* **Focus:**  Developing and implementing long-term marketing plans, securing partnerships, planning exclusive events, creating curated merchandise, exploring NFT integration.
+
+
+**6. Implementation Timeline:**
+
+* **Week 1-2:**  High-quality content creation, initial social media campaign.
+* **Week 3-4:** Website launch, initial media outreach, crisis communication protocol implemented.
+* **Week 5-8:**  Develop long-term marketing strategy, explore funding opportunities.
+* **Week 9-12:** Secure partnerships, plan exclusive events, begin creating curated merchandise.
+
+
+**7. Impact on Family Relationships:**
+
+Open communication, collaborative decision-making, and clear roles will be crucial for maintaining strong family relationships throughout this process.  Regular meetings and transparent communication will help address concerns and prevent conflicts.
+
+
+**8. Lessons Learned for Future Decisions:**
+
+* The importance of proactive planning and risk mitigation.
+* The value of a diverse skill set and collaborative decision-making.
+* The need for adaptability and a willingness to adjust strategies as needed.
+* The importance of maintaining open communication and addressing concerns promptly.
+
+
+This plan represents a unified approach, incorporating each cousin's expertise and addressing their concerns. The success of this venture depends on our collective effort and commitment to a shared vision.
+2025-09-06 20:03:10,937 - INFO - --------------------------------------------------------------------------------
+2025-09-06 20:03:10,937 - INFO - 📊 KEY DECISIONS & OUTCOMES:
+2025-09-06 20:03:10,938 - INFO - --------------------------------------------------------------------------------
+2025-09-06 20:03:10,938 - INFO - 🎯 FINAL DECISION:
+2025-09-06 20:03:10,938 - INFO -    **4. Final Unanimous Decision:**
+2025-09-06 20:03:10,938 - INFO -    We will leverage the current viral fame to launch the art gallery with a hybrid strategy incorporating both high-end exclusivity and creative engagement.  This phased approach will begin with immediate actions to capitalize on the current momentum, followed by a more strategic, long-term plan.  A collaborative decision-making process will be employed, ensuring all cousins feel valued and their expertise is utilized.
+2025-09-06 20:03:10,938 - INFO - --------------------------------------------------------------------------------
+2025-09-06 20:03:10,939 - INFO - 👥 INDIVIDUAL AGENT CONTRIBUTIONS:
+2025-09-06 20:03:10,939 - INFO - --------------------------------------------------------------------------------
+2025-09-06 20:03:10,939 - INFO - 🤖 Agent 1 (Creative Visionary & Opportunity Spotter):
+2025-09-06 20:03:10,939 - INFO -    Task: 
+            As the analytical member of the group, provide your initial assessment of this scenario...
+2025-09-06 20:03:10,939 - INFO -    Output: **Initial Assessment: Viral Fame Opportunity**
+
+This viral social media post is a double-edged sword – a massive opportunity, but also a potential minefield. We need to move swiftly and strategically ...
+2025-09-06 20:03:10,940 - INFO - ----------------------------------------
+2025-09-06 20:03:10,940 - INFO - 🤖 Agent 2 (Social Strategist & Relationship Builder):
+2025-09-06 20:03:10,940 - INFO -    Task: 
+            Based on the initial analysis provided, now provide the business and financial perspect...
+2025-09-06 20:03:10,940 - INFO -    Output: **Business Analysis of Viral Fame Opportunity**
+
+This viral opportunity presents a unique chance to catapult the art gallery into the high-end art world, aligning perfectly with my vision of exclusive...
+2025-09-06 20:03:10,940 - INFO - ----------------------------------------
+2025-09-06 20:03:10,941 - INFO - 🤖 Agent 3 (Analytical Strategist & Risk Assessor):
+2025-09-06 20:03:10,941 - INFO -    Task: 
+            Building on the analytical and business perspectives already provided, now contribute t...
+2025-09-06 20:03:10,941 - INFO -    Output: The viral fame presents a unique opportunity to not only increase the gallery's visibility but to also strategically position it within the high-end art market.  My analytical approach, while acknowle...
+2025-09-06 20:03:10,941 - INFO - ----------------------------------------
+2025-09-06 20:03:10,941 - INFO - 🤖 Agent 4 (Execution Specialist & Resource Manager):
+2025-09-06 20:03:10,941 - INFO -    Task: 
+            As the group coordinator, synthesize all previous analyses and facilitate the final dec...
+2025-09-06 20:03:10,941 - INFO -    Output: **Final Coordinated Decision Document: Viral Fame Opportunity**
+
+**1. Summary of Perspectives:**
+
+* **C1 (Initial Assessment):** Focused on risk mitigation and strategic planning, emphasizing a rapid ...
+2025-09-06 20:03:10,942 - INFO - ----------------------------------------
+2025-09-06 20:03:10,942 - INFO - --------------------------------------------------------------------------------
+2025-09-06 20:03:10,942 - INFO - ✅ CrewAI task execution completed
+2025-09-06 20:03:10,942 - INFO - ✅ Scenario completed: Viral Fame Opportunity
+2025-09-06 20:03:10,942 - INFO - ⏳ Waiting between scenarios to respect API limits...
+2025-09-06 20:03:20,948 - INFO - 📈 Generating Month 2 summary...
+2025-09-06 20:03:20,949 - INFO - 
+================================================================================
+2025-09-06 20:03:20,949 - INFO - 📊 MONTH 2 DETAILED SUMMARY
+2025-09-06 20:03:20,949 - INFO - ================================================================================
+2025-09-06 20:03:20,949 - INFO - 📋 Scenarios Completed: 1
+2025-09-06 20:03:20,949 - INFO - --------------------------------------------------------------------------------
+2025-09-06 20:03:20,949 - INFO - 🎯 Scenario 1: Viral Fame Opportunity
+2025-09-06 20:03:20,949 - INFO -    📅 Week: N/A
+2025-09-06 20:03:20,949 - INFO -    ⏰ Timestamp: 2025-09-06T20:03:10.942252
+2025-09-06 20:03:20,949 - INFO -    📝 Decision Summary:
+2025-09-06 20:03:20,949 - INFO - ----------------------------------------
+2025-09-06 20:03:20,949 - INFO - 💰 RESOURCE STATUS:
+2025-09-06 20:03:20,949 - INFO - --------------------------------------------------------------------------------
+2025-09-06 20:03:20,949 - INFO - 👤 C1:
+2025-09-06 20:03:20,949 - INFO -    ⏰ Time: 40.0 hours
+2025-09-06 20:03:20,949 - INFO -    💵 Money: $0.00
+2025-09-06 20:03:20,949 - INFO -    🤝 Social Connections: 0
+2025-09-06 20:03:20,949 - INFO -    🏆 Reputation: 8.75
+2025-09-06 20:03:20,949 - INFO - 👤 C2:
+2025-09-06 20:03:20,949 - INFO -    ⏰ Time: 40.0 hours
+2025-09-06 20:03:20,949 - INFO -    💵 Money: $0.00
+2025-09-06 20:03:20,949 - INFO -    🤝 Social Connections: 0
+2025-09-06 20:03:20,949 - INFO -    🏆 Reputation: 8.75
+2025-09-06 20:03:20,949 - INFO - 👤 C3:
+2025-09-06 20:03:20,949 - INFO -    ⏰ Time: 40.0 hours
+2025-09-06 20:03:20,949 - INFO -    💵 Money: $0.00
+2025-09-06 20:03:20,949 - INFO -    🤝 Social Connections: 0
+2025-09-06 20:03:20,949 - INFO -    🏆 Reputation: 8.75
+2025-09-06 20:03:20,949 - INFO - 👤 C4:
+2025-09-06 20:03:20,949 - INFO -    ⏰ Time: 40.0 hours
+2025-09-06 20:03:20,949 - INFO -    💵 Money: $0.00
+2025-09-06 20:03:20,949 - INFO -    🤝 Social Connections: 0
+2025-09-06 20:03:20,949 - INFO -    🏆 Reputation: 8.75
+2025-09-06 20:03:20,949 - INFO - ================================================================================
+2025-09-06 20:03:20,949 - INFO - ✅ Month 2 completed successfully
+2025-09-06 20:03:20,949 - INFO - 
+💾 Saving Month 2 decisions...
+2025-09-06 20:03:20,949 - INFO -    Saved 1 scenarios and relationship dynamics
+2025-09-06 20:03:20,965 - INFO - 💾 Experiment state saved to output\state\experiment_state_month_1.json
+2025-09-06 20:03:20,966 - INFO - 💾 Exporting results...
+2025-09-06 20:03:20,972 - INFO - 🎉 Month 2 completed successfully!
+2025-09-06 20:03:20,974 - INFO - 📊 Results saved to:
+2025-09-06 20:03:20,974 - INFO -    📁 output/
+2025-09-06 20:03:20,974 - INFO -    📊 output\results\experiment_results_month_2.json
+2025-09-06 20:03:20,974 - INFO -    📊 output\results\experiment_data_month_2.json
+2025-09-06 20:03:20,974 - INFO -    💾 output\state\experiment_state_month_1.json (for future runs)
+2025-09-06 20:03:20,974 - INFO - ------------------------------------------------------------
+2025-09-06 20:03:20,974 - INFO - 🎉 Experiment completed successfully!
+2025-09-06 20:03:20,974 - INFO - 📊 Check the generated files in the output directory:
+2025-09-06 20:03:20,974 - INFO -    📁 output/
+2025-09-06 20:03:20,974 - INFO -    📄 output\logs\experiment_log_month_2_20250906_200110.txt
+2025-09-06 20:03:20,974 - INFO -    📊 output/results/experiment_results.json
+2025-09-06 20:03:20,974 - INFO -    📊 output/results/experiment_data.json
+2025-09-06 20:03:20,974 - INFO -    💾 output/state/experiment_state.json
+2025-09-06 20:03:20,974 - INFO - 📅 Completed at: 2025-09-06 20:03:20
