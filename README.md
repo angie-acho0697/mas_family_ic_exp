@@ -107,28 +107,28 @@ Four cousins inherit their great-aunt's art gallery space with equal ownership b
 ### Prerequisites
 - Python 3.10 or higher
 - Conda (Anaconda or Miniconda)
-- **Google Gemini API Key** (Free tier available)
+- **Google Gemini API Key** (Free tier)
 
 ### Installation
 
-1. **Clone the repository**
+1. **Repository Setup**
    ```bash
    git clone <repository-url>
    cd mas_family_ic_exp
    ```
 
-2. **Create conda environment**
+2. **Environment Creation**
    ```bash
    conda create -n mas_family_exp python=3.10
    conda activate mas_family_exp
    ```
 
-3. **Install dependencies**
+3. **Dependency Installation**
    ```bash
    pip install -r requirements.txt
    ```
 
-4. **Set up environment variables**
+4. **Environment Variable Configuration**
    
    **On Windows:**
    ```cmd
@@ -140,27 +140,27 @@ Four cousins inherit their great-aunt's art gallery space with equal ownership b
    cp env_example.txt .env
    ```
    
-   Then edit `.env` and add your Google Gemini API key:
+   The `.env` file should be edited to include the Google Gemini API key:
    ```
    GOOGLE_API_KEY=your_google_api_key_here
    LLM_PROVIDER=google
    ```
    
-   **To get your Google Gemini API key:**
-   1. Go to [Google AI Studio](https://makersuite.google.com/)
-   2. Sign in with your Google account
+   **Google Gemini API Key Acquisition:**
+   1. Navigate to [Google AI Studio](https://makersuite.google.com/)
+   2. Sign in with a Google account
    3. Click "Get API Key" 
    4. Create a new API key
-   5. Copy the key and paste it in your `.env` file
+   5. Copy the key and paste it in the `.env` file
 
-5. **Run the experiment**
+5. **Experiment Execution**
 
-   **Run all 6 months:**
+   **Full 6-month simulation:**
    ```bash
    python run_experiment.py
    ```
 
-   **Run a specific month:**
+   **Individual month execution:**
    ```bash
    python run_experiment.py --month 1
    python run_experiment.py --month 2
@@ -183,13 +183,13 @@ This experiment is configured to use **Google Gemini** by default, which offers:
 - ✅ **Reliable**: Google's infrastructure and support
 - ✅ **Cost Effective**: Generous free tier, then reasonable pay-per-use pricing
 
-### **Getting Your API Key:**
+### **API Key Acquisition:**
 1. Visit [Google AI Studio](https://makersuite.google.com/)
-2. Sign in with your Google account
+2. Sign in with a Google account
 3. Click "Get API Key" in the left sidebar
 4. Click "Create API Key" 
 5. Copy the generated key
-6. Paste it in your `.env` file
+6. Paste it in the `.env` file
 
 ## Output Files
 
@@ -217,16 +217,15 @@ output/
 
 ## State Persistence
 
-The experiment automatically saves its complete state after each month, allowing you to:
+The experiment automatically saves its complete state after each month, enabling:
 
-- **Run individual months** without losing context from previous months
+- **Individual month execution** without losing context from previous months
 - **Resume interrupted runs** from the last completed month
-- **Maintain full context** including relationship dynamics, resource allocations, and decision history
-- **Preserve all metrics and conversation logs** across runs
+- **Full context maintenance** including relationship dynamics, resource allocations, and decision history
+- **Preservation of all metrics and conversation logs** across runs
 
-When running a specific month (e.g., `--month 3`), the system automatically loads all previous months' context to ensure agents have full awareness of past decisions and relationships.
 
-**Note**: All output files are automatically organized in the `output/` directory, keeping your project root clean and organized.
+**Note**: All output files are automatically organized in the `output/` directory, keeping the project root clean and organized.
 
 ## Analysis and Insights
 
@@ -248,13 +247,13 @@ The experiment is designed to study:
 
 ## Contributing
 
-This experiment framework is designed to be extensible. You can:
+This experiment framework is designed to be extensible. The following modifications are supported:
 
-- Add new agent personality types
-- Create additional scenario events
-- Implement new resource types
-- Develop custom analysis metrics
-- Modify the decision-making framework
+- Addition of new agent personality types
+- Creation of additional scenario events
+- Implementation of new resource types
+- Development of custom analysis metrics
+- Modification of the decision-making framework
 
 ## License
 
