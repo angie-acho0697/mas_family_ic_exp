@@ -104,7 +104,7 @@ class ResourceManager:
             })
         return success
     
-    def add_resource(self, cousin_id: str, resource_type: ResourceType, amount: float):
+    def add_resource(self, cousin_id: str, resource_type: ResourceType, amount: float, description: str = ""):
         """Add resources to a cousin's pool (e.g., from successful ventures)"""
         if cousin_id not in self.cousin_resources:
             return
@@ -118,6 +118,15 @@ class ResourceManager:
         elif resource_type == ResourceType.SOCIAL_CONNECTIONS:
             # Add new connection
             self.cousin_resources[cousin_id].social_connections.append(f"Connection_{len(self.cousin_resources[cousin_id].social_connections)}")
+        
+        # Track the resource addition in history
+        self.allocation_history.append({
+            "cousin": cousin_id,
+            "resource": resource_type.value,
+            "amount": amount,
+            "description": description,
+            "type": "addition"
+        })
     
     def get_resource_status(self, cousin_id: str) -> Dict[str, Any]:
         """Get current resource status for a cousin"""
