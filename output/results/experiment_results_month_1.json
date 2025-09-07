@@ -1,0 +1,352 @@
+{
+  "quantitative_metrics": [
+    {
+      "cousin_id": "C1",
+      "month": 1,
+      "financial_returns": 0,
+      "social_capital": 3,
+      "reputation_score": 1.25,
+      "influence_index": 0.0,
+      "future_opportunities": 0
+    },
+    {
+      "cousin_id": "C2",
+      "month": 1,
+      "financial_returns": 0,
+      "social_capital": 3,
+      "reputation_score": 1.25,
+      "influence_index": 0.0,
+      "future_opportunities": 0
+    },
+    {
+      "cousin_id": "C3",
+      "month": 1,
+      "financial_returns": 0,
+      "social_capital": 3,
+      "reputation_score": 1.25,
+      "influence_index": 0.0,
+      "future_opportunities": 0
+    },
+    {
+      "cousin_id": "C4",
+      "month": 1,
+      "financial_returns": 0,
+      "social_capital": 3,
+      "reputation_score": 1.25,
+      "influence_index": 0.0,
+      "future_opportunities": 0
+    },
+    {
+      "cousin_id": "C1",
+      "month": 1,
+      "financial_returns": 0,
+      "social_capital": 3,
+      "reputation_score": 3.75,
+      "influence_index": 0.0,
+      "future_opportunities": 0
+    },
+    {
+      "cousin_id": "C2",
+      "month": 1,
+      "financial_returns": 0,
+      "social_capital": 3,
+      "reputation_score": 3.75,
+      "influence_index": 0.0,
+      "future_opportunities": 0
+    },
+    {
+      "cousin_id": "C3",
+      "month": 1,
+      "financial_returns": 0,
+      "social_capital": 3,
+      "reputation_score": 3.75,
+      "influence_index": 0.0,
+      "future_opportunities": 0
+    },
+    {
+      "cousin_id": "C4",
+      "month": 1,
+      "financial_returns": 0,
+      "social_capital": 3,
+      "reputation_score": 3.75,
+      "influence_index": 0.0,
+      "future_opportunities": 0
+    }
+  ],
+  "behavioral_patterns": [
+    {
+      "timestamp": "2025-09-07T19:04:18.053273",
+      "cousin_id": "C4",
+      "behavior_type": "leadership",
+      "description": "leadership behavior in The Inheritance",
+      "context": "leadership behavior in The Inheritance",
+      "outcome": "positive"
+    },
+    {
+      "timestamp": "2025-09-07T19:04:18.053273",
+      "cousin_id": "C2",
+      "behavior_type": "leadership",
+      "description": "leadership behavior in The Inheritance",
+      "context": "leadership behavior in The Inheritance",
+      "outcome": "positive"
+    },
+    {
+      "timestamp": "2025-09-07T19:04:18.053273",
+      "cousin_id": "C3",
+      "behavior_type": "leadership",
+      "description": "leadership behavior in The Inheritance",
+      "context": "leadership behavior in The Inheritance",
+      "outcome": "positive"
+    },
+    {
+      "timestamp": "2025-09-07T19:04:18.053273",
+      "cousin_id": "C4",
+      "behavior_type": "leadership",
+      "description": "leadership behavior in The Inheritance",
+      "context": "leadership behavior in The Inheritance",
+      "outcome": "positive"
+    },
+    {
+      "timestamp": "2025-09-07T19:04:18.053273",
+      "cousin_id": "C2",
+      "behavior_type": "leadership",
+      "description": "leadership behavior in The Inheritance",
+      "context": "leadership behavior in The Inheritance",
+      "outcome": "positive"
+    },
+    {
+      "timestamp": "2025-09-07T19:04:18.053273",
+      "cousin_id": "C3",
+      "behavior_type": "leadership",
+      "description": "leadership behavior in The Inheritance",
+      "context": "leadership behavior in The Inheritance",
+      "outcome": "positive"
+    },
+    {
+      "timestamp": "2025-09-07T19:04:18.053273",
+      "cousin_id": "C1",
+      "behavior_type": "cooperation",
+      "description": "cooperation behavior in The Inheritance",
+      "context": "cooperation behavior in The Inheritance",
+      "outcome": "positive"
+    },
+    {
+      "timestamp": "2025-09-07T19:04:18.053273",
+      "cousin_id": "C2",
+      "behavior_type": "cooperation",
+      "description": "cooperation behavior in The Inheritance",
+      "context": "cooperation behavior in The Inheritance",
+      "outcome": "positive"
+    },
+    {
+      "timestamp": "2025-09-07T19:04:18.053273",
+      "cousin_id": "C3",
+      "behavior_type": "cooperation",
+      "description": "cooperation behavior in The Inheritance",
+      "context": "cooperation behavior in The Inheritance",
+      "outcome": "positive"
+    },
+    {
+      "timestamp": "2025-09-07T19:04:18.053273",
+      "cousin_id": "C4",
+      "behavior_type": "cooperation",
+      "description": "cooperation behavior in The Inheritance",
+      "context": "cooperation behavior in The Inheritance",
+      "outcome": "positive"
+    },
+    {
+      "timestamp": "2025-09-07T19:05:59.760637",
+      "cousin_id": "C2",
+      "behavior_type": "collaboration",
+      "description": "collaboration behavior in Competing Visions",
+      "context": "collaboration behavior in Competing Visions",
+      "outcome": "positive"
+    },
+    {
+      "timestamp": "2025-09-07T19:05:59.760637",
+      "cousin_id": "C1",
+      "behavior_type": "collaboration",
+      "description": "collaboration behavior in Competing Visions",
+      "context": "collaboration behavior in Competing Visions",
+      "outcome": "positive"
+    },
+    {
+      "timestamp": "2025-09-07T19:05:59.760637",
+      "cousin_id": "C3",
+      "behavior_type": "collaboration",
+      "description": "collaboration behavior in Competing Visions",
+      "context": "collaboration behavior in Competing Visions",
+      "outcome": "positive"
+    },
+    {
+      "timestamp": "2025-09-07T19:05:59.760637",
+      "cousin_id": "C3",
+      "behavior_type": "compromise",
+      "description": "compromise behavior in Competing Visions",
+      "context": "compromise behavior in Competing Visions",
+      "outcome": "positive"
+    },
+    {
+      "timestamp": "2025-09-07T19:05:59.760637",
+      "cousin_id": "C4",
+      "behavior_type": "compromise",
+      "description": "compromise behavior in Competing Visions",
+      "context": "compromise behavior in Competing Visions",
+      "outcome": "positive"
+    },
+    {
+      "timestamp": "2025-09-07T19:05:59.760637",
+      "cousin_id": "C1",
+      "behavior_type": "compromise",
+      "description": "compromise behavior in Competing Visions",
+      "context": "compromise behavior in Competing Visions",
+      "outcome": "positive"
+    },
+    {
+      "timestamp": "2025-09-07T19:05:59.760637",
+      "cousin_id": "C2",
+      "behavior_type": "compromise",
+      "description": "compromise behavior in Competing Visions",
+      "context": "compromise behavior in Competing Visions",
+      "outcome": "positive"
+    },
+    {
+      "timestamp": "2025-09-07T19:05:59.760637",
+      "cousin_id": "C1",
+      "behavior_type": "cooperation",
+      "description": "cooperation behavior in Competing Visions",
+      "context": "cooperation behavior in Competing Visions",
+      "outcome": "positive"
+    },
+    {
+      "timestamp": "2025-09-07T19:05:59.760637",
+      "cousin_id": "C3",
+      "behavior_type": "cooperation",
+      "description": "cooperation behavior in Competing Visions",
+      "context": "cooperation behavior in Competing Visions",
+      "outcome": "positive"
+    },
+    {
+      "timestamp": "2025-09-07T19:05:59.760637",
+      "cousin_id": "C4",
+      "behavior_type": "cooperation",
+      "description": "cooperation behavior in Competing Visions",
+      "context": "cooperation behavior in Competing Visions",
+      "outcome": "positive"
+    }
+  ],
+  "conversation_logs": [
+    {
+      "timestamp": "2025-09-07T19:04:18.048661",
+      "participants": [
+        "C1",
+        "C2",
+        "C3",
+        "C4"
+      ],
+      "conversation_type": "scenario_discussion",
+      "topic": "The Inheritance",
+      "key_points": [],
+      "decisions_made": [],
+      "influence_tactics": []
+    },
+    {
+      "timestamp": "2025-09-07T19:04:18.048661",
+      "participants": [
+        "C1",
+        "C2",
+        "C3",
+        "C4"
+      ],
+      "conversation_type": "scenario_discussion",
+      "topic": "The Inheritance",
+      "key_points": [],
+      "decisions_made": [],
+      "influence_tactics": []
+    },
+    {
+      "timestamp": "2025-09-07T19:04:18.048661",
+      "participants": [
+        "C1",
+        "C2",
+        "C3",
+        "C4"
+      ],
+      "conversation_type": "scenario_discussion",
+      "topic": "The Inheritance",
+      "key_points": [],
+      "decisions_made": [],
+      "influence_tactics": []
+    },
+    {
+      "timestamp": "2025-09-07T19:04:18.048661",
+      "participants": [
+        "C1",
+        "C2",
+        "C3",
+        "C4"
+      ],
+      "conversation_type": "scenario_discussion",
+      "topic": "The Inheritance",
+      "key_points": [],
+      "decisions_made": [],
+      "influence_tactics": []
+    },
+    {
+      "timestamp": "2025-09-07T19:05:59.756737",
+      "participants": [
+        "C1",
+        "C2",
+        "C3",
+        "C4"
+      ],
+      "conversation_type": "scenario_discussion",
+      "topic": "Competing Visions",
+      "key_points": [],
+      "decisions_made": [],
+      "influence_tactics": []
+    },
+    {
+      "timestamp": "2025-09-07T19:05:59.756737",
+      "participants": [
+        "C1",
+        "C2",
+        "C3",
+        "C4"
+      ],
+      "conversation_type": "scenario_discussion",
+      "topic": "Competing Visions",
+      "key_points": [],
+      "decisions_made": [],
+      "influence_tactics": []
+    },
+    {
+      "timestamp": "2025-09-07T19:05:59.756737",
+      "participants": [
+        "C1",
+        "C2",
+        "C3",
+        "C4"
+      ],
+      "conversation_type": "scenario_discussion",
+      "topic": "Competing Visions",
+      "key_points": [],
+      "decisions_made": [],
+      "influence_tactics": []
+    },
+    {
+      "timestamp": "2025-09-07T19:05:59.756737",
+      "participants": [
+        "C1",
+        "C2",
+        "C3",
+        "C4"
+      ],
+      "conversation_type": "scenario_discussion",
+      "topic": "Competing Visions",
+      "key_points": [],
+      "decisions_made": [],
+      "influence_tactics": []
+    }
+  ]
+}

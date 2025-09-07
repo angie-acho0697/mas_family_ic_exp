@@ -8,6 +8,7 @@ import os
 import sys
 import logging
 import time
+import random
 from typing import Dict, List, Any
 from datetime import datetime
 import json
@@ -129,147 +130,259 @@ class FamilyInheritanceExperiment:
             agent = cousin.create_agent()
             self.crew_agents.append(agent)
         
-        # Create the crew optimized for Gemini
+        # Create the crew optimized for dynamic family conversations
         self.crew = Crew(
             agents=self.crew_agents,
             tasks=[],  # Tasks will be added dynamically
             verbose=True,
-            process="sequential",  # Sequential processing works better with Gemini
+            process="sequential",  # Sequential works well for our dynamic conversation approach
             memory=True,  # Enable memory for better context
             embedder=None,  # Use default embedder
             llm=llm_config.get_llm()  # Explicitly set the LLM for the crew
         )
     
+    def create_dynamic_family_conversation_tasks(self, scenario_event) -> List[Task]:
+        """Create dynamic family conversation tasks with randomized starting agent"""
+        
+        historical_context = self._build_historical_context()
+        
+        # Randomize which agent starts the conversation
+        starting_agent_index = random.randint(0, len(self.crew_agents) - 1)
+        starting_agent = self.crew_agents[starting_agent_index]
+        starting_cousin_id = list(self.cousins.keys())[starting_agent_index]
+        
+        # Add some randomness to conversation dynamics, influenced by relationship history
+        base_moods = [
+            "Everyone is feeling optimistic and collaborative",
+            "There's some tension in the air - people have different strong opinions",
+            "The family is feeling nostalgic and emotional about grandma's memory",
+            "Everyone is feeling practical and focused on getting things done",
+            "There's excitement mixed with some anxiety about the decision"
+        ]
+        
+        # Check if there are any existing conflicts or alliances that might influence mood
+        has_conflicts = any(len(self.relationship_dynamics[cousin]["conflicts"]) > 0 
+                          for cousin in self.relationship_dynamics)
+        has_alliances = any(len(self.relationship_dynamics[cousin]["alliances"]) > 0 
+                          for cousin in self.relationship_dynamics)
+        
+        if has_conflicts:
+            base_moods.extend([
+                "There's underlying tension from previous disagreements",
+                "People are being more careful with their words due to past conflicts"
+            ])
+        if has_alliances:
+            base_moods.extend([
+                "Some cousins are naturally supporting each other's ideas",
+                "There's a sense of solidarity from previous collaborations"
+            ])
+        
+        conversation_mood = random.choice(base_moods)
+        
+        conversation_style = random.choice([
+            "casual and relaxed",
+            "intense and passionate", 
+            "thoughtful and careful",
+            "energetic and enthusiastic",
+            "concerned and cautious"
+        ])
+        
+        logger.info(f"🎲 Random conversation starter: {starting_cousin_id}")
+        logger.info(f"🎭 Conversation mood: {conversation_mood}")
+        logger.info(f"💭 Conversation style: {conversation_style}")
+        
+        # Track conversation patterns for future randomization
+        if not hasattr(self, 'conversation_history'):
+            self.conversation_history = {
+                'starters': [],
+                'moods': [],
+                'styles': []
+            }
+        
+        self.conversation_history['starters'].append(starting_cousin_id)
+        self.conversation_history['moods'].append(conversation_mood)
+        self.conversation_history['styles'].append(conversation_style)
+        
+        # Create a single collaborative task that simulates a family conversation
+        family_conversation_task = Task(
+            description=f"""
+            FAMILY CONVERSATION: {scenario_event.title}
+            
+            {scenario_event.description}
+            
+            Here's what we need to figure out:
+            {chr(10).join(f"- {dp}" for dp in scenario_event.decision_points)}
+            
+            And here's what could happen:
+            {chr(10).join(f"- {outcome}" for outcome in scenario_event.potential_outcomes)}
+            
+            This will affect our resources: {scenario_event.resource_impact}
+            
+            Previous family decisions: {historical_context}
+            
+            CONVERSATION ATMOSPHERE:
+            - Current mood: {conversation_mood}
+            - Conversation style: {conversation_style}
+            
+            CONVERSATION RULES:
+            - This is a natural family conversation, not a formal meeting
+            - {starting_cousin_id} starts the conversation, but anyone can jump in
+            - People can interrupt, build on each other's ideas, or disagree
+            - Share personal feelings, memories of grandma, and family concerns
+            - We need to reach a decision everyone can agree on
+            - Speak like you're sitting around the kitchen table with family
+            - Let the conversation flow naturally - don't force a rigid structure
+            - Some people might be more talkative, others might be quieter
+            - It's okay to have side conversations or tangents
+            
+            Remember: We're family figuring this out together. Be real, be honest, 
+            and remember what grandma would have wanted for us. Let the conversation 
+            develop organically based on the current mood and everyone's personalities.
+            """,
+            agent=starting_agent,  # Random starting agent
+            expected_output=f"""A natural family conversation where all four cousins participate organically. 
+            The conversation should feel {conversation_style} and reflect the current mood: {conversation_mood}.
+            Include interruptions, building on ideas, disagreements, emotional responses, and natural 
+            conversation flow. Some cousins might be more talkative than others. Include side comments, 
+            family references, and personal touches. End with a decision everyone can agree on, but 
+            let the path to that decision be natural and conversational, not formal or structured.""",
+            max_execution_time=600,  # 10 minutes for more complex conversation
+            async_execution=False,
+            llm=llm_config.get_llm()
+        )
+        
+        return [family_conversation_task]
+
     def create_collaborative_scenario_tasks(self, scenario_event) -> List[Task]:
         """Create multiple collaborative tasks for a scenario event"""
         
         historical_context = self._build_historical_context()
         
-        # Task 1: Initial Analysis (assigned to analytical cousin - typically C1)
+        # Task 1: Initial Family Discussion (assigned to eldest cousin - C1)
         analysis_task = Task(
             description=f"""
-            As the analytical member of the group, provide your initial assessment of this scenario:
+            Hey everyone, we need to talk about this situation that's come up:
             
-            Scenario: {scenario_event.title}
-            Description: {scenario_event.description}
+            {scenario_event.title}
+            {scenario_event.description}
             
-            Decision Points to Consider:
+            Here's what we need to figure out:
             {chr(10).join(f"- {dp}" for dp in scenario_event.decision_points)}
             
-            Potential Outcomes:
+            And here's what could happen:
             {chr(10).join(f"- {outcome}" for outcome in scenario_event.potential_outcomes)}
             
-            Resource Impact: {scenario_event.resource_impact}
+            This will affect our resources: {scenario_event.resource_impact}
             
-            Your task:
-            1. Break down the key issues and implications
-            2. Identify potential risks and opportunities
-            3. Suggest questions the group should consider
-            4. Provide your initial recommendation
-            5. Consider how this aligns with our inheritance terms (unanimous decision required)
+            As the eldest cousin, I want to hear your thoughts, but let me share what I'm thinking first:
             
-            Historical Context: {historical_context}
+            Talk to us like family - what's on your mind? What are you worried about? What excites you? 
+            Remember, we all have to agree on whatever we decide, so let's be honest about our concerns 
+            and hopes. Share your gut feelings, your memories of grandma, and what you think she would 
+            have wanted.
             
-            Remember: This is YOUR individual perspective. Other cousins will provide their views next.
+            Previous family decisions: {historical_context}
+            
+            Speak from your heart, not like you're writing a business report. We're family figuring 
+            this out together.
             """,
             agent=self.crew_agents[0],  # Assign to analytical cousin
-            expected_output="Initial analysis with key issues, risks, opportunities, and preliminary recommendations. Include specific questions for the group to discuss and your reasoning for recommendations.",
+            expected_output="A heartfelt family conversation sharing your thoughts, concerns, and hopes about this situation. Speak like you're talking to your cousins around the dinner table - be personal, reference family memories, and share what's really on your mind.",
             max_execution_time=300,  # 5 minutes timeout for Gemini
             async_execution=False,  # Ensure synchronous execution
             llm=llm_config.get_llm()  # Explicitly use Google LLM
         )
         
-        # Task 2: Financial/Business Perspective (assigned to business-minded cousin - typically C2)
+        # Task 2: Family Financial Concerns (assigned to relationship-focused cousin - C2)
         business_task = Task(
             description=f"""
-            Based on the initial analysis provided, now provide the business and financial perspective on this scenario:
+            Okay, I heard what C1 had to say about {scenario_event.title}. Now let me share my thoughts 
+            as someone who cares about keeping our family strong and our relationships healthy.
             
-            Scenario: {scenario_event.title}
             Resource Impact: {scenario_event.resource_impact}
             
-            Your task:
-            1. Evaluate financial implications and costs
-            2. Consider business opportunities and revenue potential
-            3. Assess resource allocation needs (time, money, reputation)
-            4. Analyze market conditions and competitive factors
-            5. Provide business-focused recommendations
-            6. Address any financial concerns raised in the initial analysis
+            I'm thinking about how this affects all of us as a family. What are the real costs here - 
+            not just money, but time, stress, and our relationships with each other? 
             
-            Consider the previous analysis and historical context.
-            Build upon the analytical perspective while adding your business expertise.
+            Talk to us like you're sitting around the kitchen table with family:
+            - What are you worried about financially?
+            - How will this impact our family dynamics?
+            - What opportunities do you see for us to work together?
+            - What concerns do you have about our relationships?
+            - How can we make sure everyone feels heard and valued?
             
-            Remember: We need unanimous agreement, so consider what compromises might be needed.
+            I want to make sure we're thinking about grandma's legacy and what she would want for us. 
+            She always said family comes first, so let's talk about how this decision affects our family 
+            bond, not just the business side.
+            
+            Be honest about your feelings and concerns. We're all in this together.
             """,
             agent=self.crew_agents[1],  # Assign to business-minded cousin
-            expected_output="Business analysis with financial implications, resource requirements, market assessment, and business-focused recommendations that complement the initial analysis.",
+            expected_output="A caring family conversation about how this affects our relationships, finances, and family dynamics. Share your concerns and hopes like you're talking to family members you love and want to protect.",
             max_execution_time=300,  # 5 minutes timeout for Gemini
             async_execution=False,  # Ensure synchronous execution
             llm=llm_config.get_llm()  # Explicitly use Google LLM
         )
         
-        # Task 3: Creative/Design Perspective (assigned to creative cousin - typically C3)
+        # Task 3: Practical Family Perspective (assigned to responsible cousin - C3)
         creative_task = Task(
             description=f"""
-            Building on the analytical and business perspectives already provided, now contribute the creative and design viewpoint:
+            Alright, I've heard from C1 and C2 about {scenario_event.title}. Now let me share my thoughts 
+            as the cousin who always worries about the details and making sure we don't mess this up.
             
-            Scenario: {scenario_event.title}
+            I'm thinking about what grandma would do in this situation. She was always so careful and 
+            thoughtful about every decision. I remember how she'd sit at her desk, going through every 
+            detail before making a choice.
             
-            Your task:
-            1. Envision creative possibilities and innovative approaches
-            2. Consider aesthetic, experiential, and artistic aspects
-            3. Think about innovative solutions that others might not see
-            4. Address how this fits with the gallery's artistic vision and mission
-            5. Propose creative alternatives to traditional approaches
-            6. Consider the human/emotional aspects of the decision
+            Talk to us like you're the responsible family member who wants to make sure we don't make 
+            mistakes:
+            - What are the risks we need to think about?
+            - How do we make sure we're being smart about this?
+            - What would grandma have done differently?
+            - How can we honor her memory while being practical?
+            - What are the real numbers and facts we need to consider?
             
-            Review the analytical assessment and business analysis already provided.
-            Add your unique creative perspective while acknowledging their valid points.
+            I know I can be a bit of a worrywart, but I care about our family's future. I want to make 
+            sure we're making decisions that will make grandma proud and keep our family strong.
             
-            Remember: Your creativity is valued, but we need practical solutions everyone can agree on.
+            Share your concerns and ideas like you're talking to family who trusts your judgment.
             """,
             agent=self.crew_agents[2],  # Assign to creative cousin
-            expected_output="Creative analysis with innovative ideas, artistic vision considerations, alternative approaches, and creative solutions that integrate with analytical and business perspectives.",
+            expected_output="A thoughtful family conversation sharing your concerns and practical ideas. Speak like the responsible family member who wants to make sure we make good decisions that honor grandma's memory.",
             max_execution_time=300,  # 5 minutes timeout for Gemini
             async_execution=False,  # Ensure synchronous execution
             llm=llm_config.get_llm()  # Explicitly use Google LLM
         )
         
-        # Task 4: Final Decision Coordination (assigned to diplomatic cousin - typically C4)
+        # Task 4: Family Decision Making (assigned to action-oriented cousin - C4)
         coordination_task = Task(
             description=f"""
-            As the group coordinator, synthesize all previous analyses and facilitate the final decision:
+            Okay everyone, I've heard from C1, C2, and C3 about {scenario_event.title}. Now it's time 
+            for us to make a decision as a family.
             
-            Scenario: {scenario_event.title}
+            I'm the youngest, but I've always been the one who gets things done when we're all talking 
+            in circles. Let me help us figure this out together.
             
-            You have received:
-            1. Analytical assessment with risks, opportunities, and key questions
-            2. Business/financial analysis with market and resource considerations
-            3. Creative perspective with innovative ideas and artistic vision
+            Talk to us like you're the family member who's ready to take action and make sure we all 
+            agree:
+            - What did you hear from everyone that makes sense?
+            - Where do we all agree, and where do we need to compromise?
+            - How can we honor everyone's concerns while moving forward?
+            - What's our plan that we can all get behind?
+            - How do we make sure grandma would be proud of our decision?
             
-            Your task:
-            1. Review and summarize all previous analyses
-            2. Identify areas of agreement and disagreement between perspectives
-            3. Propose compromises and middle-ground solutions where conflicts exist
-            4. Address concerns raised by each cousin
-            5. Formulate the final group decision that everyone can support
-            6. Document the reasoning, trade-offs, and any conflicts resolved
-            7. Create resource allocation plan based on all inputs
-            8. Consider impact on family relationships and future decisions
+            Remember, we all have to agree on this. No one gets left out or ignored. We're family, 
+            and we need to find a way forward that works for all of us.
             
-            CRITICAL: You need unanimous agreement as per inheritance terms.
+            Let's be practical but also remember what's really important - our family and grandma's 
+            legacy. What are we actually going to do?
+            
+            CRITICAL: We need unanimous agreement as per inheritance terms.
             Find a path forward that incorporates everyone's valid concerns and expertise.
             If consensus seems impossible, propose a modified approach or delayed decision.
             """,
             agent=self.crew_agents[3],  # Assign to diplomatic cousin
-            expected_output="""Final coordinated decision document including:
-            - Summary of all four perspectives
-            - Areas of agreement and disagreement
-            - Compromises and solutions proposed
-            - Final unanimous decision (or explanation if consensus not reached)
-            - Detailed resource allocation plan
-            - Implementation timeline
-            - Impact on family relationships
-            - Lessons learned for future decisions""",
+            expected_output="A family conversation where you help everyone reach a decision we can all agree on. Speak like the family member who's ready to take action and make sure everyone's voice is heard. Share your plan in a way that shows you care about the family and grandma's legacy.",
             max_execution_time=300,  # 5 minutes timeout for Gemini
             async_execution=False,  # Ensure synchronous execution
             llm=llm_config.get_llm()  # Explicitly use Google LLM
@@ -491,8 +604,8 @@ class FamilyInheritanceExperiment:
         logger.info(f"Month {scenario_event.month}, Week {scenario_event.week}")
         logger.info(f"{'='*60}")
         
-        # Create collaborative tasks for this scenario
-        tasks = self.create_collaborative_scenario_tasks(scenario_event)
+        # Create dynamic family conversation tasks for this scenario
+        tasks = self.create_dynamic_family_conversation_tasks(scenario_event)
         
         # Update the crew's tasks
         self.crew.tasks = tasks
@@ -828,13 +941,7 @@ class FamilyInheritanceExperiment:
                             for m in self.metrics_tracker.quantitative_metrics
                         ],
                 "conversation_logs": [
-                    {
-                        "cousin_id": log.cousin_id,
-                        "month": log.month,
-                        "conversation_type": log.conversation_type,
-                        "content": log.content,
-                        "timestamp": log.timestamp.isoformat()
-                    }
+                    log.to_dict()
                     for log in self.metrics_tracker.conversation_logs
                 ]
             },

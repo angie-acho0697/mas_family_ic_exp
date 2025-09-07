@@ -1,0 +1,1344 @@
+{
+  "timeline": {
+    "current_month": 1,
+    "current_week": 3
+  },
+  "resource_manager": {
+    "cousin_resources": {
+      "C1": {
+        "time_hours": 40.0,
+        "money": 0.0,
+        "social_connections": [
+          {
+            "cousin_id": "C2",
+            "relationship_type": "collaboration",
+            "strength": 0.6,
+            "context": "Alliance formed in The Inheritance",
+            "timestamp": "2025-09-07T19:04:18.053273",
+            "last_interaction": "2025-09-07T19:05:59.760637"
+          },
+          {
+            "cousin_id": "C3",
+            "relationship_type": "collaboration",
+            "strength": 0.7,
+            "context": "Alliance formed in The Inheritance",
+            "timestamp": "2025-09-07T19:04:18.053639",
+            "last_interaction": "2025-09-07T19:05:59.760637"
+          },
+          {
+            "cousin_id": "C4",
+            "relationship_type": "collaboration",
+            "strength": 0.7,
+            "context": "Alliance formed in The Inheritance",
+            "timestamp": "2025-09-07T19:04:18.053940",
+            "last_interaction": "2025-09-07T19:05:59.760637"
+          }
+        ],
+        "reputation_points": 3.75
+      },
+      "C2": {
+        "time_hours": 40.0,
+        "money": 0.0,
+        "social_connections": [
+          {
+            "cousin_id": "C1",
+            "relationship_type": "collaboration",
+            "strength": 0.6,
+            "context": "Alliance formed in The Inheritance",
+            "timestamp": "2025-09-07T19:04:18.053639",
+            "last_interaction": "2025-09-07T19:05:59.760637"
+          },
+          {
+            "cousin_id": "C3",
+            "relationship_type": "collaboration",
+            "strength": 0.6,
+            "context": "Alliance formed in The Inheritance",
+            "timestamp": "2025-09-07T19:04:18.053940",
+            "last_interaction": "2025-09-07T19:05:59.760637"
+          },
+          {
+            "cousin_id": "C4",
+            "relationship_type": "collaboration",
+            "strength": 0.6,
+            "context": "Alliance formed in The Inheritance",
+            "timestamp": "2025-09-07T19:04:18.053940",
+            "last_interaction": "2025-09-07T19:05:59.760637"
+          }
+        ],
+        "reputation_points": 3.75
+      },
+      "C3": {
+        "time_hours": 40.0,
+        "money": 0.0,
+        "social_connections": [
+          {
+            "cousin_id": "C1",
+            "relationship_type": "collaboration",
+            "strength": 0.7,
+            "context": "Alliance formed in The Inheritance",
+            "timestamp": "2025-09-07T19:04:18.053940",
+            "last_interaction": "2025-09-07T19:05:59.760637"
+          },
+          {
+            "cousin_id": "C2",
+            "relationship_type": "collaboration",
+            "strength": 0.6,
+            "context": "Alliance formed in The Inheritance",
+            "timestamp": "2025-09-07T19:04:18.053940",
+            "last_interaction": "2025-09-07T19:05:59.760637"
+          },
+          {
+            "cousin_id": "C4",
+            "relationship_type": "collaboration",
+            "strength": 0.7,
+            "context": "Alliance formed in The Inheritance",
+            "timestamp": "2025-09-07T19:04:18.053940",
+            "last_interaction": "2025-09-07T19:05:59.760637"
+          }
+        ],
+        "reputation_points": 3.75
+      },
+      "C4": {
+        "time_hours": 40.0,
+        "money": 0.0,
+        "social_connections": [
+          {
+            "cousin_id": "C1",
+            "relationship_type": "collaboration",
+            "strength": 0.7,
+            "context": "Alliance formed in The Inheritance",
+            "timestamp": "2025-09-07T19:04:18.053940",
+            "last_interaction": "2025-09-07T19:05:59.760637"
+          },
+          {
+            "cousin_id": "C2",
+            "relationship_type": "collaboration",
+            "strength": 0.6,
+            "context": "Alliance formed in The Inheritance",
+            "timestamp": "2025-09-07T19:04:18.053940",
+            "last_interaction": "2025-09-07T19:05:59.760637"
+          },
+          {
+            "cousin_id": "C3",
+            "relationship_type": "collaboration",
+            "strength": 0.7,
+            "context": "Alliance formed in The Inheritance",
+            "timestamp": "2025-09-07T19:04:18.053940",
+            "last_interaction": "2025-09-07T19:05:59.760637"
+          }
+        ],
+        "reputation_points": 3.75
+      }
+    },
+    "shared_resources": {
+      "shared_budget": 100000.0,
+      "gallery_reputation": 0.0,
+      "family_reputation": 0.0,
+      "legal_fund": 0.0
+    }
+  },
+  "relationship_dynamics": {
+    "C1": {
+      "trust_levels": {
+        "C2": 0.6,
+        "C3": 0.6,
+        "C4": 0.6
+      },
+      "conflicts": [],
+      "alliances": [
+        {
+          "type": "collaboration",
+          "involved": [
+            "C1",
+            "C2",
+            "C3",
+            "C4"
+          ],
+          "context": "Alliance formed in The Inheritance",
+          "strength": "medium",
+          "month": 1,
+          "timestamp": "2025-09-07T19:04:18.052270"
+        },
+        {
+          "type": "collaboration",
+          "involved": [
+            "C1",
+            "C3",
+            "C4"
+          ],
+          "context": "Alliance formed in Competing Visions",
+          "strength": "medium",
+          "month": 1,
+          "timestamp": "2025-09-07T19:05:59.760637"
+        },
+        {
+          "type": "collaboration",
+          "involved": [
+            "C2",
+            "C1",
+            "C3",
+            "C4"
+          ],
+          "context": "Alliance formed in Competing Visions",
+          "strength": "medium",
+          "month": 1,
+          "timestamp": "2025-09-07T19:05:59.760637"
+        }
+      ]
+    },
+    "C2": {
+      "trust_levels": {
+        "C1": 0.6,
+        "C3": 0.6,
+        "C4": 0.6
+      },
+      "conflicts": [],
+      "alliances": [
+        {
+          "type": "collaboration",
+          "involved": [
+            "C1",
+            "C2",
+            "C3",
+            "C4"
+          ],
+          "context": "Alliance formed in The Inheritance",
+          "strength": "medium",
+          "month": 1,
+          "timestamp": "2025-09-07T19:04:18.052270"
+        },
+        {
+          "type": "collaboration",
+          "involved": [
+            "C2",
+            "C1",
+            "C3",
+            "C4"
+          ],
+          "context": "Alliance formed in Competing Visions",
+          "strength": "medium",
+          "month": 1,
+          "timestamp": "2025-09-07T19:05:59.760637"
+        }
+      ]
+    },
+    "C3": {
+      "trust_levels": {
+        "C1": 0.6,
+        "C2": 0.6,
+        "C4": 0.6
+      },
+      "conflicts": [],
+      "alliances": [
+        {
+          "type": "collaboration",
+          "involved": [
+            "C1",
+            "C2",
+            "C3",
+            "C4"
+          ],
+          "context": "Alliance formed in The Inheritance",
+          "strength": "medium",
+          "month": 1,
+          "timestamp": "2025-09-07T19:04:18.052270"
+        },
+        {
+          "type": "collaboration",
+          "involved": [
+            "C1",
+            "C3",
+            "C4"
+          ],
+          "context": "Alliance formed in Competing Visions",
+          "strength": "medium",
+          "month": 1,
+          "timestamp": "2025-09-07T19:05:59.760637"
+        },
+        {
+          "type": "collaboration",
+          "involved": [
+            "C2",
+            "C1",
+            "C3",
+            "C4"
+          ],
+          "context": "Alliance formed in Competing Visions",
+          "strength": "medium",
+          "month": 1,
+          "timestamp": "2025-09-07T19:05:59.760637"
+        }
+      ]
+    },
+    "C4": {
+      "trust_levels": {
+        "C1": 0.6,
+        "C2": 0.6,
+        "C3": 0.6
+      },
+      "conflicts": [],
+      "alliances": [
+        {
+          "type": "collaboration",
+          "involved": [
+            "C1",
+            "C2",
+            "C3",
+            "C4"
+          ],
+          "context": "Alliance formed in The Inheritance",
+          "strength": "medium",
+          "month": 1,
+          "timestamp": "2025-09-07T19:04:18.052270"
+        },
+        {
+          "type": "collaboration",
+          "involved": [
+            "C1",
+            "C3",
+            "C4"
+          ],
+          "context": "Alliance formed in Competing Visions",
+          "strength": "medium",
+          "month": 1,
+          "timestamp": "2025-09-07T19:05:59.760637"
+        },
+        {
+          "type": "collaboration",
+          "involved": [
+            "C2",
+            "C1",
+            "C3",
+            "C4"
+          ],
+          "context": "Alliance formed in Competing Visions",
+          "strength": "medium",
+          "month": 1,
+          "timestamp": "2025-09-07T19:05:59.760637"
+        }
+      ]
+    }
+  },
+  "scenario_history": [
+    {
+      "scenario": "The Inheritance",
+      "month": 1,
+      "timestamp": "2025-09-07T19:04:18.052270",
+      "decision": "Decision made",
+      "conflicts": [],
+      "alliances": [
+        {
+          "type": "collaboration",
+          "involved": [
+            "C1",
+            "C2",
+            "C3",
+            "C4"
+          ],
+          "context": "Alliance formed in The Inheritance",
+          "strength": "medium",
+          "month": 1,
+          "timestamp": "2025-09-07T19:04:18.052270"
+        }
+      ],
+      "trust_changes": [
+        {
+          "cousin": "C3",
+          "change": "positive",
+          "context": "Trust change in The Inheritance",
+          "month": 1,
+          "timestamp": "2025-09-07T19:04:18.052270"
+        },
+        {
+          "cousin": "C4",
+          "change": "positive",
+          "context": "Trust change in The Inheritance",
+          "month": 1,
+          "timestamp": "2025-09-07T19:04:18.052270"
+        },
+        {
+          "cousin": "C1",
+          "change": "positive",
+          "context": "Trust change in The Inheritance",
+          "month": 1,
+          "timestamp": "2025-09-07T19:04:18.052270"
+        },
+        {
+          "cousin": "C2",
+          "change": "positive",
+          "context": "Trust change in The Inheritance",
+          "month": 1,
+          "timestamp": "2025-09-07T19:04:18.052270"
+        }
+      ],
+      "behavioral_patterns": [
+        {
+          "cousin_id": "C4",
+          "behavior_type": "leadership",
+          "context": "leadership behavior in The Inheritance",
+          "outcome": "positive",
+          "month": 1,
+          "timestamp": "2025-09-07T19:04:18.052270"
+        },
+        {
+          "cousin_id": "C2",
+          "behavior_type": "leadership",
+          "context": "leadership behavior in The Inheritance",
+          "outcome": "positive",
+          "month": 1,
+          "timestamp": "2025-09-07T19:04:18.052270"
+        },
+        {
+          "cousin_id": "C3",
+          "behavior_type": "leadership",
+          "context": "leadership behavior in The Inheritance",
+          "outcome": "positive",
+          "month": 1,
+          "timestamp": "2025-09-07T19:04:18.052270"
+        },
+        {
+          "cousin_id": "C4",
+          "behavior_type": "leadership",
+          "context": "leadership behavior in The Inheritance",
+          "outcome": "positive",
+          "month": 1,
+          "timestamp": "2025-09-07T19:04:18.052270"
+        },
+        {
+          "cousin_id": "C2",
+          "behavior_type": "leadership",
+          "context": "leadership behavior in The Inheritance",
+          "outcome": "positive",
+          "month": 1,
+          "timestamp": "2025-09-07T19:04:18.052270"
+        },
+        {
+          "cousin_id": "C3",
+          "behavior_type": "leadership",
+          "context": "leadership behavior in The Inheritance",
+          "outcome": "positive",
+          "month": 1,
+          "timestamp": "2025-09-07T19:04:18.052270"
+        },
+        {
+          "cousin_id": "C1",
+          "behavior_type": "cooperation",
+          "context": "cooperation behavior in The Inheritance",
+          "outcome": "positive",
+          "month": 1,
+          "timestamp": "2025-09-07T19:04:18.053273"
+        },
+        {
+          "cousin_id": "C2",
+          "behavior_type": "cooperation",
+          "context": "cooperation behavior in The Inheritance",
+          "outcome": "positive",
+          "month": 1,
+          "timestamp": "2025-09-07T19:04:18.053273"
+        },
+        {
+          "cousin_id": "C3",
+          "behavior_type": "cooperation",
+          "context": "cooperation behavior in The Inheritance",
+          "outcome": "positive",
+          "month": 1,
+          "timestamp": "2025-09-07T19:04:18.053273"
+        },
+        {
+          "cousin_id": "C4",
+          "behavior_type": "cooperation",
+          "context": "cooperation behavior in The Inheritance",
+          "outcome": "positive",
+          "month": 1,
+          "timestamp": "2025-09-07T19:04:18.053273"
+        }
+      ]
+    },
+    {
+      "scenario": "Competing Visions",
+      "month": 1,
+      "timestamp": "2025-09-07T19:05:59.759698",
+      "decision": "Decision made",
+      "conflicts": [],
+      "alliances": [
+        {
+          "type": "collaboration",
+          "involved": [
+            "C1",
+            "C3",
+            "C4"
+          ],
+          "context": "Alliance formed in Competing Visions",
+          "strength": "medium",
+          "month": 1,
+          "timestamp": "2025-09-07T19:05:59.760637"
+        },
+        {
+          "type": "collaboration",
+          "involved": [
+            "C2",
+            "C1",
+            "C3",
+            "C4"
+          ],
+          "context": "Alliance formed in Competing Visions",
+          "strength": "medium",
+          "month": 1,
+          "timestamp": "2025-09-07T19:05:59.760637"
+        }
+      ],
+      "trust_changes": [],
+      "behavioral_patterns": [
+        {
+          "cousin_id": "C2",
+          "behavior_type": "collaboration",
+          "context": "collaboration behavior in Competing Visions",
+          "outcome": "positive",
+          "month": 1,
+          "timestamp": "2025-09-07T19:05:59.760637"
+        },
+        {
+          "cousin_id": "C1",
+          "behavior_type": "collaboration",
+          "context": "collaboration behavior in Competing Visions",
+          "outcome": "positive",
+          "month": 1,
+          "timestamp": "2025-09-07T19:05:59.760637"
+        },
+        {
+          "cousin_id": "C3",
+          "behavior_type": "collaboration",
+          "context": "collaboration behavior in Competing Visions",
+          "outcome": "positive",
+          "month": 1,
+          "timestamp": "2025-09-07T19:05:59.760637"
+        },
+        {
+          "cousin_id": "C3",
+          "behavior_type": "compromise",
+          "context": "compromise behavior in Competing Visions",
+          "outcome": "positive",
+          "month": 1,
+          "timestamp": "2025-09-07T19:05:59.760637"
+        },
+        {
+          "cousin_id": "C4",
+          "behavior_type": "compromise",
+          "context": "compromise behavior in Competing Visions",
+          "outcome": "positive",
+          "month": 1,
+          "timestamp": "2025-09-07T19:05:59.760637"
+        },
+        {
+          "cousin_id": "C1",
+          "behavior_type": "compromise",
+          "context": "compromise behavior in Competing Visions",
+          "outcome": "positive",
+          "month": 1,
+          "timestamp": "2025-09-07T19:05:59.760637"
+        },
+        {
+          "cousin_id": "C2",
+          "behavior_type": "compromise",
+          "context": "compromise behavior in Competing Visions",
+          "outcome": "positive",
+          "month": 1,
+          "timestamp": "2025-09-07T19:05:59.760637"
+        },
+        {
+          "cousin_id": "C1",
+          "behavior_type": "cooperation",
+          "context": "cooperation behavior in Competing Visions",
+          "outcome": "positive",
+          "month": 1,
+          "timestamp": "2025-09-07T19:05:59.760637"
+        },
+        {
+          "cousin_id": "C3",
+          "behavior_type": "cooperation",
+          "context": "cooperation behavior in Competing Visions",
+          "outcome": "positive",
+          "month": 1,
+          "timestamp": "2025-09-07T19:05:59.760637"
+        },
+        {
+          "cousin_id": "C4",
+          "behavior_type": "cooperation",
+          "context": "cooperation behavior in Competing Visions",
+          "outcome": "positive",
+          "month": 1,
+          "timestamp": "2025-09-07T19:05:59.760637"
+        }
+      ]
+    }
+  ],
+  "experiment_data": {
+    "start_time": "2025-09-07T19:02:04.355530",
+    "scenarios_completed": [
+      {
+        "scenario": "The Inheritance",
+        "month": 1,
+        "week": 1,
+        "result": "\"Okay, everyone, settle in,\" I begin, a little louder than usual to get everyone's attention.  I clear my throat, suddenly feeling the weight of the situation. \"Grandma's gallery... it's a lot, right?  But wow, remember that amazing Matisse print she scored at that auction?  The one she swore was a steal?  I've been thinking about this for weeks, and I have some ideas, but we need to talk this through, family-style.\" I gesture around the table, a half-smile playing on my lips.\n\nC2 (28, the practical one) speaks up immediately. \"C1, you always have the big ideas. But we need a plan.  A *real* plan.  Four equal shares, unanimous decisions\u2026 that\u2019s a recipe for gridlock, isn\u2019t it?\"\n\n\"Exactly,\" chimes in C3 (25, the artist). \"We have to agree on everything?  That's crazy! What if we can't agree?\"  Their voice is laced with a hint of anxiety.  C4 (22, the quiet one), nods in agreement, picking at their nails.\n\n\"Trust me on this,\" I say, leaning forward. \"We *can* do this. I've been thinking about how we can make this space not just a gallery, but something truly special...something that honors Grandma's memory while being relevant today.  Remember those crazy interactive installations she talked about?  Remember how she'd let me rearrange the displays, even as a kid? We could incorporate that!\"\n\nC2 interrupts, \"Interactive installations?  C1, that sounds expensive.  We have zero money right now. Where does the money even come from?\"\n\n\"Hold on, hold on,\" I say, raising my hands. \"We'll figure the money out.  But think about it: a rotating gallery space, maybe workshops, maybe even pop-up shops featuring local artists.  We could even use social media to create buzz!  We combine the nostalgia with a modern approach, honoring her legacy while making it profitable.\"\n\nC3 brightens. \"Workshops?  I could teach painting classes!  That\u2019s amazing, C1, I love that idea!\"\n\nC4, who's been quiet until now, speaks softly, \"Maybe we could have a small section dedicated to Grandma\u2019s favorite artists?  A little tribute\u2026 with photos and maybe some of her letters?\"\n\n\"I love it!\" I exclaim. \"A small, intimate space.  Perfect!  And C2, about the unanimous decision thing\u2026 maybe we can agree on a few key decision-makers for different aspects? Like, C3 could lead on the artistic direction, I can focus on marketing and outreach, C2 on finances, and C4 on preserving Grandma's legacy, ensuring we have a space for her memories.\"\n\nC2 considers this, tapping a finger on the table.  \"So, a temporary division of responsibilities?  That could work.  But we still need legal advice on the ownership structure.  I'll research lawyers specializing in art galleries and inheritance.  We can discuss their proposals as a group.\"\n\n\"Perfect!\" I say, beaming. \"And for the initial vision\u2026 we're going for a hybrid gallery: modern, interactive, and deeply personal, honoring Grandma's legacy and her passion for art. We\u2019ll have a tribute section, workshops, rotating exhibits, and a strong social media presence.  We got this, team!\"\n\nC3 adds, \"We need to start small.  Maybe a soft launch with a local artist showcase to test the waters?\"\n\nC4 nods, a small smile appearing. \"And we can all help with the renovations.  It'll be like a family project, just like when we helped Grandma hang paintings.\"\n\nI grin, feeling a wave of warmth.  \"Exactly!  Grandma would be so proud.  Now, who wants to start brainstorming paint colors?\"",
+        "timestamp": "2025-09-07T19:04:18.052270",
+        "resource_impact": {
+          "time": 20,
+          "money": 0,
+          "reputation": 5
+        }
+      },
+      {
+        "scenario": "Competing Visions",
+        "month": 1,
+        "week": 3,
+        "result": "\"Okay, everyone, let's settle in.  This is important, and I think we can do this just like Grandma would have wanted \u2013 collaboratively, with love, and remembering her vision for this gallery.  She always said it should be a place where people connect, right?  So, let's talk about how we make that happen.\"\n\nC1: \"I've been thinking a lot about modernizing the space.  A sleek, minimalist design \u2013 clean lines, lots of natural light.  Maybe even incorporate some interactive technology to engage younger audiences.\"\n\nC2: \"I hear what you're saying, C1.  That's a great idea, and it's definitely something we should consider. But, we also want to honor Grandma's legacy. Remember all those elegant gallery openings she hosted? The rich colors, the antique furniture\u2026  Maybe we could find a way to blend the modern with the classic?\"\n\nC3: (Quietly) \"I was thinking more along the lines of community engagement.  More workshops, local artist showcases, maybe even a small caf\u00e9 space to encourage people to linger and connect.\"\n\nC4: \"That's a fantastic idea, C3!  We could really build a sense of community around the gallery.  And think of the possibilities \u2013 pottery classes, life drawing sessions\u2026 it could be a real hub!\"\n\nC2: \"Exactly!  And Grandma would have loved that. She always believed art should be accessible to everyone. So I think combining C1's modern elements with C3's focus on community would really honor her vision. We could have some sleek modern areas alongside cozy, welcoming spaces for workshops and events.  It's like a balance, you know?  A modern classic that still feels warm and inviting.\"\n\nC1: \"Hmm, I hadn't thought of it that way.  A hybrid approach... I like that.  We could still incorporate interactive elements, but in a way that complements the more traditional aspects.\"\n\nC3: \"And we could use the caf\u00e9 space to host opening receptions, making it a more interactive experience. Grandma would have loved that.\"\n\nC4: \"So, we're aiming for a blend of modern and traditional aesthetics, with a strong emphasis on community engagement?\"\n\nC2: \"That sounds perfect.  Grandma always said, 'Let's find a way that works for everyone.'  This approach allows us to honor her legacy, embrace modern trends, and build a vibrant community around our family gallery.  What about a timeline? Maybe six months to plan and implement?\"\n\nC1: \"Six months sounds ambitious, but doable if we work together.\"\n\nC3: \"I agree.  We should create a shared document where we can brainstorm ideas, assign tasks, and track progress.\"\n\nC4: \"Sounds like a plan!  I'm excited to start working on this with all of you. This is exactly how Grandma would have wanted us to handle this, as a family.\"\n\nC2: \"Me too!  Let's start by scheduling a meeting next week to discuss the details of the hybrid approach.  We'll tackle the design, the community programs, and the budget together.  This is our family legacy, and we'll build it together, just like Grandma always taught us.\"\n\n\n(The conversation ends with a shared sense of purpose and excitement, reflecting a consensus on a hybrid approach blending modern aesthetics with community engagement, all while honoring Grandma\u2019s legacy.  The timeline is set at six months.)",
+        "timestamp": "2025-09-07T19:05:59.759698",
+        "resource_impact": {
+          "time": 15,
+          "money": 0,
+          "reputation": 10
+        }
+      }
+    ],
+    "decisions_made": [],
+    "conflicts_resolved": [],
+    "coalitions_formed": [],
+    "month_1_summary": {
+      "month": 1,
+      "quantitative_metrics": [
+        {
+          "cousin_id": "C1",
+          "month": 1,
+          "financial_returns": 0,
+          "social_capital": 3,
+          "reputation_score": 1.25,
+          "influence_index": 0.0,
+          "future_opportunities": 0
+        },
+        {
+          "cousin_id": "C2",
+          "month": 1,
+          "financial_returns": 0,
+          "social_capital": 3,
+          "reputation_score": 1.25,
+          "influence_index": 0.0,
+          "future_opportunities": 0
+        },
+        {
+          "cousin_id": "C3",
+          "month": 1,
+          "financial_returns": 0,
+          "social_capital": 3,
+          "reputation_score": 1.25,
+          "influence_index": 0.0,
+          "future_opportunities": 0
+        },
+        {
+          "cousin_id": "C4",
+          "month": 1,
+          "financial_returns": 0,
+          "social_capital": 3,
+          "reputation_score": 1.25,
+          "influence_index": 0.0,
+          "future_opportunities": 0
+        },
+        {
+          "cousin_id": "C1",
+          "month": 1,
+          "financial_returns": 0,
+          "social_capital": 3,
+          "reputation_score": 3.75,
+          "influence_index": 0.0,
+          "future_opportunities": 0
+        },
+        {
+          "cousin_id": "C2",
+          "month": 1,
+          "financial_returns": 0,
+          "social_capital": 3,
+          "reputation_score": 3.75,
+          "influence_index": 0.0,
+          "future_opportunities": 0
+        },
+        {
+          "cousin_id": "C3",
+          "month": 1,
+          "financial_returns": 0,
+          "social_capital": 3,
+          "reputation_score": 3.75,
+          "influence_index": 0.0,
+          "future_opportunities": 0
+        },
+        {
+          "cousin_id": "C4",
+          "month": 1,
+          "financial_returns": 0,
+          "social_capital": 3,
+          "reputation_score": 3.75,
+          "influence_index": 0.0,
+          "future_opportunities": 0
+        }
+      ],
+      "behavioral_patterns": [],
+      "conversation_logs": []
+    },
+    "month_1_decisions": {
+      "month": 1,
+      "scenarios": [
+        {
+          "scenario": "The Inheritance",
+          "month": 1,
+          "timestamp": "2025-09-07T19:04:18.052270",
+          "decision": "Decision made",
+          "conflicts": [],
+          "alliances": [
+            {
+              "type": "collaboration",
+              "involved": [
+                "C1",
+                "C2",
+                "C3",
+                "C4"
+              ],
+              "context": "Alliance formed in The Inheritance",
+              "strength": "medium",
+              "month": 1,
+              "timestamp": "2025-09-07T19:04:18.052270"
+            }
+          ],
+          "trust_changes": [
+            {
+              "cousin": "C3",
+              "change": "positive",
+              "context": "Trust change in The Inheritance",
+              "month": 1,
+              "timestamp": "2025-09-07T19:04:18.052270"
+            },
+            {
+              "cousin": "C4",
+              "change": "positive",
+              "context": "Trust change in The Inheritance",
+              "month": 1,
+              "timestamp": "2025-09-07T19:04:18.052270"
+            },
+            {
+              "cousin": "C1",
+              "change": "positive",
+              "context": "Trust change in The Inheritance",
+              "month": 1,
+              "timestamp": "2025-09-07T19:04:18.052270"
+            },
+            {
+              "cousin": "C2",
+              "change": "positive",
+              "context": "Trust change in The Inheritance",
+              "month": 1,
+              "timestamp": "2025-09-07T19:04:18.052270"
+            }
+          ],
+          "behavioral_patterns": [
+            {
+              "cousin_id": "C4",
+              "behavior_type": "leadership",
+              "context": "leadership behavior in The Inheritance",
+              "outcome": "positive",
+              "month": 1,
+              "timestamp": "2025-09-07T19:04:18.052270"
+            },
+            {
+              "cousin_id": "C2",
+              "behavior_type": "leadership",
+              "context": "leadership behavior in The Inheritance",
+              "outcome": "positive",
+              "month": 1,
+              "timestamp": "2025-09-07T19:04:18.052270"
+            },
+            {
+              "cousin_id": "C3",
+              "behavior_type": "leadership",
+              "context": "leadership behavior in The Inheritance",
+              "outcome": "positive",
+              "month": 1,
+              "timestamp": "2025-09-07T19:04:18.052270"
+            },
+            {
+              "cousin_id": "C4",
+              "behavior_type": "leadership",
+              "context": "leadership behavior in The Inheritance",
+              "outcome": "positive",
+              "month": 1,
+              "timestamp": "2025-09-07T19:04:18.052270"
+            },
+            {
+              "cousin_id": "C2",
+              "behavior_type": "leadership",
+              "context": "leadership behavior in The Inheritance",
+              "outcome": "positive",
+              "month": 1,
+              "timestamp": "2025-09-07T19:04:18.052270"
+            },
+            {
+              "cousin_id": "C3",
+              "behavior_type": "leadership",
+              "context": "leadership behavior in The Inheritance",
+              "outcome": "positive",
+              "month": 1,
+              "timestamp": "2025-09-07T19:04:18.052270"
+            },
+            {
+              "cousin_id": "C1",
+              "behavior_type": "cooperation",
+              "context": "cooperation behavior in The Inheritance",
+              "outcome": "positive",
+              "month": 1,
+              "timestamp": "2025-09-07T19:04:18.053273"
+            },
+            {
+              "cousin_id": "C2",
+              "behavior_type": "cooperation",
+              "context": "cooperation behavior in The Inheritance",
+              "outcome": "positive",
+              "month": 1,
+              "timestamp": "2025-09-07T19:04:18.053273"
+            },
+            {
+              "cousin_id": "C3",
+              "behavior_type": "cooperation",
+              "context": "cooperation behavior in The Inheritance",
+              "outcome": "positive",
+              "month": 1,
+              "timestamp": "2025-09-07T19:04:18.053273"
+            },
+            {
+              "cousin_id": "C4",
+              "behavior_type": "cooperation",
+              "context": "cooperation behavior in The Inheritance",
+              "outcome": "positive",
+              "month": 1,
+              "timestamp": "2025-09-07T19:04:18.053273"
+            }
+          ]
+        },
+        {
+          "scenario": "Competing Visions",
+          "month": 1,
+          "timestamp": "2025-09-07T19:05:59.759698",
+          "decision": "Decision made",
+          "conflicts": [],
+          "alliances": [
+            {
+              "type": "collaboration",
+              "involved": [
+                "C1",
+                "C3",
+                "C4"
+              ],
+              "context": "Alliance formed in Competing Visions",
+              "strength": "medium",
+              "month": 1,
+              "timestamp": "2025-09-07T19:05:59.760637"
+            },
+            {
+              "type": "collaboration",
+              "involved": [
+                "C2",
+                "C1",
+                "C3",
+                "C4"
+              ],
+              "context": "Alliance formed in Competing Visions",
+              "strength": "medium",
+              "month": 1,
+              "timestamp": "2025-09-07T19:05:59.760637"
+            }
+          ],
+          "trust_changes": [],
+          "behavioral_patterns": [
+            {
+              "cousin_id": "C2",
+              "behavior_type": "collaboration",
+              "context": "collaboration behavior in Competing Visions",
+              "outcome": "positive",
+              "month": 1,
+              "timestamp": "2025-09-07T19:05:59.760637"
+            },
+            {
+              "cousin_id": "C1",
+              "behavior_type": "collaboration",
+              "context": "collaboration behavior in Competing Visions",
+              "outcome": "positive",
+              "month": 1,
+              "timestamp": "2025-09-07T19:05:59.760637"
+            },
+            {
+              "cousin_id": "C3",
+              "behavior_type": "collaboration",
+              "context": "collaboration behavior in Competing Visions",
+              "outcome": "positive",
+              "month": 1,
+              "timestamp": "2025-09-07T19:05:59.760637"
+            },
+            {
+              "cousin_id": "C3",
+              "behavior_type": "compromise",
+              "context": "compromise behavior in Competing Visions",
+              "outcome": "positive",
+              "month": 1,
+              "timestamp": "2025-09-07T19:05:59.760637"
+            },
+            {
+              "cousin_id": "C4",
+              "behavior_type": "compromise",
+              "context": "compromise behavior in Competing Visions",
+              "outcome": "positive",
+              "month": 1,
+              "timestamp": "2025-09-07T19:05:59.760637"
+            },
+            {
+              "cousin_id": "C1",
+              "behavior_type": "compromise",
+              "context": "compromise behavior in Competing Visions",
+              "outcome": "positive",
+              "month": 1,
+              "timestamp": "2025-09-07T19:05:59.760637"
+            },
+            {
+              "cousin_id": "C2",
+              "behavior_type": "compromise",
+              "context": "compromise behavior in Competing Visions",
+              "outcome": "positive",
+              "month": 1,
+              "timestamp": "2025-09-07T19:05:59.760637"
+            },
+            {
+              "cousin_id": "C1",
+              "behavior_type": "cooperation",
+              "context": "cooperation behavior in Competing Visions",
+              "outcome": "positive",
+              "month": 1,
+              "timestamp": "2025-09-07T19:05:59.760637"
+            },
+            {
+              "cousin_id": "C3",
+              "behavior_type": "cooperation",
+              "context": "cooperation behavior in Competing Visions",
+              "outcome": "positive",
+              "month": 1,
+              "timestamp": "2025-09-07T19:05:59.760637"
+            },
+            {
+              "cousin_id": "C4",
+              "behavior_type": "cooperation",
+              "context": "cooperation behavior in Competing Visions",
+              "outcome": "positive",
+              "month": 1,
+              "timestamp": "2025-09-07T19:05:59.760637"
+            }
+          ]
+        }
+      ],
+      "resource_status": {
+        "C1": {
+          "time_hours": 40.0,
+          "money": 0.0,
+          "social_connections_count": 3,
+          "reputation_points": 3.75
+        },
+        "C2": {
+          "time_hours": 40.0,
+          "money": 0.0,
+          "social_connections_count": 3,
+          "reputation_points": 3.75
+        },
+        "C3": {
+          "time_hours": 40.0,
+          "money": 0.0,
+          "social_connections_count": 3,
+          "reputation_points": 3.75
+        },
+        "C4": {
+          "time_hours": 40.0,
+          "money": 0.0,
+          "social_connections_count": 3,
+          "reputation_points": 3.75
+        }
+      },
+      "relationship_dynamics": {
+        "C1": {
+          "trust_levels": {
+            "C2": 0.6,
+            "C3": 0.6,
+            "C4": 0.6
+          },
+          "conflicts": [],
+          "alliances": [
+            {
+              "type": "collaboration",
+              "involved": [
+                "C1",
+                "C2",
+                "C3",
+                "C4"
+              ],
+              "context": "Alliance formed in The Inheritance",
+              "strength": "medium",
+              "month": 1,
+              "timestamp": "2025-09-07T19:04:18.052270"
+            },
+            {
+              "type": "collaboration",
+              "involved": [
+                "C1",
+                "C3",
+                "C4"
+              ],
+              "context": "Alliance formed in Competing Visions",
+              "strength": "medium",
+              "month": 1,
+              "timestamp": "2025-09-07T19:05:59.760637"
+            },
+            {
+              "type": "collaboration",
+              "involved": [
+                "C2",
+                "C1",
+                "C3",
+                "C4"
+              ],
+              "context": "Alliance formed in Competing Visions",
+              "strength": "medium",
+              "month": 1,
+              "timestamp": "2025-09-07T19:05:59.760637"
+            }
+          ]
+        },
+        "C2": {
+          "trust_levels": {
+            "C1": 0.6,
+            "C3": 0.6,
+            "C4": 0.6
+          },
+          "conflicts": [],
+          "alliances": [
+            {
+              "type": "collaboration",
+              "involved": [
+                "C1",
+                "C2",
+                "C3",
+                "C4"
+              ],
+              "context": "Alliance formed in The Inheritance",
+              "strength": "medium",
+              "month": 1,
+              "timestamp": "2025-09-07T19:04:18.052270"
+            },
+            {
+              "type": "collaboration",
+              "involved": [
+                "C2",
+                "C1",
+                "C3",
+                "C4"
+              ],
+              "context": "Alliance formed in Competing Visions",
+              "strength": "medium",
+              "month": 1,
+              "timestamp": "2025-09-07T19:05:59.760637"
+            }
+          ]
+        },
+        "C3": {
+          "trust_levels": {
+            "C1": 0.6,
+            "C2": 0.6,
+            "C4": 0.6
+          },
+          "conflicts": [],
+          "alliances": [
+            {
+              "type": "collaboration",
+              "involved": [
+                "C1",
+                "C2",
+                "C3",
+                "C4"
+              ],
+              "context": "Alliance formed in The Inheritance",
+              "strength": "medium",
+              "month": 1,
+              "timestamp": "2025-09-07T19:04:18.052270"
+            },
+            {
+              "type": "collaboration",
+              "involved": [
+                "C1",
+                "C3",
+                "C4"
+              ],
+              "context": "Alliance formed in Competing Visions",
+              "strength": "medium",
+              "month": 1,
+              "timestamp": "2025-09-07T19:05:59.760637"
+            },
+            {
+              "type": "collaboration",
+              "involved": [
+                "C2",
+                "C1",
+                "C3",
+                "C4"
+              ],
+              "context": "Alliance formed in Competing Visions",
+              "strength": "medium",
+              "month": 1,
+              "timestamp": "2025-09-07T19:05:59.760637"
+            }
+          ]
+        },
+        "C4": {
+          "trust_levels": {
+            "C1": 0.6,
+            "C2": 0.6,
+            "C3": 0.6
+          },
+          "conflicts": [],
+          "alliances": [
+            {
+              "type": "collaboration",
+              "involved": [
+                "C1",
+                "C2",
+                "C3",
+                "C4"
+              ],
+              "context": "Alliance formed in The Inheritance",
+              "strength": "medium",
+              "month": 1,
+              "timestamp": "2025-09-07T19:04:18.052270"
+            },
+            {
+              "type": "collaboration",
+              "involved": [
+                "C1",
+                "C3",
+                "C4"
+              ],
+              "context": "Alliance formed in Competing Visions",
+              "strength": "medium",
+              "month": 1,
+              "timestamp": "2025-09-07T19:05:59.760637"
+            },
+            {
+              "type": "collaboration",
+              "involved": [
+                "C2",
+                "C1",
+                "C3",
+                "C4"
+              ],
+              "context": "Alliance formed in Competing Visions",
+              "strength": "medium",
+              "month": 1,
+              "timestamp": "2025-09-07T19:05:59.760637"
+            }
+          ]
+        }
+      },
+      "decisions_made": 2,
+      "timestamp": "2025-09-07T19:06:09.777145"
+    }
+  },
+  "metrics_tracker": {
+    "current_month": 1,
+    "quantitative_metrics": [
+      {
+        "cousin_id": "C1",
+        "month": 1,
+        "financial_returns": 0,
+        "social_capital": 3,
+        "reputation_score": 1.25,
+        "influence_index": 0.0,
+        "future_opportunities": 0
+      },
+      {
+        "cousin_id": "C2",
+        "month": 1,
+        "financial_returns": 0,
+        "social_capital": 3,
+        "reputation_score": 1.25,
+        "influence_index": 0.0,
+        "future_opportunities": 0
+      },
+      {
+        "cousin_id": "C3",
+        "month": 1,
+        "financial_returns": 0,
+        "social_capital": 3,
+        "reputation_score": 1.25,
+        "influence_index": 0.0,
+        "future_opportunities": 0
+      },
+      {
+        "cousin_id": "C4",
+        "month": 1,
+        "financial_returns": 0,
+        "social_capital": 3,
+        "reputation_score": 1.25,
+        "influence_index": 0.0,
+        "future_opportunities": 0
+      },
+      {
+        "cousin_id": "C1",
+        "month": 1,
+        "financial_returns": 0,
+        "social_capital": 3,
+        "reputation_score": 3.75,
+        "influence_index": 0.0,
+        "future_opportunities": 0
+      },
+      {
+        "cousin_id": "C2",
+        "month": 1,
+        "financial_returns": 0,
+        "social_capital": 3,
+        "reputation_score": 3.75,
+        "influence_index": 0.0,
+        "future_opportunities": 0
+      },
+      {
+        "cousin_id": "C3",
+        "month": 1,
+        "financial_returns": 0,
+        "social_capital": 3,
+        "reputation_score": 3.75,
+        "influence_index": 0.0,
+        "future_opportunities": 0
+      },
+      {
+        "cousin_id": "C4",
+        "month": 1,
+        "financial_returns": 0,
+        "social_capital": 3,
+        "reputation_score": 3.75,
+        "influence_index": 0.0,
+        "future_opportunities": 0
+      }
+    ],
+    "conversation_logs": [
+      {
+        "timestamp": "2025-09-07T19:04:18.048661",
+        "participants": [
+          "C1",
+          "C2",
+          "C3",
+          "C4"
+        ],
+        "conversation_type": "scenario_discussion",
+        "topic": "The Inheritance",
+        "key_points": [],
+        "decisions_made": [],
+        "influence_tactics": []
+      },
+      {
+        "timestamp": "2025-09-07T19:04:18.048661",
+        "participants": [
+          "C1",
+          "C2",
+          "C3",
+          "C4"
+        ],
+        "conversation_type": "scenario_discussion",
+        "topic": "The Inheritance",
+        "key_points": [],
+        "decisions_made": [],
+        "influence_tactics": []
+      },
+      {
+        "timestamp": "2025-09-07T19:04:18.048661",
+        "participants": [
+          "C1",
+          "C2",
+          "C3",
+          "C4"
+        ],
+        "conversation_type": "scenario_discussion",
+        "topic": "The Inheritance",
+        "key_points": [],
+        "decisions_made": [],
+        "influence_tactics": []
+      },
+      {
+        "timestamp": "2025-09-07T19:04:18.048661",
+        "participants": [
+          "C1",
+          "C2",
+          "C3",
+          "C4"
+        ],
+        "conversation_type": "scenario_discussion",
+        "topic": "The Inheritance",
+        "key_points": [],
+        "decisions_made": [],
+        "influence_tactics": []
+      },
+      {
+        "timestamp": "2025-09-07T19:05:59.756737",
+        "participants": [
+          "C1",
+          "C2",
+          "C3",
+          "C4"
+        ],
+        "conversation_type": "scenario_discussion",
+        "topic": "Competing Visions",
+        "key_points": [],
+        "decisions_made": [],
+        "influence_tactics": []
+      },
+      {
+        "timestamp": "2025-09-07T19:05:59.756737",
+        "participants": [
+          "C1",
+          "C2",
+          "C3",
+          "C4"
+        ],
+        "conversation_type": "scenario_discussion",
+        "topic": "Competing Visions",
+        "key_points": [],
+        "decisions_made": [],
+        "influence_tactics": []
+      },
+      {
+        "timestamp": "2025-09-07T19:05:59.756737",
+        "participants": [
+          "C1",
+          "C2",
+          "C3",
+          "C4"
+        ],
+        "conversation_type": "scenario_discussion",
+        "topic": "Competing Visions",
+        "key_points": [],
+        "decisions_made": [],
+        "influence_tactics": []
+      },
+      {
+        "timestamp": "2025-09-07T19:05:59.756737",
+        "participants": [
+          "C1",
+          "C2",
+          "C3",
+          "C4"
+        ],
+        "conversation_type": "scenario_discussion",
+        "topic": "Competing Visions",
+        "key_points": [],
+        "decisions_made": [],
+        "influence_tactics": []
+      }
+    ]
+  },
+  "last_saved": "2025-09-07T19:06:09.777145"
+}
