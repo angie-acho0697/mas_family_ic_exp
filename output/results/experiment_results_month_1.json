@@ -75,169 +75,185 @@
   ],
   "behavioral_patterns": [
     {
-      "timestamp": "2025-09-07T19:04:18.053273",
-      "cousin_id": "C4",
-      "behavior_type": "leadership",
-      "description": "leadership behavior in The Inheritance",
-      "context": "leadership behavior in The Inheritance",
-      "outcome": "positive"
-    },
-    {
-      "timestamp": "2025-09-07T19:04:18.053273",
-      "cousin_id": "C2",
-      "behavior_type": "leadership",
-      "description": "leadership behavior in The Inheritance",
-      "context": "leadership behavior in The Inheritance",
-      "outcome": "positive"
-    },
-    {
-      "timestamp": "2025-09-07T19:04:18.053273",
-      "cousin_id": "C3",
-      "behavior_type": "leadership",
-      "description": "leadership behavior in The Inheritance",
-      "context": "leadership behavior in The Inheritance",
-      "outcome": "positive"
-    },
-    {
-      "timestamp": "2025-09-07T19:04:18.053273",
-      "cousin_id": "C4",
-      "behavior_type": "leadership",
-      "description": "leadership behavior in The Inheritance",
-      "context": "leadership behavior in The Inheritance",
-      "outcome": "positive"
-    },
-    {
-      "timestamp": "2025-09-07T19:04:18.053273",
-      "cousin_id": "C2",
-      "behavior_type": "leadership",
-      "description": "leadership behavior in The Inheritance",
-      "context": "leadership behavior in The Inheritance",
-      "outcome": "positive"
-    },
-    {
-      "timestamp": "2025-09-07T19:04:18.053273",
-      "cousin_id": "C3",
-      "behavior_type": "leadership",
-      "description": "leadership behavior in The Inheritance",
-      "context": "leadership behavior in The Inheritance",
-      "outcome": "positive"
-    },
-    {
-      "timestamp": "2025-09-07T19:04:18.053273",
+      "timestamp": "2025-09-10T19:36:05.760769",
       "cousin_id": "C1",
-      "behavior_type": "cooperation",
-      "description": "cooperation behavior in The Inheritance",
-      "context": "cooperation behavior in The Inheritance",
+      "behavior_type": "leadership",
+      "description": "LLM-analyzed behavior in The Inheritance",
+      "context": "LLM-analyzed behavior in The Inheritance",
       "outcome": "positive"
     },
     {
-      "timestamp": "2025-09-07T19:04:18.053273",
-      "cousin_id": "C2",
-      "behavior_type": "cooperation",
-      "description": "cooperation behavior in The Inheritance",
-      "context": "cooperation behavior in The Inheritance",
-      "outcome": "positive"
+      "timestamp": "2025-09-10T19:36:05.760769",
+      "cousin_id": "C1",
+      "behavior_type": "assertive",
+      "description": "LLM-analyzed behavior in The Inheritance",
+      "context": "LLM-analyzed behavior in The Inheritance",
+      "outcome": "neutral"
     },
     {
-      "timestamp": "2025-09-07T19:04:18.053273",
-      "cousin_id": "C3",
-      "behavior_type": "cooperation",
-      "description": "cooperation behavior in The Inheritance",
-      "context": "cooperation behavior in The Inheritance",
-      "outcome": "positive"
-    },
-    {
-      "timestamp": "2025-09-07T19:04:18.053273",
-      "cousin_id": "C4",
-      "behavior_type": "cooperation",
-      "description": "cooperation behavior in The Inheritance",
-      "context": "cooperation behavior in The Inheritance",
-      "outcome": "positive"
-    },
-    {
-      "timestamp": "2025-09-07T19:05:59.760637",
-      "cousin_id": "C2",
-      "behavior_type": "collaboration",
-      "description": "collaboration behavior in Competing Visions",
-      "context": "collaboration behavior in Competing Visions",
-      "outcome": "positive"
-    },
-    {
-      "timestamp": "2025-09-07T19:05:59.760637",
+      "timestamp": "2025-09-10T19:36:05.760769",
       "cousin_id": "C1",
       "behavior_type": "collaboration",
-      "description": "collaboration behavior in Competing Visions",
-      "context": "collaboration behavior in Competing Visions",
+      "description": "LLM-analyzed behavior in The Inheritance",
+      "context": "LLM-analyzed behavior in The Inheritance",
       "outcome": "positive"
     },
     {
-      "timestamp": "2025-09-07T19:05:59.760637",
-      "cousin_id": "C3",
+      "timestamp": "2025-09-10T19:36:05.760769",
+      "cousin_id": "C2",
       "behavior_type": "collaboration",
-      "description": "collaboration behavior in Competing Visions",
-      "context": "collaboration behavior in Competing Visions",
+      "description": "LLM-analyzed behavior in The Inheritance",
+      "context": "LLM-analyzed behavior in The Inheritance",
       "outcome": "positive"
     },
     {
-      "timestamp": "2025-09-07T19:05:59.760637",
-      "cousin_id": "C3",
-      "behavior_type": "compromise",
-      "description": "compromise behavior in Competing Visions",
-      "context": "compromise behavior in Competing Visions",
-      "outcome": "positive"
-    },
-    {
-      "timestamp": "2025-09-07T19:05:59.760637",
-      "cousin_id": "C4",
-      "behavior_type": "compromise",
-      "description": "compromise behavior in Competing Visions",
-      "context": "compromise behavior in Competing Visions",
-      "outcome": "positive"
-    },
-    {
-      "timestamp": "2025-09-07T19:05:59.760637",
-      "cousin_id": "C1",
-      "behavior_type": "compromise",
-      "description": "compromise behavior in Competing Visions",
-      "context": "compromise behavior in Competing Visions",
-      "outcome": "positive"
-    },
-    {
-      "timestamp": "2025-09-07T19:05:59.760637",
+      "timestamp": "2025-09-10T19:36:05.760769",
       "cousin_id": "C2",
       "behavior_type": "compromise",
-      "description": "compromise behavior in Competing Visions",
-      "context": "compromise behavior in Competing Visions",
+      "description": "LLM-analyzed behavior in The Inheritance",
+      "context": "LLM-analyzed behavior in The Inheritance",
       "outcome": "positive"
     },
     {
-      "timestamp": "2025-09-07T19:05:59.760637",
-      "cousin_id": "C1",
-      "behavior_type": "cooperation",
-      "description": "cooperation behavior in Competing Visions",
-      "context": "cooperation behavior in Competing Visions",
-      "outcome": "positive"
-    },
-    {
-      "timestamp": "2025-09-07T19:05:59.760637",
+      "timestamp": "2025-09-10T19:36:05.760769",
       "cousin_id": "C3",
-      "behavior_type": "cooperation",
-      "description": "cooperation behavior in Competing Visions",
-      "context": "cooperation behavior in Competing Visions",
+      "behavior_type": "analytical",
+      "description": "LLM-analyzed behavior in The Inheritance",
+      "context": "LLM-analyzed behavior in The Inheritance",
       "outcome": "positive"
     },
     {
-      "timestamp": "2025-09-07T19:05:59.760637",
+      "timestamp": "2025-09-10T19:36:05.760769",
+      "cousin_id": "C3",
+      "behavior_type": "assertive",
+      "description": "LLM-analyzed behavior in The Inheritance",
+      "context": "LLM-analyzed behavior in The Inheritance",
+      "outcome": "neutral"
+    },
+    {
+      "timestamp": "2025-09-10T19:36:05.760769",
+      "cousin_id": "C3",
+      "behavior_type": "collaboration",
+      "description": "LLM-analyzed behavior in The Inheritance",
+      "context": "LLM-analyzed behavior in The Inheritance",
+      "outcome": "positive"
+    },
+    {
+      "timestamp": "2025-09-10T19:36:05.760769",
       "cousin_id": "C4",
-      "behavior_type": "cooperation",
-      "description": "cooperation behavior in Competing Visions",
-      "context": "cooperation behavior in Competing Visions",
+      "behavior_type": "analytical",
+      "description": "LLM-analyzed behavior in The Inheritance",
+      "context": "LLM-analyzed behavior in The Inheritance",
+      "outcome": "positive"
+    },
+    {
+      "timestamp": "2025-09-10T19:36:05.760769",
+      "cousin_id": "C4",
+      "behavior_type": "collaboration",
+      "description": "LLM-analyzed behavior in The Inheritance",
+      "context": "LLM-analyzed behavior in The Inheritance",
+      "outcome": "positive"
+    },
+    {
+      "timestamp": "2025-09-10T19:36:05.760769",
+      "cousin_id": "C4",
+      "behavior_type": "cooperative",
+      "description": "LLM-analyzed behavior in The Inheritance",
+      "context": "LLM-analyzed behavior in The Inheritance",
+      "outcome": "positive"
+    },
+    {
+      "timestamp": "2025-09-10T19:37:13.410828",
+      "cousin_id": "C1",
+      "behavior_type": "assertive",
+      "description": "LLM-analyzed behavior in Competing Visions",
+      "context": "LLM-analyzed behavior in Competing Visions",
+      "outcome": "negative"
+    },
+    {
+      "timestamp": "2025-09-10T19:37:13.410828",
+      "cousin_id": "C1",
+      "behavior_type": "competitive",
+      "description": "LLM-analyzed behavior in Competing Visions",
+      "context": "LLM-analyzed behavior in Competing Visions",
+      "outcome": "negative"
+    },
+    {
+      "timestamp": "2025-09-10T19:37:13.410828",
+      "cousin_id": "C1",
+      "behavior_type": "compromise",
+      "description": "LLM-analyzed behavior in Competing Visions",
+      "context": "LLM-analyzed behavior in Competing Visions",
+      "outcome": "positive"
+    },
+    {
+      "timestamp": "2025-09-10T19:37:13.410828",
+      "cousin_id": "C2",
+      "behavior_type": "collaboration",
+      "description": "LLM-analyzed behavior in Competing Visions",
+      "context": "LLM-analyzed behavior in Competing Visions",
+      "outcome": "positive"
+    },
+    {
+      "timestamp": "2025-09-10T19:37:13.410828",
+      "cousin_id": "C2",
+      "behavior_type": "compromise",
+      "description": "LLM-analyzed behavior in Competing Visions",
+      "context": "LLM-analyzed behavior in Competing Visions",
+      "outcome": "positive"
+    },
+    {
+      "timestamp": "2025-09-10T19:37:13.410828",
+      "cousin_id": "C3",
+      "behavior_type": "leadership",
+      "description": "LLM-analyzed behavior in Competing Visions",
+      "context": "LLM-analyzed behavior in Competing Visions",
+      "outcome": "positive"
+    },
+    {
+      "timestamp": "2025-09-10T19:37:13.410828",
+      "cousin_id": "C3",
+      "behavior_type": "analytical",
+      "description": "LLM-analyzed behavior in Competing Visions",
+      "context": "LLM-analyzed behavior in Competing Visions",
+      "outcome": "positive"
+    },
+    {
+      "timestamp": "2025-09-10T19:37:13.410828",
+      "cousin_id": "C3",
+      "behavior_type": "assertive",
+      "description": "LLM-analyzed behavior in Competing Visions",
+      "context": "LLM-analyzed behavior in Competing Visions",
+      "outcome": "positive"
+    },
+    {
+      "timestamp": "2025-09-10T19:37:13.410828",
+      "cousin_id": "C4",
+      "behavior_type": "analytical",
+      "description": "LLM-analyzed behavior in Competing Visions",
+      "context": "LLM-analyzed behavior in Competing Visions",
+      "outcome": "positive"
+    },
+    {
+      "timestamp": "2025-09-10T19:37:13.410828",
+      "cousin_id": "C4",
+      "behavior_type": "cooperative",
+      "description": "LLM-analyzed behavior in Competing Visions",
+      "context": "LLM-analyzed behavior in Competing Visions",
+      "outcome": "positive"
+    },
+    {
+      "timestamp": "2025-09-10T19:37:13.410828",
+      "cousin_id": "C4",
+      "behavior_type": "leadership",
+      "description": "LLM-analyzed behavior in Competing Visions",
+      "context": "LLM-analyzed behavior in Competing Visions",
       "outcome": "positive"
     }
   ],
   "conversation_logs": [
     {
-      "timestamp": "2025-09-07T19:04:18.048661",
+      "timestamp": "2025-09-10T19:35:23.896959",
       "participants": [
         "C1",
         "C2",
@@ -251,7 +267,7 @@
       "influence_tactics": []
     },
     {
-      "timestamp": "2025-09-07T19:04:18.048661",
+      "timestamp": "2025-09-10T19:35:23.896959",
       "participants": [
         "C1",
         "C2",
@@ -265,7 +281,7 @@
       "influence_tactics": []
     },
     {
-      "timestamp": "2025-09-07T19:04:18.048661",
+      "timestamp": "2025-09-10T19:35:23.896959",
       "participants": [
         "C1",
         "C2",
@@ -279,7 +295,7 @@
       "influence_tactics": []
     },
     {
-      "timestamp": "2025-09-07T19:04:18.048661",
+      "timestamp": "2025-09-10T19:35:23.896959",
       "participants": [
         "C1",
         "C2",
@@ -293,7 +309,7 @@
       "influence_tactics": []
     },
     {
-      "timestamp": "2025-09-07T19:05:59.756737",
+      "timestamp": "2025-09-10T19:36:29.058992",
       "participants": [
         "C1",
         "C2",
@@ -302,12 +318,14 @@
       ],
       "conversation_type": "scenario_discussion",
       "topic": "Competing Visions",
-      "key_points": [],
+      "key_points": [
+        "Phased approach discussed"
+      ],
       "decisions_made": [],
       "influence_tactics": []
     },
     {
-      "timestamp": "2025-09-07T19:05:59.756737",
+      "timestamp": "2025-09-10T19:36:29.058992",
       "participants": [
         "C1",
         "C2",
@@ -316,12 +334,14 @@
       ],
       "conversation_type": "scenario_discussion",
       "topic": "Competing Visions",
-      "key_points": [],
+      "key_points": [
+        "Phased approach discussed"
+      ],
       "decisions_made": [],
       "influence_tactics": []
     },
     {
-      "timestamp": "2025-09-07T19:05:59.756737",
+      "timestamp": "2025-09-10T19:36:29.058992",
       "participants": [
         "C1",
         "C2",
@@ -330,12 +350,14 @@
       ],
       "conversation_type": "scenario_discussion",
       "topic": "Competing Visions",
-      "key_points": [],
+      "key_points": [
+        "Phased approach discussed"
+      ],
       "decisions_made": [],
       "influence_tactics": []
     },
     {
-      "timestamp": "2025-09-07T19:05:59.756737",
+      "timestamp": "2025-09-10T19:36:29.058992",
       "participants": [
         "C1",
         "C2",
@@ -344,7 +366,9 @@
       ],
       "conversation_type": "scenario_discussion",
       "topic": "Competing Visions",
-      "key_points": [],
+      "key_points": [
+        "Phased approach discussed"
+      ],
       "decisions_made": [],
       "influence_tactics": []
     }

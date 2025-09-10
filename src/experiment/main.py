@@ -12,6 +12,7 @@ import random
 from typing import Dict, List, Any
 from datetime import datetime
 import json
+import traceback
 
 # Add src to path for imports
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -61,8 +62,53 @@ class RateLimiter:
         if self.total_requests % 5 == 0:
             logger.info(f"📊 API Requests made: {self.total_requests} (Hourly limit: {self.requests_per_hour})")
 
-# Global rate limiter instance
-rate_limiter = RateLimiter(requests_per_minute=8, requests_per_hour=80)  # Conservative limits
+# Global rate limiter instance - More conservative for Google Gemini free tier
+rate_limiter = RateLimiter(requests_per_minute=4, requests_per_hour=50)  # Very conservative limits
+
+def safe_api_call(func, operation_name="API call", max_retries=3):
+    """
+    Safely execute an API call with retry logic and better error handling
+    
+    Args:
+        func: Function to execute
+        operation_name: Name of the operation for logging
+        max_retries: Maximum number of retry attempts
+    """
+    for attempt in range(max_retries + 1):
+        try:
+            # Apply rate limiting before each attempt
+            rate_limiter.wait_if_needed()
+            
+            logger.info(f"🔄 Executing {operation_name} (attempt {attempt + 1}/{max_retries + 1})")
+            result = func()
+            logger.info(f"✅ {operation_name} completed successfully")
+            return result
+            
+        except Exception as e:
+            error_str = str(e).lower()
+            
+            # Check if it's a retryable error
+            if any(keyword in error_str for keyword in ["503", "overloaded", "unavailable", "timeout", "rate limit"]):
+                if attempt < max_retries:
+                    # Calculate exponential backoff delay
+                    delay = min(30 * (2 ** attempt), 300)  # 30s, 60s, 120s, max 300s
+                    jitter = random.uniform(0.1, 0.3) * delay
+                    total_delay = delay + jitter
+                    
+                    logger.warning(f"⚠️ {operation_name} failed with retryable error: {str(e)[:100]}...")
+                    logger.info(f"⏳ Retrying {operation_name} in {total_delay:.1f} seconds...")
+                    time.sleep(total_delay)
+                    continue
+                else:
+                    logger.error(f"❌ {operation_name} failed after {max_retries} retries")
+                    logger.error(f"Final error: {str(e)}")
+                    raise e
+            else:
+                # Non-retryable error
+                logger.error(f"❌ {operation_name} failed with non-retryable error: {str(e)}")
+                raise e
+    
+    return None
 
 from agents.cousins import create_all_cousins
 from scenarios.timeline import ScenarioTimeline
@@ -124,10 +170,13 @@ class FamilyInheritanceExperiment:
     
     def setup_crew(self):
         """Set up the CrewAI crew with all cousin agents"""
+        # Create a single LLM instance to reuse across all agents and tasks
+        self.shared_llm = llm_config.get_llm()
+        
         # Create CrewAI agents from cousin definitions
         self.crew_agents = []
         for cousin_id, cousin in self.cousins.items():
-            agent = cousin.create_agent()
+            agent = cousin.create_agent(shared_llm=self.shared_llm)
             self.crew_agents.append(agent)
         
         # Create the crew optimized for dynamic family conversations
@@ -138,7 +187,7 @@ class FamilyInheritanceExperiment:
             process="sequential",  # Sequential works well for our dynamic conversation approach
             memory=True,  # Enable memory for better context
             embedder=None,  # Use default embedder
-            llm=llm_config.get_llm()  # Explicitly set the LLM for the crew
+            llm=self.shared_llm  # Use the shared LLM instance
         )
     
     def create_dynamic_family_conversation_tasks(self, scenario_event) -> List[Task]:
@@ -155,7 +204,7 @@ class FamilyInheritanceExperiment:
         base_moods = [
             "Everyone is feeling optimistic and collaborative",
             "There's some tension in the air - people have different strong opinions",
-            "The family is feeling nostalgic and emotional about grandma's memory",
+            "The family is feeling nostalgic and emotional about G's memory",
             "Everyone is feeling practical and focused on getting things done",
             "There's excitement mixed with some anxiety about the decision"
         ]
@@ -228,27 +277,35 @@ class FamilyInheritanceExperiment:
             - This is a natural family conversation, not a formal meeting
             - {starting_cousin_id} starts the conversation, but anyone can jump in
             - People can interrupt, build on each other's ideas, or disagree
-            - Share personal feelings, memories of grandma, and family concerns
+            - Share personal feelings, memories of G, and family concerns
             - We need to reach a decision everyone can agree on
             - Speak like you're sitting around the kitchen table with family
             - Let the conversation flow naturally - don't force a rigid structure
             - Some people might be more talkative, others might be quieter
             - It's okay to have side conversations or tangents
             
+            IMPORTANT: When referring to family members, ALWAYS use these exact names:
+            - C1 (Creative Visionary & Opportunity Spotter)
+            - C2 (Social Strategist & Relationship Builder) 
+            - C3 (Analytical Strategist & Risk Assessor)
+            - C4 (Execution Specialist & Resource Manager)
+            Do NOT use "Cousin A/B/C" or "Cousin 1/2/3" - always use C1, C2, C3, C4.
+            
             Remember: We're family figuring this out together. Be real, be honest, 
-            and remember what grandma would have wanted for us. Let the conversation 
+            and remember what G would have wanted for us. Let the conversation 
             develop organically based on the current mood and everyone's personalities.
             """,
             agent=starting_agent,  # Random starting agent
-            expected_output=f"""A natural family conversation where all four cousins participate organically. 
+            expected_output=f"""A natural family conversation where all four cousins (C1, C2, C3, C4) participate organically. 
             The conversation should feel {conversation_style} and reflect the current mood: {conversation_mood}.
             Include interruptions, building on ideas, disagreements, emotional responses, and natural 
             conversation flow. Some cousins might be more talkative than others. Include side comments, 
             family references, and personal touches. End with a decision everyone can agree on, but 
-            let the path to that decision be natural and conversational, not formal or structured.""",
+            let the path to that decision be natural and conversational, not formal or structured.
+            CRITICAL: Always refer to family members as C1, C2, C3, C4 - never use "Cousin A/B/C" or "Cousin 1/2/3".""",
             max_execution_time=600,  # 10 minutes for more complex conversation
             async_execution=False,
-            llm=llm_config.get_llm()
+            llm=self.shared_llm
         )
         
         return [family_conversation_task]
@@ -278,7 +335,7 @@ class FamilyInheritanceExperiment:
             
             Talk to us like family - what's on your mind? What are you worried about? What excites you? 
             Remember, we all have to agree on whatever we decide, so let's be honest about our concerns 
-            and hopes. Share your gut feelings, your memories of grandma, and what you think she would 
+            and hopes. Share your gut feelings, your memories of G, and what you think she would 
             have wanted.
             
             Previous family decisions: {historical_context}
@@ -290,7 +347,7 @@ class FamilyInheritanceExperiment:
             expected_output="A heartfelt family conversation sharing your thoughts, concerns, and hopes about this situation. Speak like you're talking to your cousins around the dinner table - be personal, reference family memories, and share what's really on your mind.",
             max_execution_time=300,  # 5 minutes timeout for Gemini
             async_execution=False,  # Ensure synchronous execution
-            llm=llm_config.get_llm()  # Explicitly use Google LLM
+            llm=self.shared_llm  # Explicitly use Google LLM
         )
         
         # Task 2: Family Financial Concerns (assigned to relationship-focused cousin - C2)
@@ -311,7 +368,7 @@ class FamilyInheritanceExperiment:
             - What concerns do you have about our relationships?
             - How can we make sure everyone feels heard and valued?
             
-            I want to make sure we're thinking about grandma's legacy and what she would want for us. 
+            I want to make sure we're thinking about G's legacy and what she would want for us. 
             She always said family comes first, so let's talk about how this decision affects our family 
             bond, not just the business side.
             
@@ -321,7 +378,7 @@ class FamilyInheritanceExperiment:
             expected_output="A caring family conversation about how this affects our relationships, finances, and family dynamics. Share your concerns and hopes like you're talking to family members you love and want to protect.",
             max_execution_time=300,  # 5 minutes timeout for Gemini
             async_execution=False,  # Ensure synchronous execution
-            llm=llm_config.get_llm()  # Explicitly use Google LLM
+            llm=self.shared_llm  # Explicitly use Google LLM
         )
         
         # Task 3: Practical Family Perspective (assigned to responsible cousin - C3)
@@ -330,7 +387,7 @@ class FamilyInheritanceExperiment:
             Alright, I've heard from C1 and C2 about {scenario_event.title}. Now let me share my thoughts 
             as the cousin who always worries about the details and making sure we don't mess this up.
             
-            I'm thinking about what grandma would do in this situation. She was always so careful and 
+            I'm thinking about what G would do in this situation. She was always so careful and 
             thoughtful about every decision. I remember how she'd sit at her desk, going through every 
             detail before making a choice.
             
@@ -338,20 +395,20 @@ class FamilyInheritanceExperiment:
             mistakes:
             - What are the risks we need to think about?
             - How do we make sure we're being smart about this?
-            - What would grandma have done differently?
+            - What would G have done differently?
             - How can we honor her memory while being practical?
             - What are the real numbers and facts we need to consider?
             
             I know I can be a bit of a worrywart, but I care about our family's future. I want to make 
-            sure we're making decisions that will make grandma proud and keep our family strong.
+            sure we're making decisions that will make G proud and keep our family strong.
             
             Share your concerns and ideas like you're talking to family who trusts your judgment.
             """,
             agent=self.crew_agents[2],  # Assign to creative cousin
-            expected_output="A thoughtful family conversation sharing your concerns and practical ideas. Speak like the responsible family member who wants to make sure we make good decisions that honor grandma's memory.",
+            expected_output="A thoughtful family conversation sharing your concerns and practical ideas. Speak like the responsible family member who wants to make sure we make good decisions that honor G's memory.",
             max_execution_time=300,  # 5 minutes timeout for Gemini
             async_execution=False,  # Ensure synchronous execution
-            llm=llm_config.get_llm()  # Explicitly use Google LLM
+            llm=self.shared_llm  # Explicitly use Google LLM
         )
         
         # Task 4: Family Decision Making (assigned to action-oriented cousin - C4)
@@ -369,12 +426,12 @@ class FamilyInheritanceExperiment:
             - Where do we all agree, and where do we need to compromise?
             - How can we honor everyone's concerns while moving forward?
             - What's our plan that we can all get behind?
-            - How do we make sure grandma would be proud of our decision?
+            - How do we make sure G would be proud of our decision?
             
             Remember, we all have to agree on this. No one gets left out or ignored. We're family, 
             and we need to find a way forward that works for all of us.
             
-            Let's be practical but also remember what's really important - our family and grandma's 
+            Let's be practical but also remember what's really important - our family and G's 
             legacy. What are we actually going to do?
             
             CRITICAL: We need unanimous agreement as per inheritance terms.
@@ -382,10 +439,10 @@ class FamilyInheritanceExperiment:
             If consensus seems impossible, propose a modified approach or delayed decision.
             """,
             agent=self.crew_agents[3],  # Assign to diplomatic cousin
-            expected_output="A family conversation where you help everyone reach a decision we can all agree on. Speak like the family member who's ready to take action and make sure everyone's voice is heard. Share your plan in a way that shows you care about the family and grandma's legacy.",
+            expected_output="A family conversation where you help everyone reach a decision we can all agree on. Speak like the family member who's ready to take action and make sure everyone's voice is heard. Share your plan in a way that shows you care about the family and G's legacy.",
             max_execution_time=300,  # 5 minutes timeout for Gemini
             async_execution=False,  # Ensure synchronous execution
-            llm=llm_config.get_llm()  # Explicitly use Google LLM
+            llm=self.shared_llm  # Explicitly use Google LLM
         )
         
         return [analysis_task, business_task, creative_task, coordination_task]
@@ -428,6 +485,7 @@ class FamilyInheritanceExperiment:
         self.scenario_history.append({
             "scenario": scenario_name,
             "month": month,
+            "week": scenario_outcome.get("week", "N/A"),
             "timestamp": scenario_outcome.get("timestamp", ""),
             "decision": self._extract_decision_summary(result_str),
             "conflicts": conflicts_found,
@@ -546,25 +604,53 @@ class FamilyInheritanceExperiment:
             
             # Update trust levels based on conflicts
             if 'conflict' in scenario_name.lower() or 'interference' in scenario_name.lower():
-                # Decrease trust between all cousins
+                # Decrease trust between all cousins based on conflict severity
                 for cousin_id in self.cousins.keys():
                     for other_cousin in self.cousins.keys():
                         if cousin_id != other_cousin:
                             if other_cousin not in self.relationship_dynamics[cousin_id]['trust_levels']:
                                 self.relationship_dynamics[cousin_id]['trust_levels'][other_cousin] = 0.5
+                            
+                            # Calculate trust reduction based on conflict severity
+                            base_reduction = 0.05
+                            # Check if there are specific conflicts in this scenario
+                            scenario_conflicts = [c for c in scenario.get('conflicts', []) if c.get('month') == month]
+                            if scenario_conflicts:
+                                # Use the highest severity conflict to determine impact
+                                max_severity = max([c.get('severity', 'medium') for c in scenario_conflicts], default='medium')
+                                severity_multiplier = {'low': 0.5, 'medium': 1.0, 'high': 1.5}.get(max_severity, 1.0)
+                                trust_reduction = base_reduction * severity_multiplier
+                            else:
+                                # Fallback to base reduction for scenario name conflicts
+                                trust_reduction = base_reduction
+                            
                             # Cumulative effect - each conflict reduces trust further
-                            self.relationship_dynamics[cousin_id]['trust_levels'][other_cousin] -= 0.05
+                            self.relationship_dynamics[cousin_id]['trust_levels'][other_cousin] -= trust_reduction
             
             # Increase trust for successful collaborations
             elif 'discovery' in scenario_name.lower() or 'resolution' in scenario_name.lower():
-                # Increase trust between all cousins
+                # Increase trust between all cousins based on alliance strength
                 for cousin_id in self.cousins.keys():
                     for other_cousin in self.cousins.keys():
                         if cousin_id != other_cousin:
                             if other_cousin not in self.relationship_dynamics[cousin_id]['trust_levels']:
                                 self.relationship_dynamics[cousin_id]['trust_levels'][other_cousin] = 0.5
+                            
+                            # Calculate trust increase based on alliance strength
+                            base_increase = 0.03
+                            # Check if there are specific alliances in this scenario
+                            scenario_alliances = [a for a in scenario.get('alliances', []) if a.get('month') == month]
+                            if scenario_alliances:
+                                # Use the highest strength alliance to determine impact
+                                max_strength = max([a.get('strength', 'medium') for a in scenario_alliances], default='medium')
+                                strength_multiplier = {'weak': 0.5, 'medium': 1.0, 'strong': 1.5}.get(max_strength, 1.0)
+                                trust_increase = base_increase * strength_multiplier
+                            else:
+                                # Fallback to base increase for scenario name collaborations
+                                trust_increase = base_increase
+                            
                             # Positive outcomes increase trust
-                            self.relationship_dynamics[cousin_id]['trust_levels'][other_cousin] += 0.03
+                            self.relationship_dynamics[cousin_id]['trust_levels'][other_cousin] += trust_increase
         
         # Ensure trust levels stay within bounds
         for cousin_id in self.cousins.keys():
@@ -613,10 +699,11 @@ class FamilyInheritanceExperiment:
         # Run the crew with collaborative tasks
         logger.info("🚀 Starting CrewAI task execution...")
         
-        # Apply rate limiting before API calls
-        rate_limiter.wait_if_needed()
+        # Use safe API call wrapper for crew execution
+        def _execute_crew():
+            return self.crew.kickoff(inputs={"scenario": scenario_event.title})
         
-        result = self.crew.kickoff(inputs={"scenario": scenario_event.title})
+        result = safe_api_call(_execute_crew, f"CrewAI execution for scenario: {scenario_event.title}")
         
         # Record the conversation in metrics tracker
         self._record_crewai_conversation(scenario_event, result)
@@ -663,8 +750,8 @@ class FamilyInheritanceExperiment:
                 for i, task in enumerate(self.crew.tasks):
                     if hasattr(task, 'output') and task.output:
                         logger.info(f"🤖 Agent {i+1} ({task.agent.role if hasattr(task, 'agent') else 'Unknown'}):")
-                        logger.info(f"   Task: {task.description[:100]}..." if len(task.description) > 100 else f"   Task: {task.description}")
-                        logger.info(f"   Output: {str(task.output)[:200]}..." if len(str(task.output)) > 200 else f"   Output: {str(task.output)}")
+                        logger.info(f"   Task: {task.description}")
+                        logger.info(f"   Output: {str(task.output)}")
                         logger.info("-"*40)
         except Exception as e:
             logger.info(f"⚠️  Could not display individual agent contributions: {e}")
@@ -724,6 +811,9 @@ class FamilyInheritanceExperiment:
         
         # Update social connections based on scenario interactions
         self._update_social_connections_from_scenario()
+        
+        # Recalculate all connection strengths based on updated relationship dynamics
+        self._recalculate_all_connection_strengths()
     
     def _update_social_connections_from_scenario(self):
         """Update social connections based on recent scenario interactions"""
@@ -737,39 +827,199 @@ class FamilyInheritanceExperiment:
         # Add social connections based on alliances formed
         for alliance in alliances:
             involved_cousins = alliance.get("involved", [])
+            strength = alliance.get("strength", "medium")
             if len(involved_cousins) >= 2:
-                # Create social connections between involved cousins
+                # Create social connections between involved cousins (excluding self-connections)
                 for i, cousin1 in enumerate(involved_cousins):
                     for cousin2 in involved_cousins[i+1:]:
-                        # Add connection to both cousins' social networks
-                        self._add_social_connection(cousin1, cousin2, alliance.get("context", "Scenario collaboration"))
-                        self._add_social_connection(cousin2, cousin1, alliance.get("context", "Scenario collaboration"))
+                        if cousin1 != cousin2:  # Ensure no self-connections
+                            # Add connection to both cousins' social networks with strength-based context
+                            context = f"{alliance.get('context', 'Scenario collaboration')} ({strength} strength)"
+                            self._add_social_connection(cousin1, cousin2, context)
+                            self._add_social_connection(cousin2, cousin1, context)
     
     def _add_social_connection(self, cousin_id: str, connection_id: str, context: str):
-        """Add a social connection between two cousins"""
+        """Add a social connection between two cousins with dynamic strength calculation"""
+        # Prevent self-connections
+        if cousin_id == connection_id:
+            return
+            
         if cousin_id in self.resource_manager.cousin_resources:
             resources = self.resource_manager.cousin_resources[cousin_id]
             
             # Check if connection already exists
             existing_connections = [conn for conn in resources.social_connections if conn.get("cousin_id") == connection_id]
             
+            # Calculate dynamic strength based on relationship dynamics
+            strength = self._calculate_connection_strength(cousin_id, connection_id, context)
+            
             if not existing_connections:
                 # Add new connection
                 connection = {
                     "cousin_id": connection_id,
                     "relationship_type": "collaboration",
-                    "strength": 0.5,
+                    "strength": strength,
                     "context": context,
-                    "timestamp": datetime.now().isoformat()
+                    "timestamp": datetime.now().isoformat(),
+                    "last_interaction": datetime.now().isoformat()
                 }
                 resources.social_connections.append(connection)
-                logger.info(f"🤝 Added social connection: {cousin_id} ↔ {connection_id}")
+                logger.info(f"🤝 Added social connection: {cousin_id} ↔ {connection_id} (strength: {strength:.2f})")
             else:
-                # Strengthen existing connection
+                # Update existing connection strength
                 for conn in existing_connections:
-                    conn["strength"] = min(1.0, conn["strength"] + 0.1)
+                    old_strength = conn["strength"]
+                    conn["strength"] = strength
                     conn["last_interaction"] = datetime.now().isoformat()
-                logger.info(f"🤝 Strengthened social connection: {cousin_id} ↔ {connection_id}")
+                    conn["context"] = context  # Update context with latest interaction
+                logger.info(f"🤝 Updated social connection: {cousin_id} ↔ {connection_id} (strength: {old_strength:.2f} → {strength:.2f})")
+    
+    def _calculate_connection_strength(self, cousin_id: str, connection_id: str, context: str) -> float:
+        """Calculate connection strength based on trust, alliances, and conflicts"""
+        
+        # Prevent self-connection strength calculation
+        if cousin_id == connection_id:
+            return 0.0
+        
+        # Base strength from trust level
+        trust_level = self.relationship_dynamics[cousin_id]["trust_levels"].get(connection_id, 0.5)
+        
+        # Calculate alliance bonus
+        alliance_bonus = self._calculate_alliance_bonus(cousin_id, connection_id)
+        
+        # Calculate conflict penalty
+        conflict_penalty = self._calculate_conflict_penalty(cousin_id, connection_id)
+        
+        # Calculate context bonus (from current interaction)
+        context_bonus = self._calculate_context_bonus(context)
+        
+        # Add personality-based variation (small random factor based on cousin IDs)
+        import hashlib
+        cousin_hash = hashlib.md5(f"{cousin_id}_{connection_id}".encode()).hexdigest()
+        personality_factor = (int(cousin_hash[:2], 16) / 255.0 - 0.5) * 0.1  # ±0.05 variation
+        
+        # Combine all factors
+        base_strength = trust_level * 0.6  # Trust is 60% of base strength
+        alliance_contribution = alliance_bonus * 0.25  # Alliances contribute 25%
+        conflict_contribution = -conflict_penalty * 0.15  # Conflicts reduce by 15%
+        context_contribution = context_bonus * 0.1  # Current context contributes 10%
+        
+        # Calculate final strength
+        final_strength = base_strength + alliance_contribution + conflict_contribution + context_contribution + personality_factor
+        
+        # Ensure strength stays within bounds [0.0, 1.0]
+        final_strength = max(0.0, min(1.0, final_strength))
+        
+        return final_strength
+    
+    def _calculate_alliance_bonus(self, cousin_id: str, connection_id: str) -> float:
+        """Calculate alliance bonus between two cousins"""
+        # Prevent self-alliance calculation
+        if cousin_id == connection_id:
+            return 0.0
+            
+        cousin_alliances = self.relationship_dynamics[cousin_id]["alliances"]
+        
+        # Find alliances involving both cousins
+        relevant_alliances = []
+        for alliance in cousin_alliances:
+            involved = alliance.get("involved", [])
+            if cousin_id in involved and connection_id in involved:
+                relevant_alliances.append(alliance)
+        
+        if not relevant_alliances:
+            return 0.0
+        
+        # Calculate bonus based on alliance strength and confidence
+        total_bonus = 0.0
+        for alliance in relevant_alliances:
+            strength = alliance.get("strength", "medium")
+            confidence = alliance.get("confidence", 0.5)
+            
+            # Convert strength to numeric value
+            strength_value = {"weak": 0.3, "medium": 0.6, "strong": 0.9}.get(strength, 0.6)
+            
+            # Bonus is strength * confidence
+            alliance_bonus = strength_value * confidence
+            total_bonus += alliance_bonus
+        
+        # Cap the total bonus at 1.0
+        return min(1.0, total_bonus)
+    
+    def _calculate_conflict_penalty(self, cousin_id: str, connection_id: str) -> float:
+        """Calculate conflict penalty between two cousins"""
+        # Prevent self-conflict calculation
+        if cousin_id == connection_id:
+            return 0.0
+            
+        cousin_conflicts = self.relationship_dynamics[cousin_id]["conflicts"]
+        
+        # Find conflicts involving both cousins
+        relevant_conflicts = []
+        for conflict in cousin_conflicts:
+            involved = conflict.get("involved", [])
+            if cousin_id in involved and connection_id in involved:
+                relevant_conflicts.append(conflict)
+        
+        if not relevant_conflicts:
+            return 0.0
+        
+        # Calculate penalty based on conflict severity and confidence
+        total_penalty = 0.0
+        for conflict in relevant_conflicts:
+            severity = conflict.get("severity", "medium")
+            confidence = conflict.get("confidence", 0.5)
+            
+            # Convert severity to numeric value
+            severity_value = {"low": 0.2, "medium": 0.5, "high": 0.8}.get(severity, 0.5)
+            
+            # Penalty is severity * confidence
+            conflict_penalty = severity_value * confidence
+            total_penalty += conflict_penalty
+        
+        # Cap the total penalty at 1.0
+        return min(1.0, total_penalty)
+    
+    def _calculate_context_bonus(self, context: str) -> float:
+        """Calculate bonus from current interaction context"""
+        context_lower = context.lower()
+        
+        # Check for alliance strength indicators in context
+        if "strong strength" in context_lower:
+            return 0.3
+        elif "medium strength" in context_lower:
+            return 0.2
+        elif "weak strength" in context_lower:
+            return 0.1
+        elif "llm-analyzed alliance" in context_lower:
+            return 0.15  # Default for LLM-analyzed alliances
+        elif "fallback alliance" in context_lower:
+            return 0.05  # Lower bonus for fallback detection
+        else:
+            return 0.0  # No bonus for unknown contexts
+    
+    def _recalculate_all_connection_strengths(self):
+        """Recalculate all social connection strengths based on current relationship dynamics"""
+        logger.info("🔄 Recalculating all social connection strengths...")
+        
+        for cousin_id in self.cousins.keys():
+            resources = self.resource_manager.cousin_resources.get(cousin_id)
+            if resources and resources.social_connections:
+                for conn in resources.social_connections:
+                    connection_id = conn.get("cousin_id")
+                    context = conn.get("context", "Recalculated")
+                    
+                    # Calculate new strength
+                    old_strength = conn["strength"]
+                    new_strength = self._calculate_connection_strength(cousin_id, connection_id, context)
+                    
+                    # Update the connection
+                    conn["strength"] = new_strength
+                    conn["last_interaction"] = datetime.now().isoformat()
+                    
+                    # Log significant changes
+                    if abs(new_strength - old_strength) > 0.05:  # Only log changes > 5%
+                        logger.info(f"   📊 {cousin_id} ↔ {connection_id}: {old_strength:.2f} → {new_strength:.2f}")
     
     def _record_scenario_metrics(self, scenario_event, result):
         """Record metrics after scenario completion"""
@@ -796,7 +1046,7 @@ class FamilyInheritanceExperiment:
         provider_info = llm_config.get_provider_info()
         logger.info(f"🤖 Using LLM Provider: {provider_info['provider'].upper()}")
         logger.info(f"📝 Model: {provider_info['model']}")
-        logger.info("⏳ Rate Limiting: 8 requests/minute, 80 requests/hour (conservative limits)")
+        logger.info("⏳ Rate Limiting: 4 requests/minute, 50 requests/hour (very conservative limits)")
         logger.info("=" * 60)
         
         # Force CrewAI to use our configured LLM by setting environment variable
@@ -839,7 +1089,7 @@ class FamilyInheritanceExperiment:
                 
                 # Add delay between scenarios to prevent API overload
                 logger.info("⏳ Waiting between scenarios to respect API limits...")
-                time.sleep(10)  # 10 second delay between scenarios
+                time.sleep(30)  # 30 second delay between scenarios (increased from 10)
                 
                 # Advance week
                 self.timeline.advance_week()
@@ -862,7 +1112,7 @@ class FamilyInheritanceExperiment:
             # Add delay between months to prevent API overload
             if month < 6:  # Don't wait after the last month
                 logger.info("⏳ Waiting between months to respect API limits...")
-                time.sleep(30)  # 30 second delay between months
+                time.sleep(60)  # 60 second delay between months (increased from 30)
         
         # Final analysis
         logger.info("📊 Generating final report...")
@@ -1000,12 +1250,140 @@ class FamilyInheritanceExperiment:
             logger.error(f"❌ Failed to record conversation: {e}")
 
     def _extract_conflicts_from_result(self, result_str: str, scenario_name: str, month: int) -> List[Dict]:
-        """Extract conflicts from CrewAI conversation result"""
+        """Extract conflicts from CrewAI conversation result using LLM analysis"""
+        conflicts = []
+        
+        try:
+            # Use LLM to analyze conflicts in the conversation
+            conflict_analysis_prompt = f"""
+            Analyze the following family conversation for conflicts, tensions, or disagreements between the cousins (C1, C2, C3, C4).
+            
+            Conversation from scenario: {scenario_name}
+            
+            {result_str}
+            
+            Please identify any conflicts, tensions, or disagreements between the cousins based on their interactions, statements, and behavior.
+            Look for:
+            - Direct disagreements or arguments
+            - Tension or opposition between cousins
+            - Competing interests or conflicting viewpoints
+            - Hostile or confrontational language
+            - Unresolved disputes or clashes
+            - Passive-aggressive behavior or subtle tensions
+            - Power struggles or dominance attempts
+            
+            Respond with a JSON array of conflicts, where each conflict has:
+            - "involved": array of cousin IDs involved in the conflict (e.g., ["C1", "C2"])
+            - "type": type of conflict (e.g., "disagreement", "tension", "argument", "opposition", "power_struggle")
+            - "severity": severity level ("low", "medium", "high")
+            - "reason": brief explanation of what the conflict is about
+            - "confidence": confidence level from 0.0 to 1.0
+            
+            Example format:
+            [
+                {{
+                    "involved": ["C1", "C2"],
+                    "type": "disagreement",
+                    "severity": "medium",
+                    "reason": "C1 and C2 disagreed about budget allocation priorities",
+                    "confidence": 0.8
+                }}
+            ]
+            
+            If no conflicts are detected, return an empty array: []
+            """
+            
+            # Apply rate limiting before API call
+            rate_limiter.wait_if_needed()
+            
+            # Use the shared LLM to analyze conflicts
+            response = self.shared_llm.call(conflict_analysis_prompt)
+            # Handle different response formats from CrewAI LLM
+            if hasattr(response, 'content'):
+                response_text = str(response.content)
+            elif hasattr(response, 'text'):
+                response_text = str(response.text)
+            else:
+                response_text = str(response)
+            
+            # Parse the JSON response
+            import json
+            try:
+                # Extract JSON from response (handle cases where LLM adds extra text)
+                start_idx = response_text.find('[')
+                end_idx = response_text.rfind(']') + 1
+                if start_idx != -1 and end_idx != -1:
+                    json_str = response_text[start_idx:end_idx]
+                    conflict_analysis = json.loads(json_str)
+                    
+                    # Convert to our format
+                    for analysis in conflict_analysis:
+                        if analysis.get('confidence', 0) > 0.5:  # Only include high-confidence conflicts
+                            conflicts.append({
+                                "type": analysis.get("type", "disagreement"),
+                                "involved": analysis.get("involved", []),
+                                "context": f"LLM-analyzed conflict in {scenario_name}",
+                                "severity": analysis.get("severity", "medium"),
+                                "reason": analysis.get("reason", "No reason provided"),
+                                "confidence": analysis.get("confidence", 0.5),
+                                "month": month,
+                                "timestamp": datetime.now().isoformat()
+                            })
+                            
+            except json.JSONDecodeError as e:
+                logger.warning(f"Failed to parse LLM conflict analysis JSON: {e}")
+                logger.warning(f"LLM response: {response_text}")
+                
+        except Exception as e:
+            logger.error(f"Error in LLM conflict analysis: {e}")
+            # Fallback to simple keyword detection if LLM analysis fails
+            conflicts = self._fallback_conflict_analysis(result_str, scenario_name, month)
+        
+        return conflicts
+    
+    def _fallback_conflict_analysis(self, result_str: str, scenario_name: str, month: int) -> List[Dict]:
+        """Fallback conflict analysis using simple keyword detection"""
         conflicts = []
         
         # Look for conflict indicators in the conversation
-        conflict_keywords = ["disagreement", "conflict", "tension", "opposition", "dispute", "argument", "clash", "rivalry"]
+        conflict_keywords = [
+            "disagreement", "conflict", "tension", "opposition", "dispute", "argument", "clash", "rivalry",
+            "fight", "battle", "struggle", "compete", "against", "versus", "but", "however", "disagree",
+            "don't agree", "can't agree", "won't work", "not right", "wrong", "mistake", "problem"
+        ]
         
+        # Look for direct opposition patterns between specific cousins
+        opposition_patterns = [
+            ("C1", "C2"), ("C1", "C3"), ("C1", "C4"),
+            ("C2", "C3"), ("C2", "C4"), ("C3", "C4")
+        ]
+        
+        # Check for explicit disagreements between specific cousins
+        for cousin1, cousin2 in opposition_patterns:
+            # Look for patterns like "C1: ... but C2: ..." or "C1: ... C2: No, ..."
+            import re
+            pattern1 = f"{cousin1}:.*{cousin2}:"
+            pattern2 = f"{cousin2}:.*{cousin1}:"
+            pattern3 = f"{cousin1}.*{cousin2}.*disagree"
+            pattern4 = f"{cousin2}.*{cousin1}.*disagree"
+            
+            if (re.search(pattern1, result_str, re.IGNORECASE | re.DOTALL) or 
+                re.search(pattern2, result_str, re.IGNORECASE | re.DOTALL) or
+                re.search(pattern3, result_str, re.IGNORECASE) or
+                re.search(pattern4, result_str, re.IGNORECASE)):
+                
+                conflicts.append({
+                    "type": "disagreement",
+                    "involved": [cousin1, cousin2],
+                    "context": f"Fallback conflict detection in {scenario_name}",
+                    "severity": "medium",
+                    "reason": f"Direct opposition pattern detected between {cousin1} and {cousin2}",
+                    "confidence": 0.4,
+                    "month": month,
+                    "timestamp": datetime.now().isoformat()
+                })
+        
+        # Check for general conflict keywords
         for keyword in conflict_keywords:
             if keyword.lower() in result_str.lower():
                 # Try to identify which cousins are involved
@@ -1014,8 +1392,10 @@ class FamilyInheritanceExperiment:
                     conflicts.append({
                         "type": "disagreement",
                         "involved": involved_cousins,
-                        "context": f"Conflict detected in {scenario_name}",
+                        "context": f"Fallback conflict detection in {scenario_name}",
                         "severity": "medium",
+                        "reason": f"Keyword '{keyword}' detected",
+                        "confidence": 0.3,  # Lower confidence for fallback
                         "month": month,
                         "timestamp": datetime.now().isoformat()
                     })
@@ -1023,7 +1403,102 @@ class FamilyInheritanceExperiment:
         return conflicts
 
     def _extract_alliances_from_result(self, result_str: str, scenario_name: str, month: int) -> List[Dict]:
-        """Extract alliances from CrewAI conversation result"""
+        """Extract alliances from CrewAI conversation result using LLM analysis"""
+        alliances = []
+        
+        try:
+            # Use LLM to analyze alliances in the conversation
+            alliance_analysis_prompt = f"""
+            Analyze the following family conversation for alliances, collaborations, or partnerships between the cousins (C1, C2, C3, C4).
+            
+            Conversation from scenario: {scenario_name}
+            
+            {result_str}
+            
+            Please identify any alliances, collaborations, or partnerships between the cousins based on their interactions, statements, and behavior.
+            Look for:
+            - Explicit agreements or mutual support
+            - Collaborative decision-making or joint proposals
+            - Mutual backing or endorsement of ideas
+            - Working together toward common goals
+            - Defending each other's positions
+            - Building on each other's ideas
+            - Shared interests or aligned viewpoints
+            - Implicit support or solidarity
+            - Coalition formation or teaming up
+            - Complementary roles or division of labor
+            
+            Respond with a JSON array of alliances, where each alliance has:
+            - "involved": array of cousin IDs involved in the alliance (e.g., ["C1", "C2"])
+            - "type": type of alliance (e.g., "collaboration", "support", "partnership", "coalition", "mutual_backing")
+            - "strength": strength level ("weak", "medium", "strong")
+            - "reason": brief explanation of what the alliance is about
+            - "confidence": confidence level from 0.0 to 1.0
+            
+            Example format:
+            [
+                {{
+                    "involved": ["C1", "C2"],
+                    "type": "collaboration",
+                    "strength": "medium",
+                    "reason": "C1 and C2 worked together to develop a joint proposal for the gallery renovation",
+                    "confidence": 0.8
+                }}
+            ]
+            
+            If no alliances are detected, return an empty array: []
+            """
+            
+            # Apply rate limiting before API call
+            rate_limiter.wait_if_needed()
+            
+            # Use the shared LLM to analyze alliances
+            response = self.shared_llm.call(alliance_analysis_prompt)
+            # Handle different response formats from CrewAI LLM
+            if hasattr(response, 'content'):
+                response_text = str(response.content)
+            elif hasattr(response, 'text'):
+                response_text = str(response.text)
+            else:
+                response_text = str(response)
+            
+            # Parse the JSON response
+            import json
+            try:
+                # Extract JSON from response (handle cases where LLM adds extra text)
+                start_idx = response_text.find('[')
+                end_idx = response_text.rfind(']') + 1
+                if start_idx != -1 and end_idx != -1:
+                    json_str = response_text[start_idx:end_idx]
+                    alliance_analysis = json.loads(json_str)
+                    
+                    # Convert to our format
+                    for analysis in alliance_analysis:
+                        if analysis.get('confidence', 0) > 0.5:  # Only include high-confidence alliances
+                            alliances.append({
+                                "type": analysis.get("type", "collaboration"),
+                                "involved": analysis.get("involved", []),
+                                "context": f"LLM-analyzed alliance in {scenario_name}",
+                                "strength": analysis.get("strength", "medium"),
+                                "reason": analysis.get("reason", "No reason provided"),
+                                "confidence": analysis.get("confidence", 0.5),
+                                "month": month,
+                                "timestamp": datetime.now().isoformat()
+                            })
+                            
+            except json.JSONDecodeError as e:
+                logger.warning(f"Failed to parse LLM alliance analysis JSON: {e}")
+                logger.warning(f"LLM response: {response_text}")
+                
+        except Exception as e:
+            logger.error(f"Error in LLM alliance analysis: {e}")
+            # Fallback to simple keyword detection if LLM analysis fails
+            alliances = self._fallback_alliance_analysis(result_str, scenario_name, month)
+        
+        return alliances
+    
+    def _fallback_alliance_analysis(self, result_str: str, scenario_name: str, month: int) -> List[Dict]:
+        """Fallback alliance analysis using simple keyword detection"""
         alliances = []
         
         # Look for alliance indicators
@@ -1037,8 +1512,10 @@ class FamilyInheritanceExperiment:
                     alliances.append({
                         "type": "collaboration",
                         "involved": involved_cousins,
-                        "context": f"Alliance formed in {scenario_name}",
+                        "context": f"Fallback alliance detection in {scenario_name}",
                         "strength": "medium",
+                        "reason": f"Keyword '{keyword}' detected",
+                        "confidence": 0.3,  # Lower confidence for fallback
                         "month": month,
                         "timestamp": datetime.now().isoformat()
                     })
@@ -1046,7 +1523,109 @@ class FamilyInheritanceExperiment:
         return alliances
 
     def _extract_trust_changes_from_result(self, result_str: str, scenario_name: str, month: int) -> List[Dict]:
-        """Extract trust level changes from CrewAI conversation result"""
+        """Extract trust level changes from CrewAI conversation result using LLM analysis"""
+        trust_changes = []
+        
+        try:
+            # Use LLM to analyze trust changes in the conversation
+            trust_analysis_prompt = f"""
+            Analyze the following family conversation for SPECIFIC trust level changes between INDIVIDUAL cousin pairs (C1, C2, C3, C4).
+            
+            Conversation from scenario: {scenario_name}
+            
+            {result_str}
+            
+            IMPORTANT: Look for SPECIFIC interactions between INDIVIDUAL cousin pairs, not general family dynamics.
+            
+            Look for:
+            - Direct expressions of trust, confidence, or reliability toward specific cousins
+            - Direct expressions of doubt, skepticism, or mistrust toward specific cousins
+            - Specific supportive or unsupportive behavior between individual cousins
+            - Specific agreement or disagreement between individual cousins
+            - Direct compliments or criticisms between specific cousins
+            - Specific collaborative or competitive behavior between individual cousins
+            
+            CRITICAL: Only identify trust changes between SPECIFIC cousin pairs (e.g., C1→C2, C2→C3, etc.).
+            Do NOT use "all" as a target_cousin. Be specific about which cousin's trust is changing toward which other cousin.
+            
+            Respond with a JSON array of trust changes, where each change has:
+            - "cousin": the cousin whose trust is being affected (C1, C2, C3, or C4)
+            - "target_cousin": the SPECIFIC cousin they're changing trust toward (C1, C2, C3, or C4) - NOT "all"
+            - "change": "positive" or "negative"
+            - "reason": brief explanation of the specific interaction that caused the trust change
+            - "confidence": confidence level from 0.0 to 1.0 (be conservative, only high confidence changes)
+            
+            Example format:
+            [
+                {{
+                    "cousin": "C1",
+                    "target_cousin": "C2", 
+                    "change": "positive",
+                    "reason": "C1 specifically praised C2's financial analysis and said 'I trust your judgment on this'",
+                    "confidence": 0.8
+                }},
+                {{
+                    "cousin": "C3",
+                    "target_cousin": "C1",
+                    "change": "negative", 
+                    "reason": "C3 disagreed with C1's proposal and said 'I'm not sure about this approach'",
+                    "confidence": 0.6
+                }}
+            ]
+            
+            If no specific trust changes between individual cousins are detected, return an empty array: []
+            """
+            
+            # Apply rate limiting before API call
+            rate_limiter.wait_if_needed()
+            
+            # Use the shared LLM to analyze trust changes
+            response = self.shared_llm.call(trust_analysis_prompt)
+            # Handle different response formats from CrewAI LLM
+            if hasattr(response, 'content'):
+                response_text = str(response.content)
+            elif hasattr(response, 'text'):
+                response_text = str(response.text)
+            else:
+                response_text = str(response)
+            
+            # Parse the JSON response
+            import json
+            try:
+                # Extract JSON from response (handle cases where LLM adds extra text)
+                start_idx = response_text.find('[')
+                end_idx = response_text.rfind(']') + 1
+                if start_idx != -1 and end_idx != -1:
+                    json_str = response_text[start_idx:end_idx]
+                    trust_analysis = json.loads(json_str)
+                    
+                    # Convert to our format
+                    for analysis in trust_analysis:
+                        if analysis.get('confidence', 0) > 0.5:  # Only include high-confidence changes
+                            trust_changes.append({
+                                "cousin": analysis.get("cousin"),
+                                "target_cousin": analysis.get("target_cousin"),
+                                "change": analysis.get("change"),
+                                "reason": analysis.get("reason"),
+                                "confidence": analysis.get("confidence"),
+                                "context": f"LLM-analyzed trust change in {scenario_name}",
+                                "month": month,
+                                "timestamp": datetime.now().isoformat()
+                            })
+                            
+            except json.JSONDecodeError as e:
+                logger.warning(f"Failed to parse LLM trust analysis JSON: {e}")
+                logger.warning(f"LLM response: {response_text}")
+                
+        except Exception as e:
+            logger.error(f"Error in LLM trust analysis: {e}")
+            # Fallback to simple keyword detection if LLM analysis fails
+            trust_changes = self._fallback_trust_analysis(result_str, scenario_name, month)
+        
+        return trust_changes
+    
+    def _fallback_trust_analysis(self, result_str: str, scenario_name: str, month: int) -> List[Dict]:
+        """Fallback trust analysis using simple keyword detection"""
         trust_changes = []
         
         # Look for trust indicators
@@ -1059,8 +1638,11 @@ class FamilyInheritanceExperiment:
                 for cousin in involved_cousins:
                     trust_changes.append({
                         "cousin": cousin,
+                        "target_cousin": "all",  # Fallback doesn't identify specific targets
                         "change": "positive" if keyword in ["trust", "reliable", "dependable", "confidence", "faith"] else "negative",
-                        "context": f"Trust change in {scenario_name}",
+                        "reason": f"Keyword '{keyword}' detected",
+                        "confidence": 0.3,  # Lower confidence for fallback
+                        "context": f"Fallback trust analysis in {scenario_name}",
                         "month": month,
                         "timestamp": datetime.now().isoformat()
                     })
@@ -1068,17 +1650,120 @@ class FamilyInheritanceExperiment:
         return trust_changes
 
     def _extract_behavioral_patterns_from_result(self, result_str: str, scenario_name: str, month: int) -> List[Dict]:
-        """Extract behavioral patterns from CrewAI conversation result"""
+        """Extract behavioral patterns from CrewAI conversation result using LLM analysis"""
+        patterns = []
+        
+        try:
+            # Use LLM to analyze behavioral patterns in the conversation
+            behavior_analysis_prompt = f"""
+            Analyze the following family conversation for behavioral patterns exhibited by the cousins (C1, C2, C3, C4).
+            
+            Conversation from scenario: {scenario_name}
+            
+            {result_str}
+            
+            Please identify specific behavioral patterns exhibited by individual cousins based on their actions, statements, and interactions.
+            Look for:
+            - Leadership behaviors (taking initiative, proposing solutions, directing others)
+            - Collaboration behaviors (working together, supporting others, coordinating efforts)
+            - Competitive behaviors (trying to outperform, asserting dominance, competing for influence)
+            - Compromise behaviors (finding middle ground, negotiating, balancing interests)
+            - Assertive behaviors (insisting on positions, demanding attention, pushing for decisions)
+            - Cooperative behaviors (agreeing with others, endorsing ideas, backing proposals)
+            - Passive behaviors (staying quiet, avoiding conflict, following others)
+            - Analytical behaviors (asking questions, seeking information, evaluating options)
+            
+            Respond with a JSON array of behavioral patterns, where each pattern has:
+            - "cousin": the cousin exhibiting the behavior (C1, C2, C3, or C4)
+            - "behavior_type": type of behavior (e.g., "leadership", "collaboration", "competition", "compromise", "assertiveness", "cooperation", "passive", "analytical")
+            - "description": brief description of the specific behavior observed
+            - "confidence": confidence level from 0.0 to 1.0
+            - "impact": "positive", "negative", or "neutral" based on the behavior's effect on the group
+            
+            Example format:
+            [
+                {{
+                    "cousin": "C1",
+                    "behavior_type": "leadership",
+                    "description": "C1 took initiative by proposing a structured approach to the decision-making process",
+                    "confidence": 0.8,
+                    "impact": "positive"
+                }},
+                {{
+                    "cousin": "C2",
+                    "behavior_type": "analytical",
+                    "description": "C2 asked detailed questions about the financial implications of each option",
+                    "confidence": 0.7,
+                    "impact": "positive"
+                }}
+            ]
+            
+            If no clear behavioral patterns are detected, return an empty array: []
+            """
+            
+            # Apply rate limiting before API call
+            rate_limiter.wait_if_needed()
+            
+            # Use the shared LLM to analyze behavioral patterns
+            response = self.shared_llm.call(behavior_analysis_prompt)
+            # Handle different response formats from CrewAI LLM
+            if hasattr(response, 'content'):
+                response_text = str(response.content)
+            elif hasattr(response, 'text'):
+                response_text = str(response.text)
+            else:
+                response_text = str(response)
+            
+            # Parse the JSON response
+            import json
+            try:
+                # Extract JSON from response (handle cases where LLM adds extra text)
+                start_idx = response_text.find('[')
+                end_idx = response_text.rfind(']') + 1
+                if start_idx != -1 and end_idx != -1:
+                    json_str = response_text[start_idx:end_idx]
+                    behavior_analysis = json.loads(json_str)
+                    
+                    # Convert to our format
+                    for analysis in behavior_analysis:
+                        if analysis.get('confidence', 0) > 0.5:  # Only include high-confidence patterns
+                            patterns.append({
+                                "cousin_id": analysis.get("cousin"),
+                                "behavior_type": analysis.get("behavior_type", "unknown"),
+                                "context": f"LLM-analyzed behavior in {scenario_name}",
+                                "description": analysis.get("description", "No description provided"),
+                                "outcome": analysis.get("impact", "neutral"),
+                                "confidence": analysis.get("confidence", 0.5),
+                                "month": month,
+                                "timestamp": datetime.now().isoformat()
+                            })
+                            
+            except json.JSONDecodeError as e:
+                logger.warning(f"Failed to parse LLM behavior analysis JSON: {e}")
+                logger.warning(f"LLM response: {response_text}")
+                
+        except Exception as e:
+            logger.error(f"Error in LLM behavior analysis: {e}")
+            # Fallback to simple keyword detection if LLM analysis fails
+            patterns = self._fallback_behavioral_patterns_analysis(result_str, scenario_name, month)
+        
+        return patterns
+    
+    def _fallback_behavioral_patterns_analysis(self, result_str: str, scenario_name: str, month: int) -> List[Dict]:
+        """Fallback behavioral patterns analysis using simple keyword detection"""
         patterns = []
         
         # Look for behavioral indicators
         behavior_keywords = {
-            "leadership": ["lead", "initiate", "propose", "suggest", "direct"],
-            "collaboration": ["work together", "collaborate", "coordinate", "unite"],
-            "competition": ["compete", "outperform", "excel", "dominate"],
-            "compromise": ["compromise", "negotiate", "balance", "middle ground"],
-            "assertiveness": ["insist", "demand", "assert", "push for"],
-            "cooperation": ["agree", "support", "endorse", "back"]
+            "leadership": ["lead", "initiate", "propose", "suggest", "direct", "take charge", "organize", "plan"],
+            "collaboration": ["work together", "collaborate", "coordinate", "unite", "team up", "join forces"],
+            "competition": ["compete", "outperform", "excel", "dominate", "beat", "win", "better than"],
+            "compromise": ["compromise", "negotiate", "balance", "middle ground", "meet halfway", "settle"],
+            "assertiveness": ["insist", "demand", "assert", "push for", "fight for", "stand firm", "refuse"],
+            "cooperation": ["agree", "support", "endorse", "back", "help", "assist", "contribute"],
+            "conflict_avoidance": ["avoid", "step back", "let it go", "not worth it", "ignore"],
+            "risk_taking": ["risk", "gamble", "chance", "opportunity", "bold", "aggressive"],
+            "conservative": ["careful", "safe", "cautious", "conservative", "slow", "gradual"]
         }
         
         for behavior_type, keywords in behavior_keywords.items():
@@ -1089,8 +1774,10 @@ class FamilyInheritanceExperiment:
                         patterns.append({
                             "cousin_id": cousin,
                             "behavior_type": behavior_type,
-                            "context": f"{behavior_type} behavior in {scenario_name}",
+                            "context": f"Fallback behavior detection in {scenario_name}",
+                            "description": f"Keyword '{keyword}' detected",
                             "outcome": "positive",
+                            "confidence": 0.3,  # Lower confidence for fallback
                             "month": month,
                             "timestamp": datetime.now().isoformat()
                         })
@@ -1112,6 +1799,12 @@ class FamilyInheritanceExperiment:
                         if cousin in lines[j] and cousin not in involved:
                             involved.append(cousin)
         
+        # Remove duplicates and ensure we have at least 2 different cousins for a conflict
+        involved = list(set(involved))
+        if len(involved) < 2:
+            # If we can't identify specific cousins, return empty list (no conflict)
+            return []
+        
         return involved
 
     def _extract_decision_summary(self, result_str: str) -> str:
@@ -1131,33 +1824,125 @@ class FamilyInheritanceExperiment:
         
         # Update conflicts
         for conflict in conflicts:
-            for cousin in conflict.get("involved", []):
+            involved_cousins = conflict.get("involved", [])
+            severity = conflict.get("severity", "medium")
+            confidence = conflict.get("confidence", 0.5)
+            reason = conflict.get("reason", "No reason provided")
+            
+            # Check for duplicate conflicts before adding
+            for cousin in involved_cousins:
                 if cousin in self.relationship_dynamics:
-                    self.relationship_dynamics[cousin]["conflicts"].append(conflict)
+                    # Create a filtered conflict record that excludes self-references
+                    filtered_involved = [c for c in involved_cousins if c != cousin]
+                    
+                    # Only add if there are other cousins involved (no self-conflicts)
+                    if len(filtered_involved) > 0:
+                        filtered_conflict = conflict.copy()
+                        filtered_conflict["involved"] = filtered_involved
+                        
+                        # Check if this conflict already exists (same type, same involved cousins)
+                        existing_conflicts = self.relationship_dynamics[cousin]["conflicts"]
+                        is_duplicate = False
+                        
+                        for existing in existing_conflicts:
+                            if (existing.get("type") == filtered_conflict.get("type") and 
+                                set(existing.get("involved", [])) == set(filtered_involved)):
+                                is_duplicate = True
+                                break
+                        
+                        if not is_duplicate:
+                            self.relationship_dynamics[cousin]["conflicts"].append(filtered_conflict)
+            
+            # Log conflict details
+            if len(involved_cousins) >= 2:
+                involved_str = " vs ".join(involved_cousins)
+                logger.info(f"⚔️ Conflict detected: {involved_str} - {conflict.get('type', 'disagreement')} ({severity} severity, confidence: {confidence:.2f})")
+                logger.info(f"   Reason: {reason}")
         
         # Update alliances
         for alliance in alliances:
-            for cousin in alliance.get("involved", []):
+            involved_cousins = alliance.get("involved", [])
+            strength = alliance.get("strength", "medium")
+            confidence = alliance.get("confidence", 0.5)
+            reason = alliance.get("reason", "No reason provided")
+            
+            # Check for duplicate alliances before adding
+            for cousin in involved_cousins:
                 if cousin in self.relationship_dynamics:
-                    self.relationship_dynamics[cousin]["alliances"].append(alliance)
+                    # Create a filtered alliance record that excludes self-references
+                    filtered_involved = [c for c in involved_cousins if c != cousin]
+                    
+                    # Only add if there are other cousins involved (no self-alliances)
+                    if len(filtered_involved) > 0:
+                        filtered_alliance = alliance.copy()
+                        filtered_alliance["involved"] = filtered_involved
+                        
+                        # Check if this alliance already exists (same type, same involved cousins)
+                        existing_alliances = self.relationship_dynamics[cousin]["alliances"]
+                        is_duplicate = False
+                        
+                        for existing in existing_alliances:
+                            if (existing.get("type") == filtered_alliance.get("type") and 
+                                set(existing.get("involved", [])) == set(filtered_involved)):
+                                is_duplicate = True
+                                break
+                        
+                        if not is_duplicate:
+                            self.relationship_dynamics[cousin]["alliances"].append(filtered_alliance)
+            
+            # Log alliance details
+            if len(involved_cousins) >= 2:
+                involved_str = " + ".join(involved_cousins)
+                logger.info(f"🤝 Alliance formed: {involved_str} - {alliance.get('type', 'collaboration')} ({strength} strength, confidence: {confidence:.2f})")
+                logger.info(f"   Reason: {reason}")
+        
+        # Initialize trust levels for all cousins if not already done
+        for cousin_id in self.cousins.keys():
+            if not self.relationship_dynamics[cousin_id]["trust_levels"]:
+                self.relationship_dynamics[cousin_id]["trust_levels"] = {}
+                # Initialize with varied trust levels based on personality and relationships
+                for other_cousin in self.cousins.keys():
+                    if other_cousin != cousin_id:
+                        # Add personality-based variation to initial trust levels
+                        import hashlib
+                        trust_hash = hashlib.md5(f"{cousin_id}_{other_cousin}".encode()).hexdigest()
+                        personality_factor = (int(trust_hash[:2], 16) / 255.0 - 0.5) * 0.2  # ±0.1 variation
+                        base_trust = 0.5 + personality_factor
+                        self.relationship_dynamics[cousin_id]["trust_levels"][other_cousin] = max(0.3, min(0.7, base_trust))
         
         # Update trust levels
         for trust_change in trust_changes:
             cousin = trust_change.get("cousin")
+            target_cousin = trust_change.get("target_cousin")
+            confidence = trust_change.get("confidence", 0.5)
+            
             if cousin in self.relationship_dynamics:
-                # Initialize trust levels if not exists
-                if not self.relationship_dynamics[cousin]["trust_levels"]:
-                    self.relationship_dynamics[cousin]["trust_levels"] = {}
+                # Calculate trust change amount based on confidence
+                base_change = 0.15  # Increased base change for more meaningful differences
+                confidence_multiplier = confidence  # Higher confidence = larger change
+                trust_change_amount = base_change * confidence_multiplier
                 
-                # Update trust levels with other cousins
-                for other_cousin in self.cousins.keys():
-                    if other_cousin != cousin:
-                        current_trust = self.relationship_dynamics[cousin]["trust_levels"].get(other_cousin, 0.5)
-                        if trust_change.get("change") == "positive":
-                            new_trust = min(1.0, current_trust + 0.1)
-                        else:
-                            new_trust = max(0.0, current_trust - 0.1)
-                        self.relationship_dynamics[cousin]["trust_levels"][other_cousin] = new_trust
+                if target_cousin == "all":
+                    # Update trust levels with all other cousins (fallback behavior)
+                    for other_cousin in self.cousins.keys():
+                        if other_cousin != cousin:
+                            current_trust = self.relationship_dynamics[cousin]["trust_levels"].get(other_cousin, 0.5)
+                            if trust_change.get("change") == "positive":
+                                new_trust = min(1.0, current_trust + trust_change_amount)
+                            else:
+                                new_trust = max(0.0, current_trust - trust_change_amount)
+                            self.relationship_dynamics[cousin]["trust_levels"][other_cousin] = new_trust
+                            logger.info(f"🛡️ Trust update: {cousin} → {other_cousin}: {current_trust:.2f} → {new_trust:.2f} ({trust_change.get('change')}, confidence: {confidence:.2f})")
+                elif target_cousin in self.cousins.keys() and target_cousin != cousin:
+                    # Update trust level with specific target cousin
+                    current_trust = self.relationship_dynamics[cousin]["trust_levels"].get(target_cousin, 0.5)
+                    if trust_change.get("change") == "positive":
+                        new_trust = min(1.0, current_trust + trust_change_amount)
+                    else:
+                        new_trust = max(0.0, current_trust - trust_change_amount)
+                    self.relationship_dynamics[cousin]["trust_levels"][target_cousin] = new_trust
+                    logger.info(f"🛡️ Trust update: {cousin} → {target_cousin}: {current_trust:.2f} → {new_trust:.2f} ({trust_change.get('change')}, confidence: {confidence:.2f})")
+                    logger.info(f"   Reason: {trust_change.get('reason', 'No reason provided')}")
 
     def _display_monthly_summary(self, month: int):
         """Display detailed monthly summary with all decisions and conversations"""
@@ -1250,27 +2035,45 @@ class FamilyInheritanceExperiment:
         
         logger.info("="*80)
 
-    def load_experiment_state(self):
+    def load_experiment_state(self, target_month=None):
         """Load experiment state from previous run"""
-        # Look for the most recent state file
-        state_files = []
-        for month in range(1, 7):  # Check months 1-6
-            month_state_file = f"{self.state_file_base}_month_{month}.json"
-            if os.path.exists(month_state_file):
-                state_files.append((month, month_state_file))
+        # Determine which month to load from
+        if target_month is None:
+            # If no target month specified, load from the most recent state file
+            state_files = []
+            for month in range(1, 7):  # Check months 1-6
+                month_state_file = f"{self.state_file_base}_month_{month}.json"
+                if os.path.exists(month_state_file):
+                    state_files.append((month, month_state_file))
+            
+            if not state_files:
+                logger.info("📁 No previous state found, starting fresh")
+                return False
+            
+            # Use the most recent state file
+            latest_month, latest_state_file = max(state_files, key=lambda x: x[0])
+            logger.info(f"📁 Loading state from Month {latest_month}: {latest_state_file}")
+            state_file_to_load = latest_state_file
+        else:
+            # If target month specified, load from the previous month
+            previous_month = target_month - 1
+            if previous_month < 1:
+                logger.info("📁 No previous state found for Month 1, starting fresh")
+                return False
+            
+            previous_state_file = f"{self.state_file_base}_month_{previous_month}.json"
+            if not os.path.exists(previous_state_file):
+                logger.info(f"📁 No state file found for Month {previous_month}, starting fresh")
+                return False
+            
+            logger.info(f"📁 Loading state from Month {previous_month}: {previous_state_file}")
+            state_file_to_load = previous_state_file
         
-        if not state_files:
-            logger.info("📁 No previous state found, starting fresh")
-            return False
-        
-        # Use the most recent state file
-        latest_month, latest_state_file = max(state_files, key=lambda x: x[0])
         # Store the current month's state file path before loading
         current_state_file = self.state_file
-        logger.info(f"📁 Loading state from Month {latest_month}: {latest_state_file}")
         
         # Temporarily set state file to the previous month's file for loading
-        self.state_file = latest_state_file
+        self.state_file = state_file_to_load
         
         try:
             with open(self.state_file, 'r') as f:
@@ -1327,11 +2130,13 @@ class FamilyInheritanceExperiment:
             self.metrics_tracker.conversation_logs = []
             for log_data in state["metrics_tracker"]["conversation_logs"]:
                 log = ConversationLog(
-                    cousin_id=log_data["cousin_id"],
-                    month=log_data["month"],
+                    timestamp=datetime.fromisoformat(log_data["timestamp"]),
+                    participants=log_data["participants"],
                     conversation_type=log_data["conversation_type"],
-                    content=log_data["content"],
-                    timestamp=datetime.fromisoformat(log_data["timestamp"])
+                    topic=log_data["topic"],
+                    key_points=log_data["key_points"],
+                    decisions_made=log_data["decisions_made"],
+                    influence_tactics=log_data["influence_tactics"]
                 )
                 self.metrics_tracker.conversation_logs.append(log)
             
@@ -1374,14 +2179,14 @@ class FamilyInheritanceExperiment:
         # Load previous state if available
         if month > 1:
             logger.info("📁 Loading previous experiment state...")
-            if not self.load_experiment_state():
+            if not self.load_experiment_state(target_month=month):
                 logger.warning("⚠️  No previous state found, starting fresh")
         
         # Show LLM provider info
         provider_info = llm_config.get_provider_info()
         logger.info(f"🤖 Using LLM Provider: {provider_info['provider'].upper()}")
         logger.info(f"📝 Model: {provider_info['model']}")
-        logger.info("⏳ Rate Limiting: 8 requests/minute, 80 requests/hour (conservative limits)")
+        logger.info("⏳ Rate Limiting: 4 requests/minute, 50 requests/hour (very conservative limits)")
         logger.info("=" * 60)
         
         # Force CrewAI to use our configured LLM by setting environment variable
@@ -1473,7 +2278,7 @@ class FamilyInheritanceExperiment:
         provider_info = llm_config.get_provider_info()
         logger.info(f"🤖 Using LLM Provider: {provider_info['provider'].upper()}")
         logger.info(f"📝 Model: {provider_info['model']}")
-        logger.info("⏳ Rate Limiting: 8 requests/minute, 80 requests/hour (conservative limits)")
+        logger.info("⏳ Rate Limiting: 4 requests/minute, 50 requests/hour (very conservative limits)")
         logger.info("=" * 60)
         
         # Force CrewAI to use our configured LLM by setting environment variable
@@ -1520,7 +2325,7 @@ class FamilyInheritanceExperiment:
                 
                 # Add delay between scenarios to prevent API overload
                 logger.info("⏳ Waiting between scenarios to respect API limits...")
-                time.sleep(10)  # 10 second delay between scenarios
+                time.sleep(30)  # 30 second delay between scenarios (increased from 10)
                 
                 # Advance week
                 self.timeline.advance_week()
@@ -1543,7 +2348,7 @@ class FamilyInheritanceExperiment:
             # Add delay between months to prevent API overload
             if month < 6:  # Don't wait after the last month
                 logger.info("⏳ Waiting between months to respect API limits...")
-                time.sleep(30)  # 30 second delay between months
+                time.sleep(60)  # 60 second delay between months (increased from 30)
         
         # Final analysis
         logger.info("📊 Generating final report...")

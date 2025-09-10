@@ -33,20 +33,19 @@ os.makedirs(logs_dir, exist_ok=True)
 
 # Create timestamped log file (will be updated with month suffix if needed)
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-log_file = os.path.join(logs_dir, f"experiment_log_{timestamp}.txt")
+log_file = None  # Will be set when we know which month we're running
 
-# Configure logging to output to both console and file
+# Configure logging to output to console only initially
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.StreamHandler(sys.stdout),  # Console output
-        logging.FileHandler(log_file, mode='w', encoding='utf-8')  # File output
+        logging.StreamHandler(sys.stdout),  # Console output only
     ],
     force=True  # Override any existing logging configuration
 )
 
-# Also configure root logger to ensure all messages go to both console and file
+# Also configure root logger to ensure all messages go to console
 root_logger = logging.getLogger()
 root_logger.setLevel(logging.INFO)
 for handler in root_logger.handlers:
@@ -58,12 +57,6 @@ console_handler.setLevel(logging.INFO)
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 console_handler.setFormatter(formatter)
 root_logger.addHandler(console_handler)
-
-# File handler
-file_handler = logging.FileHandler(log_file, mode='w', encoding='utf-8')
-file_handler.setLevel(logging.INFO)
-file_handler.setFormatter(formatter)
-root_logger.addHandler(file_handler)
 
 # Create logger
 logger = logging.getLogger(__name__)
@@ -152,25 +145,25 @@ def main():
     
     if args.month:
         logger.info(f"📅 Running Month {args.month} only")
-        # Update log file to include month suffix
-        month_log_file = os.path.join(logs_dir, f"experiment_log_month_{args.month}_{timestamp}.txt")
-        # Update the file handler to use month-specific log file
-        for handler in root_logger.handlers:
-            if isinstance(handler, logging.FileHandler):
-                handler.close()
-                root_logger.removeHandler(handler)
-        file_handler = logging.FileHandler(month_log_file, mode='w', encoding='utf-8')
-        file_handler.setLevel(logging.INFO)
-        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-        file_handler.setFormatter(formatter)
-        root_logger.addHandler(file_handler)
-        log_file = month_log_file
+        # Create month-specific log file
+        log_file = os.path.join(logs_dir, f"experiment_log_month_{args.month}_{timestamp}.txt")
     elif args.resume:
         logger.info("📅 Resuming from last completed month")
+        # Create general log file for resume
+        log_file = os.path.join(logs_dir, f"experiment_log_resume_{timestamp}.txt")
     else:
         logger.info("📅 Running all 6 months")
+        # Create general log file for full run
+        log_file = os.path.join(logs_dir, f"experiment_log_full_{timestamp}.txt")
     
-    # Display log file location after it's been set
+    # Add file handler for the large detailed log
+    file_handler = logging.FileHandler(log_file, mode='w', encoding='utf-8')
+    file_handler.setLevel(logging.INFO)
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    file_handler.setFormatter(formatter)
+    root_logger.addHandler(file_handler)
+    
+    # Display log file location
     logger.info(f"📄 Log file: {log_file}")
     
     if not check_requirements():

@@ -50,8 +50,7 @@ ehthumbs.db
 Thumbs.db
 
 # Experiment outputs
-experiment_results.json
-experiment_data.json
+output/
 *.log
 
 # Jupyter Notebook
