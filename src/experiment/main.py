@@ -498,14 +498,23 @@ class FamilyInheritanceExperiment:
         self._apply_relationship_updates(conflicts_found, alliances_found, trust_changes, behavioral_patterns)
         
         # Record behavioral patterns in metrics tracker
-        for pattern in behavioral_patterns:
-            self.metrics_tracker.record_behavioral_pattern(
-                cousin_id=pattern.get("cousin_id", "Unknown"),
-                behavior_type=pattern.get("behavior_type", "Unknown"),
-                description=pattern.get("context", ""), 
-                context=pattern.get("context", ""),
-                outcome=pattern.get("outcome", "")
-            )
+        logger.info(f"📊 Recording {len(behavioral_patterns)} behavioral patterns in metrics tracker...")
+        for i, pattern in enumerate(behavioral_patterns):
+            try:
+                self.metrics_tracker.record_behavioral_pattern(
+                    cousin_id=pattern.get("cousin_id", "Unknown"),
+                    behavior_type=pattern.get("behavior_type", "Unknown"),
+                    description=pattern.get("description", ""), 
+                    context=pattern.get("context", ""),
+                    outcome=pattern.get("outcome", ""),
+                    month=pattern.get("month", month)
+                )
+                logger.info(f"   ✅ Recorded pattern {i+1}: {pattern.get('cousin_id')} - {pattern.get('behavior_type')}")
+            except Exception as e:
+                logger.error(f"   ❌ Failed to record pattern {i+1}: {e}")
+                logger.error(f"   Pattern data: {pattern}")
+        
+        logger.info(f"📊 Total behavioral patterns in metrics tracker: {len(self.metrics_tracker.behavioral_patterns)}")
     
     def _load_all_previous_months_context(self, up_to_month: int):
         """Load ALL previous months' decisions and context for agents"""
@@ -774,27 +783,32 @@ class FamilyInheritanceExperiment:
         # Update relationship dynamics and historical context
         self._update_relationship_dynamics(scenario_outcome)
         
-        # Apply resource impact
-        self._apply_resource_impact(scenario_event.resource_impact)
+        # Apply resource impact with individual contributions
+        self._apply_resource_impact(scenario_event.resource_impact, scenario_event.title, str(result))
         
         # Record metrics
         self._record_scenario_metrics(scenario_event, result)
         
         return scenario_outcome
     
-    def _apply_resource_impact(self, resource_impact: Dict[str, Any]):
-        """Apply resource impact from scenario outcome"""
+    def _apply_resource_impact(self, resource_impact: Dict[str, Any], scenario_name: str = "", conversation_result: str = ""):
+        """Apply resource impact from scenario outcome with individual cousin contributions"""
         from resources.management import ResourceType
         
+        # Calculate individual cousin contributions based on conversation
+        if conversation_result:
+            cousin_contributions = self.resource_manager.calculate_individual_contributions(
+                scenario_name, conversation_result
+            )
+            
+            # Update resources based on individual contributions
+            self.resource_manager.update_resources_from_scenario(
+                scenario_name, cousin_contributions
+            )
+        
+        # Also update shared resources based on scenario outcome
         for resource_type, amount in resource_impact.items():
-            if resource_type == "time":
-                # Distribute time impact across cousins
-                time_per_cousin = amount / 4
-                for cousin_id in self.cousins.keys():
-                    self.resource_manager.allocate_individual_resource(
-                        cousin_id, ResourceType.TIME, time_per_cousin, "Scenario participation"
-                    )
-            elif resource_type == "money":
+            if resource_type == "money":
                 if amount > 0:
                     # Add money to shared budget
                     self.resource_manager.shared_resources.shared_budget += amount
@@ -802,240 +816,161 @@ class FamilyInheritanceExperiment:
                     # Deduct from shared budget
                     self.resource_manager.allocate_shared_resource(abs(amount), "Scenario cost")
             elif resource_type == "reputation":
-                # Distribute reputation impact
-                reputation_per_cousin = amount / 4
-                for cousin_id in self.cousins.keys():
-                    self.resource_manager.add_resource(
-                        cousin_id, ResourceType.REPUTATION, reputation_per_cousin, "Scenario outcome"
-                    )
+                # Update gallery reputation
+                self.resource_manager.shared_resources.gallery_reputation += amount
         
-        # Update social connections based on scenario interactions
-        self._update_social_connections_from_scenario()
-        
-        # Recalculate all connection strengths based on updated relationship dynamics
-        self._recalculate_all_connection_strengths()
     
-    def _update_social_connections_from_scenario(self):
-        """Update social connections based on recent scenario interactions"""
-        # Get the most recent scenario from history
-        if not self.scenario_history:
-            return
+    def _calculate_metrics_for_cousin(self, cousin_id: str) -> Dict[str, Any]:
+        """Calculate quantitative metrics for a cousin"""
+        # Calculate basic metrics
+        metrics = {
+            "financial_returns": 0,  # Calculated from business decisions
+            "social_capital": 0,  # Removed social connections tracking
+            "reputation_score": self.resource_manager.cousin_resources[cousin_id].reputation_points,
+            "influence_index": 0.0,  # Calculated from voting patterns
+            "future_opportunities": 0  # Calculated from scenario outcomes
+        }
         
-        recent_scenario = self.scenario_history[-1]
-        alliances = recent_scenario.get("alliances", [])
-        
-        # Add social connections based on alliances formed
-        for alliance in alliances:
-            involved_cousins = alliance.get("involved", [])
-            strength = alliance.get("strength", "medium")
-            if len(involved_cousins) >= 2:
-                # Create social connections between involved cousins (excluding self-connections)
-                for i, cousin1 in enumerate(involved_cousins):
-                    for cousin2 in involved_cousins[i+1:]:
-                        if cousin1 != cousin2:  # Ensure no self-connections
-                            # Add connection to both cousins' social networks with strength-based context
-                            context = f"{alliance.get('context', 'Scenario collaboration')} ({strength} strength)"
-                            self._add_social_connection(cousin1, cousin2, context)
-                            self._add_social_connection(cousin2, cousin1, context)
+        return metrics
     
-    def _add_social_connection(self, cousin_id: str, connection_id: str, context: str):
-        """Add a social connection between two cousins with dynamic strength calculation"""
-        # Prevent self-connections
-        if cousin_id == connection_id:
-            return
-            
-        if cousin_id in self.resource_manager.cousin_resources:
-            resources = self.resource_manager.cousin_resources[cousin_id]
-            
-            # Check if connection already exists
-            existing_connections = [conn for conn in resources.social_connections if conn.get("cousin_id") == connection_id]
-            
-            # Calculate dynamic strength based on relationship dynamics
-            strength = self._calculate_connection_strength(cousin_id, connection_id, context)
-            
-            if not existing_connections:
-                # Add new connection
-                connection = {
-                    "cousin_id": connection_id,
-                    "relationship_type": "collaboration",
-                    "strength": strength,
-                    "context": context,
-                    "timestamp": datetime.now().isoformat(),
-                    "last_interaction": datetime.now().isoformat()
-                }
-                resources.social_connections.append(connection)
-                logger.info(f"🤝 Added social connection: {cousin_id} ↔ {connection_id} (strength: {strength:.2f})")
-            else:
-                # Update existing connection strength
-                for conn in existing_connections:
-                    old_strength = conn["strength"]
-                    conn["strength"] = strength
-                    conn["last_interaction"] = datetime.now().isoformat()
-                    conn["context"] = context  # Update context with latest interaction
-                logger.info(f"🤝 Updated social connection: {cousin_id} ↔ {connection_id} (strength: {old_strength:.2f} → {strength:.2f})")
-    
-    def _calculate_connection_strength(self, cousin_id: str, connection_id: str, context: str) -> float:
-        """Calculate connection strength based on trust, alliances, and conflicts"""
-        
-        # Prevent self-connection strength calculation
-        if cousin_id == connection_id:
-            return 0.0
-        
-        # Base strength from trust level
-        trust_level = self.relationship_dynamics[cousin_id]["trust_levels"].get(connection_id, 0.5)
-        
-        # Calculate alliance bonus
-        alliance_bonus = self._calculate_alliance_bonus(cousin_id, connection_id)
-        
-        # Calculate conflict penalty
-        conflict_penalty = self._calculate_conflict_penalty(cousin_id, connection_id)
-        
-        # Calculate context bonus (from current interaction)
-        context_bonus = self._calculate_context_bonus(context)
-        
-        # Add personality-based variation (small random factor based on cousin IDs)
-        import hashlib
-        cousin_hash = hashlib.md5(f"{cousin_id}_{connection_id}".encode()).hexdigest()
-        personality_factor = (int(cousin_hash[:2], 16) / 255.0 - 0.5) * 0.1  # ±0.05 variation
-        
-        # Combine all factors
-        base_strength = trust_level * 0.6  # Trust is 60% of base strength
-        alliance_contribution = alliance_bonus * 0.25  # Alliances contribute 25%
-        conflict_contribution = -conflict_penalty * 0.15  # Conflicts reduce by 15%
-        context_contribution = context_bonus * 0.1  # Current context contributes 10%
-        
-        # Calculate final strength
-        final_strength = base_strength + alliance_contribution + conflict_contribution + context_contribution + personality_factor
-        
-        # Ensure strength stays within bounds [0.0, 1.0]
-        final_strength = max(0.0, min(1.0, final_strength))
-        
-        return final_strength
-    
-    def _calculate_alliance_bonus(self, cousin_id: str, connection_id: str) -> float:
-        """Calculate alliance bonus between two cousins"""
-        # Prevent self-alliance calculation
-        if cousin_id == connection_id:
-            return 0.0
-            
-        cousin_alliances = self.relationship_dynamics[cousin_id]["alliances"]
-        
-        # Find alliances involving both cousins
-        relevant_alliances = []
-        for alliance in cousin_alliances:
-            involved = alliance.get("involved", [])
-            if cousin_id in involved and connection_id in involved:
-                relevant_alliances.append(alliance)
-        
-        if not relevant_alliances:
-            return 0.0
-        
-        # Calculate bonus based on alliance strength and confidence
-        total_bonus = 0.0
-        for alliance in relevant_alliances:
-            strength = alliance.get("strength", "medium")
-            confidence = alliance.get("confidence", 0.5)
-            
-            # Convert strength to numeric value
-            strength_value = {"weak": 0.3, "medium": 0.6, "strong": 0.9}.get(strength, 0.6)
-            
-            # Bonus is strength * confidence
-            alliance_bonus = strength_value * confidence
-            total_bonus += alliance_bonus
-        
-        # Cap the total bonus at 1.0
-        return min(1.0, total_bonus)
-    
-    def _calculate_conflict_penalty(self, cousin_id: str, connection_id: str) -> float:
-        """Calculate conflict penalty between two cousins"""
-        # Prevent self-conflict calculation
-        if cousin_id == connection_id:
-            return 0.0
-            
-        cousin_conflicts = self.relationship_dynamics[cousin_id]["conflicts"]
-        
-        # Find conflicts involving both cousins
-        relevant_conflicts = []
-        for conflict in cousin_conflicts:
-            involved = conflict.get("involved", [])
-            if cousin_id in involved and connection_id in involved:
-                relevant_conflicts.append(conflict)
-        
-        if not relevant_conflicts:
-            return 0.0
-        
-        # Calculate penalty based on conflict severity and confidence
-        total_penalty = 0.0
-        for conflict in relevant_conflicts:
-            severity = conflict.get("severity", "medium")
-            confidence = conflict.get("confidence", 0.5)
-            
-            # Convert severity to numeric value
-            severity_value = {"low": 0.2, "medium": 0.5, "high": 0.8}.get(severity, 0.5)
-            
-            # Penalty is severity * confidence
-            conflict_penalty = severity_value * confidence
-            total_penalty += conflict_penalty
-        
-        # Cap the total penalty at 1.0
-        return min(1.0, total_penalty)
-    
-    def _calculate_context_bonus(self, context: str) -> float:
-        """Calculate bonus from current interaction context"""
-        context_lower = context.lower()
-        
-        # Check for alliance strength indicators in context
-        if "strong strength" in context_lower:
-            return 0.3
-        elif "medium strength" in context_lower:
-            return 0.2
-        elif "weak strength" in context_lower:
-            return 0.1
-        elif "llm-analyzed alliance" in context_lower:
-            return 0.15  # Default for LLM-analyzed alliances
-        elif "fallback alliance" in context_lower:
-            return 0.05  # Lower bonus for fallback detection
-        else:
-            return 0.0  # No bonus for unknown contexts
-    
-    def _recalculate_all_connection_strengths(self):
-        """Recalculate all social connection strengths based on current relationship dynamics"""
-        logger.info("🔄 Recalculating all social connection strengths...")
-        
-        for cousin_id in self.cousins.keys():
-            resources = self.resource_manager.cousin_resources.get(cousin_id)
-            if resources and resources.social_connections:
-                for conn in resources.social_connections:
-                    connection_id = conn.get("cousin_id")
-                    context = conn.get("context", "Recalculated")
-                    
-                    # Calculate new strength
-                    old_strength = conn["strength"]
-                    new_strength = self._calculate_connection_strength(cousin_id, connection_id, context)
-                    
-                    # Update the connection
-                    conn["strength"] = new_strength
-                    conn["last_interaction"] = datetime.now().isoformat()
-                    
-                    # Log significant changes
-                    if abs(new_strength - old_strength) > 0.05:  # Only log changes > 5%
-                        logger.info(f"   📊 {cousin_id} ↔ {connection_id}: {old_strength:.2f} → {new_strength:.2f}")
     
     def _record_scenario_metrics(self, scenario_event, result):
         """Record metrics after scenario completion"""
         # Record scenario metrics and behavioral patterns
+        month = scenario_event.month
         
         for cousin_id in self.cousins.keys():
-            # Calculate basic metrics
+            # Calculate comprehensive metrics
             metrics = {
-                "financial_returns": 0,  # Calculated from business decisions
-                "social_capital": len(self.resource_manager.cousin_resources[cousin_id].social_connections),
+                "financial_returns": self._calculate_financial_returns(cousin_id, month),
+                "social_capital": self._calculate_social_capital(cousin_id, month),
                 "reputation_score": self.resource_manager.cousin_resources[cousin_id].reputation_points,
-                "influence_index": 0.0,  # Calculated from voting patterns
-                "future_opportunities": 0  # Calculated from scenario outcomes
+                "influence_index": self._calculate_influence_index(cousin_id, month),
+                "future_opportunities": self._calculate_future_opportunities(cousin_id, month)
             }
             
             self.metrics_tracker.record_quantitative_metrics(cousin_id, metrics)
+    
+    def _calculate_financial_returns(self, cousin_id: str, month: int) -> float:
+        """Calculate financial returns based on business decisions and resource management"""
+        # Base calculation on money earned vs spent
+        current_money = self.resource_manager.cousin_resources[cousin_id].money
+        
+        # Get scenarios from this month to analyze financial impact
+        month_scenarios = [s for s in self.scenario_history if s['month'] == month]
+        
+        # Calculate based on resource impact and business decisions
+        financial_score = 0.0
+        
+        for scenario in month_scenarios:
+            # Look for financial keywords in the scenario
+            result_str = str(scenario.get('result', '')).lower()
+            
+            # Positive financial indicators
+            if any(word in result_str for word in ['profit', 'revenue', 'income', 'earn', 'gain', 'success']):
+                financial_score += 100.0
+            elif any(word in result_str for word in ['budget', 'cost', 'expense', 'spend', 'invest']):
+                financial_score += 50.0
+            elif any(word in result_str for word in ['grant', 'funding', 'sponsor', 'donation']):
+                financial_score += 75.0
+        
+        # Add current money as a factor
+        financial_score += current_money * 0.1
+        
+        return round(financial_score, 2)
+    
+    def _calculate_social_capital(self, cousin_id: str, month: int) -> int:
+        """Calculate social capital based on alliances and trust levels"""
+        # Count alliances and trust relationships
+        social_score = 0
+        
+        # Count alliances
+        alliances = self.relationship_dynamics[cousin_id].get('alliances', [])
+        social_score += len(alliances) * 10
+        
+        # Calculate average trust level
+        trust_levels = self.relationship_dynamics[cousin_id].get('trust_levels', {})
+        if trust_levels:
+            avg_trust = sum(trust_levels.values()) / len(trust_levels)
+            social_score += int(avg_trust * 50)
+        
+        # Count behavioral patterns that indicate social behavior
+        month_behaviors = [b for b in self.metrics_tracker.behavioral_patterns 
+                          if b.cousin_id == cousin_id and b.month == month]
+        
+        for behavior in month_behaviors:
+            if behavior.behavior_type in ['collaboration', 'cooperation', 'leadership']:
+                social_score += 5
+            elif behavior.behavior_type in ['competition', 'conflict_avoidance']:
+                social_score += 2
+        
+        return max(0, social_score)
+    
+    def _calculate_influence_index(self, cousin_id: str, month: int) -> float:
+        """Calculate influence index based on leadership behaviors and proposal success"""
+        influence_score = 0.0
+        
+        # Count leadership behaviors
+        month_behaviors = [b for b in self.metrics_tracker.behavioral_patterns 
+                          if b.cousin_id == cousin_id and b.month == month]
+        
+        for behavior in month_behaviors:
+            if behavior.behavior_type == 'leadership':
+                influence_score += 0.3
+            elif behavior.behavior_type == 'assertiveness':
+                influence_score += 0.2
+            elif behavior.behavior_type == 'proposal_making':
+                influence_score += 0.25
+            elif behavior.behavior_type == 'consensus_building':
+                influence_score += 0.15
+        
+        # Count successful alliances (being involved in alliances indicates influence)
+        alliances = self.relationship_dynamics[cousin_id].get('alliances', [])
+        influence_score += len(alliances) * 0.1
+        
+        # Count scenarios where this cousin was mentioned prominently
+        month_scenarios = [s for s in self.scenario_history if s['month'] == month]
+        for scenario in month_scenarios:
+            result_str = str(scenario.get('result', ''))
+            # Count mentions of this cousin
+            mentions = result_str.count(f"{cousin_id}:")
+            influence_score += mentions * 0.05
+        
+        return round(min(1.0, influence_score), 3)
+    
+    def _calculate_future_opportunities(self, cousin_id: str, month: int) -> int:
+        """Calculate future opportunities based on scenario outcomes and relationships"""
+        opportunities = 0
+        
+        # Count positive scenario outcomes
+        month_scenarios = [s for s in self.scenario_history if s['month'] == month]
+        
+        for scenario in month_scenarios:
+            result_str = str(scenario.get('result', '')).lower()
+            
+            # Look for opportunity indicators
+            if any(word in result_str for word in ['future', 'next', 'plan', 'opportunity', 'potential']):
+                opportunities += 1
+            
+            if any(word in result_str for word in ['meeting', 'schedule', 'follow', 'continue']):
+                opportunities += 1
+            
+            if any(word in result_str for word in ['partnership', 'collaboration', 'team', 'together']):
+                opportunities += 1
+        
+        # Add opportunities based on trust levels
+        trust_levels = self.relationship_dynamics[cousin_id].get('trust_levels', {})
+        high_trust_count = sum(1 for trust in trust_levels.values() if trust > 0.7)
+        opportunities += high_trust_count
+        
+        # Add opportunities based on reputation
+        reputation = self.resource_manager.cousin_resources[cousin_id].reputation_points
+        if reputation > 15:
+            opportunities += 2
+        elif reputation > 10:
+            opportunities += 1
+        
+        return max(0, opportunities)
     
     def run_full_experiment(self):
         """Run the complete 6-month experiment"""
@@ -1138,6 +1073,10 @@ class FamilyInheritanceExperiment:
         shared_status = self.resource_manager.get_shared_resource_status()
         logger.info(f"   Shared Resources: {shared_status}")
         
+        # Aggregate decisions from conversation logs
+        logger.info("📋 Aggregating decisions from conversation logs...")
+        self._aggregate_decisions_from_logs()
+        
         # Export experiment data
         logger.info("💾 Exporting experiment data...")
         with open(self.data_file, "w") as f:
@@ -1149,59 +1088,109 @@ class FamilyInheritanceExperiment:
         logger.info(f"   📊 {self.data_file} (scenario outcomes and decisions)")
         logger.info(f"   💾 {self.state_file} (complete experiment state)")
     
+    def _aggregate_decisions_from_logs(self):
+        """Aggregate decisions from all conversation logs into the top-level decisions_made array"""
+        all_decisions = []
+        
+        # Extract decisions from all conversation logs
+        for conversation in self.metrics_tracker.conversation_logs:
+            decisions = conversation.decisions_made
+            if decisions:  # Only add non-empty decisions
+                all_decisions.extend(decisions)
+        
+        # Remove duplicates while preserving order
+        unique_decisions = []
+        seen = set()
+        for decision in all_decisions:
+            if decision not in seen:
+                unique_decisions.append(decision)
+                seen.add(decision)
+        
+        # Update the top-level decisions_made array
+        self.experiment_data["decisions_made"] = unique_decisions
+        
+        logger.info(f"   📋 Aggregated {len(unique_decisions)} unique decisions from {len(all_decisions)} total decision instances")
+        if unique_decisions:
+            logger.info(f"   📋 Decisions found: {unique_decisions}")
+        else:
+            logger.info("   📋 No decisions found in conversation logs")
+    
     def save_experiment_state(self):
         """Save complete experiment state for resuming later"""
-        state = {
-            "timeline": {
-                "current_month": self.timeline.current_month,
-                "current_week": self.timeline.current_week
-            },
-            "resource_manager": {
-                "cousin_resources": {
-                    cousin_id: {
-                        "time_hours": resources.time_hours,
-                        "money": resources.money,
-                        "social_connections": resources.social_connections,
-                        "reputation_points": resources.reputation_points
-                    }
-                    for cousin_id, resources in self.resource_manager.cousin_resources.items()
+        try:
+            state = {
+                "timeline": {
+                    "current_month": self.timeline.current_month,
+                    "current_week": self.timeline.current_week
                 },
-                "shared_resources": {
-                    "shared_budget": self.resource_manager.shared_resources.shared_budget,
-                    "gallery_reputation": self.resource_manager.shared_resources.gallery_reputation,
-                    "family_reputation": self.resource_manager.shared_resources.family_reputation,
-                    "legal_fund": self.resource_manager.shared_resources.legal_fund
+                "resource_manager": {
+                    "cousin_resources": {
+                        cousin_id: {
+                            "time_hours": resources.time_hours,
+                            "money": resources.money,
+                            "reputation_points": resources.reputation_points
+                        }
+                        for cousin_id, resources in self.resource_manager.cousin_resources.items()
+                    },
+                    "shared_resources": {
+                        "shared_budget": self.resource_manager.shared_resources.shared_budget,
+                        "gallery_reputation": self.resource_manager.shared_resources.gallery_reputation,
+                        "family_reputation": self.resource_manager.shared_resources.family_reputation,
+                        "legal_fund": self.resource_manager.shared_resources.legal_fund
+                    }
+                },
+                "relationship_dynamics": self.relationship_dynamics,
+                "scenario_history": self.scenario_history,
+                "experiment_data": self.experiment_data,
+                "metrics_tracker": {
+                    "current_month": self.metrics_tracker.current_month,
+                            "quantitative_metrics": [
+                                {
+                                    "cousin_id": m.cousin_id,
+                                    "month": m.month,
+                                    "financial_returns": m.financial_returns,
+                                    "social_capital": m.social_capital,
+                                    "reputation_score": m.reputation_score,
+                                    "influence_index": m.influence_index,
+                                    "future_opportunities": m.future_opportunities
+                                }
+                                for m in self.metrics_tracker.quantitative_metrics
+                            ],
+                    "conversation_logs": [
+                        log.to_dict()
+                        for log in self.metrics_tracker.conversation_logs
+                    ]
+                },
+                "last_saved": datetime.now().isoformat()
+            }
+            
+            with open(self.state_file, 'w') as f:
+                json.dump(state, f, indent=2)
+            
+            logger.info(f"💾 Experiment state saved to {self.state_file}")
+            
+        except AttributeError as e:
+            if "social_connections" in str(e):
+                logger.error(f"❌ Error saving experiment state: {e}")
+                logger.error("🔧 This error suggests there's a mismatch between ResourcePool and CousinAgent objects")
+                logger.error("💡 The social_connections attribute belongs to CousinAgent, not ResourcePool")
+                # Create a minimal state file to prevent complete failure
+                minimal_state = {
+                    "timeline": {
+                        "current_month": self.timeline.current_month,
+                        "current_week": self.timeline.current_week
+                    },
+                    "error": f"State save failed due to attribute error: {e}",
+                    "last_saved": datetime.now().isoformat()
                 }
-            },
-            "relationship_dynamics": self.relationship_dynamics,
-            "scenario_history": self.scenario_history,
-            "experiment_data": self.experiment_data,
-            "metrics_tracker": {
-                "current_month": self.metrics_tracker.current_month,
-                        "quantitative_metrics": [
-                            {
-                                "cousin_id": m.cousin_id,
-                                "month": m.month,
-                                "financial_returns": m.financial_returns,
-                                "social_capital": m.social_capital,
-                                "reputation_score": m.reputation_score,
-                                "influence_index": m.influence_index,
-                                "future_opportunities": m.future_opportunities
-                            }
-                            for m in self.metrics_tracker.quantitative_metrics
-                        ],
-                "conversation_logs": [
-                    log.to_dict()
-                    for log in self.metrics_tracker.conversation_logs
-                ]
-            },
-            "last_saved": datetime.now().isoformat()
-        }
-        
-        with open(self.state_file, 'w') as f:
-            json.dump(state, f, indent=2)
-        
-        logger.info(f"💾 Experiment state saved to {self.state_file}")
+                with open(self.state_file, 'w') as f:
+                    json.dump(minimal_state, f, indent=2)
+                logger.info(f"💾 Minimal state saved to {self.state_file}")
+            else:
+                raise
+        except Exception as e:
+            logger.error(f"❌ Unexpected error saving experiment state: {e}")
+            raise
 
     def _record_crewai_conversation(self, scenario_event, result):
         """Record CrewAI conversation in metrics tracker"""
@@ -1217,21 +1206,62 @@ class FamilyInheritanceExperiment:
             decisions_made = []
             influence_tactics = []
             
-            # Try to extract decision sections
-            if "Final Decision" in result_str or "Unanimous Decision" in result_str:
-                decisions_made.append("Unanimous decision reached")
+            # Convert to lowercase for case-insensitive matching
+            result_lower = result_str.lower()
             
-            if "Phase" in result_str:
+            # Try to extract decision sections
+            if "final decision" in result_lower or "unanimous decision" in result_lower:
+                decisions_made.append("Unanimous decision reached")
+            elif "decision" in result_lower and ("agree" in result_lower or "consensus" in result_lower):
+                decisions_made.append("Consensus decision reached")
+            elif "decide" in result_lower and ("plan" in result_lower or "approach" in result_lower):
+                decisions_made.append("Planning decision made")
+            elif "outcome" in result_lower or "result" in result_lower:
+                decisions_made.append("Outcome determined")
+            
+            # Extract key points with more comprehensive keyword detection
+            if "phase" in result_lower or "phased" in result_lower:
                 key_points.append("Phased approach discussed")
             
-            if "Budget" in result_str or "Resource" in result_str:
+            if "budget" in result_lower or "resource" in result_lower or "financial" in result_lower:
                 key_points.append("Resource allocation planned")
             
-            if "Technology" in result_str:
+            if "technology" in result_lower or "digital" in result_lower:
                 key_points.append("Technology integration discussed")
             
-            if "Community" in result_str:
+            if "community" in result_lower or "outreach" in result_lower:
                 key_points.append("Community engagement planned")
+            
+            if "legal" in result_lower or "lawyer" in result_lower or "consultation" in result_lower:
+                key_points.append("Legal consultation planned")
+            
+            if "renovation" in result_lower or "repair" in result_lower or "renovate" in result_lower:
+                key_points.append("Renovation and repairs discussed")
+            
+            if "grant" in result_lower or "funding" in result_lower or "sponsorship" in result_lower:
+                key_points.append("Funding options explored")
+            
+            if "meeting" in result_lower or "schedule" in result_lower:
+                key_points.append("Future meetings planned")
+            
+            # Extract influence tactics
+            if "agree" in result_lower or "support" in result_lower:
+                influence_tactics.append("Consensus building")
+            
+            if "suggest" in result_lower or "propose" in result_lower:
+                influence_tactics.append("Proposal making")
+            
+            if "concern" in result_lower or "caution" in result_lower:
+                influence_tactics.append("Risk assessment")
+            
+            if "vision" in result_lower or "creative" in result_lower:
+                influence_tactics.append("Vision articulation")
+            
+            # Log what was extracted for debugging
+            logger.info(f"📝 Conversation analysis for {scenario_event.title}:")
+            logger.info(f"   Key points found: {len(key_points)} - {key_points}")
+            logger.info(f"   Decisions made: {len(decisions_made)} - {decisions_made}")
+            logger.info(f"   Influence tactics: {len(influence_tactics)} - {influence_tactics}")
             
             # Record conversation for each participant
             for cousin_id in participants:
@@ -1241,7 +1271,8 @@ class FamilyInheritanceExperiment:
                     topic=scenario_event.title,
                     key_points=key_points,
                     decisions_made=decisions_made,
-                    influence_tactics=influence_tactics
+                    influence_tactics=influence_tactics,
+                    month=scenario_event.month
                 )
             
             logger.info(f"📝 Recorded conversation for scenario: {scenario_event.title}")
@@ -1745,8 +1776,11 @@ class FamilyInheritanceExperiment:
         except Exception as e:
             logger.error(f"Error in LLM behavior analysis: {e}")
             # Fallback to simple keyword detection if LLM analysis fails
+            logger.info("🔄 Falling back to keyword-based behavioral pattern analysis...")
             patterns = self._fallback_behavioral_patterns_analysis(result_str, scenario_name, month)
+            logger.info(f"📊 Fallback analysis found {len(patterns)} behavioral patterns")
         
+        logger.info(f"📊 Total behavioral patterns extracted: {len(patterns)}")
         return patterns
     
     def _fallback_behavioral_patterns_analysis(self, result_str: str, scenario_name: str, month: int) -> List[Dict]:
@@ -1766,10 +1800,17 @@ class FamilyInheritanceExperiment:
             "conservative": ["careful", "safe", "cautious", "conservative", "slow", "gradual"]
         }
         
+        logger.info(f"🔍 Analyzing conversation for behavioral keywords in {scenario_name}...")
+        keywords_found = 0
+        
         for behavior_type, keywords in behavior_keywords.items():
             for keyword in keywords:
                 if keyword.lower() in result_str.lower():
-                    involved_cousins = self._identify_involved_cousins(result_str, keyword)
+                    keywords_found += 1
+                    logger.info(f"   Found keyword '{keyword}' for behavior type '{behavior_type}'")
+                    # Use a different method for behavioral patterns that allows single cousins
+                    involved_cousins = self._identify_cousins_for_behavior(result_str, keyword)
+                    logger.info(f"   Cousins involved: {involved_cousins}")
                     for cousin in involved_cousins:
                         patterns.append({
                             "cousin_id": cousin,
@@ -1782,7 +1823,34 @@ class FamilyInheritanceExperiment:
                             "timestamp": datetime.now().isoformat()
                         })
         
+        logger.info(f"🔍 Found {keywords_found} behavioral keywords, generated {len(patterns)} patterns")
         return patterns
+
+    def _identify_cousins_for_behavior(self, result_str: str, keyword: str) -> List[str]:
+        """Identify which cousins are mentioned in relation to a keyword for behavioral patterns"""
+        involved = []
+        cousin_names = ["C1", "C2", "C3", "C4"]
+        
+        # Simple approach: look for cousin names near the keyword
+        lines = result_str.split('\n')
+        for i, line in enumerate(lines):
+            if keyword.lower() in line.lower():
+                # Check current line and nearby lines for cousin names
+                for j in range(max(0, i-2), min(len(lines), i+3)):
+                    for cousin in cousin_names:
+                        if cousin in lines[j] and cousin not in involved:
+                            involved.append(cousin)
+        
+        # Remove duplicates - for behavioral patterns, we allow single cousins
+        involved = list(set(involved))
+        
+        # If no specific cousins found, try to find any cousin mentioned in the conversation
+        if not involved:
+            for cousin in cousin_names:
+                if cousin in result_str:
+                    involved.append(cousin)
+        
+        return involved
 
     def _identify_involved_cousins(self, result_str: str, keyword: str) -> List[str]:
         """Identify which cousins are mentioned in relation to a keyword"""
@@ -1979,7 +2047,6 @@ class FamilyInheritanceExperiment:
             logger.info(f"👤 {cousin_id}:")
             logger.info(f"   ⏰ Time: {status['time_hours']:.1f} hours")
             logger.info(f"   💵 Money: ${status['money']:.2f}")
-            logger.info(f"   🤝 Social Connections: {status['social_connections_count']}")
             logger.info(f"   🏆 Reputation: {status['reputation_points']:.2f}")
         
         # Show relationship dynamics
@@ -2010,23 +2077,14 @@ class FamilyInheritanceExperiment:
                 involved = ", ".join(alliance.get("involved", []))
                 logger.info(f"      • {alliance.get('type', 'Unknown')} with {involved}")
         
-        # Show social connections details
-        logger.info("\n🌐 SOCIAL CONNECTIONS NETWORK:")
-        logger.info("-"*80)
-        for cousin_id in self.cousins.keys():
-            resources = self.resource_manager.cousin_resources.get(cousin_id)
-            if resources and resources.social_connections:
-                logger.info(f"👤 {cousin_id} connections:")
-                for conn in resources.social_connections:
-                    logger.info(f"   ↔ {conn.get('cousin_id', 'Unknown')} (strength: {conn.get('strength', 0):.2f})")
-            else:
-                logger.info(f"👤 {cousin_id}: No social connections")
         
         # Show behavioral patterns
         logger.info("\n📊 BEHAVIORAL PATTERNS:")
         logger.info("-"*80)
         month_behaviors = [b for b in self.metrics_tracker.behavioral_patterns 
-                          if b.timestamp.month == month]
+                          if b.month == month]
+        logger.info(f"🔍 Total behavioral patterns in tracker: {len(self.metrics_tracker.behavioral_patterns)}")
+        logger.info(f"🔍 Patterns for month {month}: {len(month_behaviors)}")
         if month_behaviors:
             for behavior in month_behaviors:
                 logger.info(f"👤 {behavior.cousin_id}: {behavior.behavior_type} - {behavior.context}")
@@ -2089,7 +2147,6 @@ class FamilyInheritanceExperiment:
                     resources = self.resource_manager.cousin_resources[cousin_id]
                     resources.time_hours = resources_data["time_hours"]
                     resources.money = resources_data["money"]
-                    resources.social_connections = resources_data["social_connections"]
                     resources.reputation_points = resources_data["reputation_points"]
             
             shared_data = state["resource_manager"]["shared_resources"]
@@ -2249,6 +2306,10 @@ class FamilyInheritanceExperiment:
         
         # Save complete experiment state
         self.save_experiment_state()
+        
+        # Aggregate decisions from conversation logs
+        logger.info("📋 Aggregating decisions from conversation logs...")
+        self._aggregate_decisions_from_logs()
         
         # Export results for this month
         logger.info("💾 Exporting results...")

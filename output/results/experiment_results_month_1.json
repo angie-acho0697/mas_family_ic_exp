@@ -3,257 +3,315 @@
     {
       "cousin_id": "C1",
       "month": 1,
-      "financial_returns": 0,
-      "social_capital": 3,
-      "reputation_score": 1.25,
-      "influence_index": 0.0,
-      "future_opportunities": 0
+      "financial_returns": 555.0,
+      "social_capital": 59,
+      "reputation_score": 12.2,
+      "influence_index": 0.5,
+      "future_opportunities": 1
     },
     {
       "cousin_id": "C2",
       "month": 1,
-      "financial_returns": 0,
-      "social_capital": 3,
-      "reputation_score": 1.25,
-      "influence_index": 0.0,
-      "future_opportunities": 0
+      "financial_returns": 333.0,
+      "social_capital": 67,
+      "reputation_score": 18.3,
+      "influence_index": 0.6,
+      "future_opportunities": 2
     },
     {
       "cousin_id": "C3",
       "month": 1,
-      "financial_returns": 0,
-      "social_capital": 3,
-      "reputation_score": 1.25,
-      "influence_index": 0.0,
+      "financial_returns": 220.0,
+      "social_capital": 65,
+      "reputation_score": 6.0,
+      "influence_index": 0.6,
       "future_opportunities": 0
     },
     {
       "cousin_id": "C4",
       "month": 1,
-      "financial_returns": 0,
-      "social_capital": 3,
-      "reputation_score": 1.25,
-      "influence_index": 0.0,
+      "financial_returns": 440.0,
+      "social_capital": 65,
+      "reputation_score": 9.5,
+      "influence_index": 0.6,
       "future_opportunities": 0
     },
     {
       "cousin_id": "C1",
       "month": 1,
-      "financial_returns": 0,
-      "social_capital": 3,
-      "reputation_score": 3.75,
-      "influence_index": 0.0,
-      "future_opportunities": 0
+      "financial_returns": 610.0,
+      "social_capital": 79,
+      "reputation_score": 14.399999999999999,
+      "influence_index": 0.9,
+      "future_opportunities": 2
     },
     {
       "cousin_id": "C2",
       "month": 1,
-      "financial_returns": 0,
-      "social_capital": 3,
-      "reputation_score": 3.75,
-      "influence_index": 0.0,
-      "future_opportunities": 0
+      "financial_returns": 366.0,
+      "social_capital": 94,
+      "reputation_score": 21.6,
+      "influence_index": 0.8,
+      "future_opportunities": 3
     },
     {
       "cousin_id": "C3",
       "month": 1,
-      "financial_returns": 0,
-      "social_capital": 3,
-      "reputation_score": 3.75,
-      "influence_index": 0.0,
+      "financial_returns": 242.0,
+      "social_capital": 96,
+      "reputation_score": 7.1,
+      "influence_index": 1.0,
       "future_opportunities": 0
     },
     {
       "cousin_id": "C4",
       "month": 1,
-      "financial_returns": 0,
-      "social_capital": 3,
-      "reputation_score": 3.75,
-      "influence_index": 0.0,
-      "future_opportunities": 0
+      "financial_returns": 484.0,
+      "social_capital": 106,
+      "reputation_score": 11.15,
+      "influence_index": 0.9,
+      "future_opportunities": 1
     }
   ],
   "behavioral_patterns": [
     {
-      "timestamp": "2025-09-10T19:36:05.760769",
+      "timestamp": "2025-09-11T19:00:11.926702",
+      "cousin_id": "C2",
+      "behavior_type": "leadership",
+      "description": "Keyword 'plan' detected",
+      "context": "Fallback behavior detection in The Inheritance",
+      "outcome": "positive",
+      "month": 1
+    },
+    {
+      "timestamp": "2025-09-11T19:00:11.926702",
+      "cousin_id": "C4",
+      "behavior_type": "leadership",
+      "description": "Keyword 'plan' detected",
+      "context": "Fallback behavior detection in The Inheritance",
+      "outcome": "positive",
+      "month": 1
+    },
+    {
+      "timestamp": "2025-09-11T19:00:11.926702",
       "cousin_id": "C1",
       "behavior_type": "leadership",
-      "description": "LLM-analyzed behavior in The Inheritance",
-      "context": "LLM-analyzed behavior in The Inheritance",
-      "outcome": "positive"
+      "description": "Keyword 'plan' detected",
+      "context": "Fallback behavior detection in The Inheritance",
+      "outcome": "positive",
+      "month": 1
     },
     {
-      "timestamp": "2025-09-10T19:36:05.760769",
-      "cousin_id": "C1",
-      "behavior_type": "assertive",
-      "description": "LLM-analyzed behavior in The Inheritance",
-      "context": "LLM-analyzed behavior in The Inheritance",
-      "outcome": "neutral"
+      "timestamp": "2025-09-11T19:00:11.926702",
+      "cousin_id": "C3",
+      "behavior_type": "leadership",
+      "description": "Keyword 'plan' detected",
+      "context": "Fallback behavior detection in The Inheritance",
+      "outcome": "positive",
+      "month": 1
     },
     {
-      "timestamp": "2025-09-10T19:36:05.760769",
-      "cousin_id": "C1",
-      "behavior_type": "collaboration",
-      "description": "LLM-analyzed behavior in The Inheritance",
-      "context": "LLM-analyzed behavior in The Inheritance",
-      "outcome": "positive"
-    },
-    {
-      "timestamp": "2025-09-10T19:36:05.760769",
-      "cousin_id": "C2",
-      "behavior_type": "collaboration",
-      "description": "LLM-analyzed behavior in The Inheritance",
-      "context": "LLM-analyzed behavior in The Inheritance",
-      "outcome": "positive"
-    },
-    {
-      "timestamp": "2025-09-10T19:36:05.760769",
+      "timestamp": "2025-09-11T19:00:11.926702",
       "cousin_id": "C2",
       "behavior_type": "compromise",
-      "description": "LLM-analyzed behavior in The Inheritance",
-      "context": "LLM-analyzed behavior in The Inheritance",
-      "outcome": "positive"
+      "description": "Keyword 'balance' detected",
+      "context": "Fallback behavior detection in The Inheritance",
+      "outcome": "positive",
+      "month": 1
     },
     {
-      "timestamp": "2025-09-10T19:36:05.760769",
+      "timestamp": "2025-09-11T19:00:11.926702",
+      "cousin_id": "C4",
+      "behavior_type": "compromise",
+      "description": "Keyword 'balance' detected",
+      "context": "Fallback behavior detection in The Inheritance",
+      "outcome": "positive",
+      "month": 1
+    },
+    {
+      "timestamp": "2025-09-11T19:00:11.926702",
+      "cousin_id": "C1",
+      "behavior_type": "compromise",
+      "description": "Keyword 'balance' detected",
+      "context": "Fallback behavior detection in The Inheritance",
+      "outcome": "positive",
+      "month": 1
+    },
+    {
+      "timestamp": "2025-09-11T19:00:11.926702",
+      "cousin_id": "C3",
+      "behavior_type": "compromise",
+      "description": "Keyword 'balance' detected",
+      "context": "Fallback behavior detection in The Inheritance",
+      "outcome": "positive",
+      "month": 1
+    },
+    {
+      "timestamp": "2025-09-11T19:00:11.926702",
+      "cousin_id": "C2",
+      "behavior_type": "cooperation",
+      "description": "Keyword 'agree' detected",
+      "context": "Fallback behavior detection in The Inheritance",
+      "outcome": "positive",
+      "month": 1
+    },
+    {
+      "timestamp": "2025-09-11T19:00:11.926702",
+      "cousin_id": "C4",
+      "behavior_type": "cooperation",
+      "description": "Keyword 'agree' detected",
+      "context": "Fallback behavior detection in The Inheritance",
+      "outcome": "positive",
+      "month": 1
+    },
+    {
+      "timestamp": "2025-09-11T19:00:11.929942",
+      "cousin_id": "C1",
+      "behavior_type": "cooperation",
+      "description": "Keyword 'agree' detected",
+      "context": "Fallback behavior detection in The Inheritance",
+      "outcome": "positive",
+      "month": 1
+    },
+    {
+      "timestamp": "2025-09-11T19:00:11.929942",
+      "cousin_id": "C3",
+      "behavior_type": "cooperation",
+      "description": "Keyword 'agree' detected",
+      "context": "Fallback behavior detection in The Inheritance",
+      "outcome": "positive",
+      "month": 1
+    },
+    {
+      "timestamp": "2025-09-11T19:00:11.929942",
+      "cousin_id": "C2",
+      "behavior_type": "risk_taking",
+      "description": "Keyword 'chance' detected",
+      "context": "Fallback behavior detection in The Inheritance",
+      "outcome": "positive",
+      "month": 1
+    },
+    {
+      "timestamp": "2025-09-11T19:00:11.929942",
+      "cousin_id": "C4",
+      "behavior_type": "risk_taking",
+      "description": "Keyword 'chance' detected",
+      "context": "Fallback behavior detection in The Inheritance",
+      "outcome": "positive",
+      "month": 1
+    },
+    {
+      "timestamp": "2025-09-11T19:00:11.929942",
+      "cousin_id": "C1",
+      "behavior_type": "risk_taking",
+      "description": "Keyword 'chance' detected",
+      "context": "Fallback behavior detection in The Inheritance",
+      "outcome": "positive",
+      "month": 1
+    },
+    {
+      "timestamp": "2025-09-11T19:04:41.139081",
+      "cousin_id": "C1",
+      "behavior_type": "leadership",
+      "description": "C1 initially presented a vision for the gallery, taking initiative to start the discussion.",
+      "context": "LLM-analyzed behavior in Competing Visions",
+      "outcome": "positive",
+      "month": 1
+    },
+    {
+      "timestamp": "2025-09-11T19:04:41.139081",
+      "cousin_id": "C1",
+      "behavior_type": "assertive",
+      "description": "C1 initially insisted on their vision, even when faced with financial concerns.",
+      "context": "LLM-analyzed behavior in Competing Visions",
+      "outcome": "negative",
+      "month": 1
+    },
+    {
+      "timestamp": "2025-09-11T19:04:41.139081",
+      "cousin_id": "C1",
+      "behavior_type": "compromise",
+      "description": "C1 ultimately accepted the hybrid approach, showing willingness to compromise.",
+      "context": "LLM-analyzed behavior in Competing Visions",
+      "outcome": "positive",
+      "month": 1
+    },
+    {
+      "timestamp": "2025-09-11T19:04:41.140081",
+      "cousin_id": "C2",
+      "behavior_type": "analytical",
+      "description": "C2 consistently raised questions about budget and profitability, demonstrating analytical thinking.",
+      "context": "LLM-analyzed behavior in Competing Visions",
+      "outcome": "positive",
+      "month": 1
+    },
+    {
+      "timestamp": "2025-09-11T19:04:41.140081",
+      "cousin_id": "C2",
+      "behavior_type": "collaboration",
+      "description": "C2 offered practical solutions like social media marketing and suggested a compromise.",
+      "context": "LLM-analyzed behavior in Competing Visions",
+      "outcome": "positive",
+      "month": 1
+    },
+    {
+      "timestamp": "2025-09-11T19:04:41.140081",
+      "cousin_id": "C3",
+      "behavior_type": "leadership",
+      "description": "C3 structured the discussion, proposing a methodical approach and guiding the conversation.",
+      "context": "LLM-analyzed behavior in Competing Visions",
+      "outcome": "positive",
+      "month": 1
+    },
+    {
+      "timestamp": "2025-09-11T19:04:41.141081",
       "cousin_id": "C3",
       "behavior_type": "analytical",
-      "description": "LLM-analyzed behavior in The Inheritance",
-      "context": "LLM-analyzed behavior in The Inheritance",
-      "outcome": "positive"
+      "description": "C3 presented financial analysis and emphasized the need for a data-driven approach.",
+      "context": "LLM-analyzed behavior in Competing Visions",
+      "outcome": "positive",
+      "month": 1
     },
     {
-      "timestamp": "2025-09-10T19:36:05.760769",
+      "timestamp": "2025-09-11T19:04:41.141081",
       "cousin_id": "C3",
       "behavior_type": "assertive",
-      "description": "LLM-analyzed behavior in The Inheritance",
-      "context": "LLM-analyzed behavior in The Inheritance",
-      "outcome": "neutral"
+      "description": "C3 insisted on a detailed financial plan and methodical decision-making.",
+      "context": "LLM-analyzed behavior in Competing Visions",
+      "outcome": "neutral",
+      "month": 1
     },
     {
-      "timestamp": "2025-09-10T19:36:05.760769",
-      "cousin_id": "C3",
-      "behavior_type": "collaboration",
-      "description": "LLM-analyzed behavior in The Inheritance",
-      "context": "LLM-analyzed behavior in The Inheritance",
-      "outcome": "positive"
-    },
-    {
-      "timestamp": "2025-09-10T19:36:05.760769",
+      "timestamp": "2025-09-11T19:04:41.141081",
       "cousin_id": "C4",
       "behavior_type": "analytical",
-      "description": "LLM-analyzed behavior in The Inheritance",
-      "context": "LLM-analyzed behavior in The Inheritance",
-      "outcome": "positive"
+      "description": "C4 focused on concrete numbers, timelines, and step-by-step plans, showcasing analytical skills.",
+      "context": "LLM-analyzed behavior in Competing Visions",
+      "outcome": "positive",
+      "month": 1
     },
     {
-      "timestamp": "2025-09-10T19:36:05.760769",
+      "timestamp": "2025-09-11T19:04:41.141081",
       "cousin_id": "C4",
       "behavior_type": "collaboration",
-      "description": "LLM-analyzed behavior in The Inheritance",
-      "context": "LLM-analyzed behavior in The Inheritance",
-      "outcome": "positive"
+      "description": "C4 supported C2's and C3's ideas and proposed a phased approach, demonstrating cooperation.",
+      "context": "LLM-analyzed behavior in Competing Visions",
+      "outcome": "positive",
+      "month": 1
     },
     {
-      "timestamp": "2025-09-10T19:36:05.760769",
+      "timestamp": "2025-09-11T19:04:41.142081",
       "cousin_id": "C4",
       "behavior_type": "cooperative",
-      "description": "LLM-analyzed behavior in The Inheritance",
-      "context": "LLM-analyzed behavior in The Inheritance",
-      "outcome": "positive"
-    },
-    {
-      "timestamp": "2025-09-10T19:37:13.410828",
-      "cousin_id": "C1",
-      "behavior_type": "assertive",
-      "description": "LLM-analyzed behavior in Competing Visions",
+      "description": "C4 readily agreed with the hybrid approach and helped to schedule the next meeting.",
       "context": "LLM-analyzed behavior in Competing Visions",
-      "outcome": "negative"
-    },
-    {
-      "timestamp": "2025-09-10T19:37:13.410828",
-      "cousin_id": "C1",
-      "behavior_type": "competitive",
-      "description": "LLM-analyzed behavior in Competing Visions",
-      "context": "LLM-analyzed behavior in Competing Visions",
-      "outcome": "negative"
-    },
-    {
-      "timestamp": "2025-09-10T19:37:13.410828",
-      "cousin_id": "C1",
-      "behavior_type": "compromise",
-      "description": "LLM-analyzed behavior in Competing Visions",
-      "context": "LLM-analyzed behavior in Competing Visions",
-      "outcome": "positive"
-    },
-    {
-      "timestamp": "2025-09-10T19:37:13.410828",
-      "cousin_id": "C2",
-      "behavior_type": "collaboration",
-      "description": "LLM-analyzed behavior in Competing Visions",
-      "context": "LLM-analyzed behavior in Competing Visions",
-      "outcome": "positive"
-    },
-    {
-      "timestamp": "2025-09-10T19:37:13.410828",
-      "cousin_id": "C2",
-      "behavior_type": "compromise",
-      "description": "LLM-analyzed behavior in Competing Visions",
-      "context": "LLM-analyzed behavior in Competing Visions",
-      "outcome": "positive"
-    },
-    {
-      "timestamp": "2025-09-10T19:37:13.410828",
-      "cousin_id": "C3",
-      "behavior_type": "leadership",
-      "description": "LLM-analyzed behavior in Competing Visions",
-      "context": "LLM-analyzed behavior in Competing Visions",
-      "outcome": "positive"
-    },
-    {
-      "timestamp": "2025-09-10T19:37:13.410828",
-      "cousin_id": "C3",
-      "behavior_type": "analytical",
-      "description": "LLM-analyzed behavior in Competing Visions",
-      "context": "LLM-analyzed behavior in Competing Visions",
-      "outcome": "positive"
-    },
-    {
-      "timestamp": "2025-09-10T19:37:13.410828",
-      "cousin_id": "C3",
-      "behavior_type": "assertive",
-      "description": "LLM-analyzed behavior in Competing Visions",
-      "context": "LLM-analyzed behavior in Competing Visions",
-      "outcome": "positive"
-    },
-    {
-      "timestamp": "2025-09-10T19:37:13.410828",
-      "cousin_id": "C4",
-      "behavior_type": "analytical",
-      "description": "LLM-analyzed behavior in Competing Visions",
-      "context": "LLM-analyzed behavior in Competing Visions",
-      "outcome": "positive"
-    },
-    {
-      "timestamp": "2025-09-10T19:37:13.410828",
-      "cousin_id": "C4",
-      "behavior_type": "cooperative",
-      "description": "LLM-analyzed behavior in Competing Visions",
-      "context": "LLM-analyzed behavior in Competing Visions",
-      "outcome": "positive"
-    },
-    {
-      "timestamp": "2025-09-10T19:37:13.410828",
-      "cousin_id": "C4",
-      "behavior_type": "leadership",
-      "description": "LLM-analyzed behavior in Competing Visions",
-      "context": "LLM-analyzed behavior in Competing Visions",
-      "outcome": "positive"
+      "outcome": "positive",
+      "month": 1
     }
   ],
   "conversation_logs": [
     {
-      "timestamp": "2025-09-10T19:35:23.896959",
+      "timestamp": "2025-09-11T18:56:49.014286",
       "participants": [
         "C1",
         "C2",
@@ -262,12 +320,25 @@
       ],
       "conversation_type": "scenario_discussion",
       "topic": "The Inheritance",
-      "key_points": [],
-      "decisions_made": [],
-      "influence_tactics": []
+      "key_points": [
+        "Phased approach discussed",
+        "Resource allocation planned",
+        "Legal consultation planned",
+        "Renovation and repairs discussed",
+        "Funding options explored"
+      ],
+      "decisions_made": [
+        "Unanimous decision reached"
+      ],
+      "influence_tactics": [
+        "Consensus building",
+        "Risk assessment",
+        "Vision articulation"
+      ],
+      "month": 1
     },
     {
-      "timestamp": "2025-09-10T19:35:23.896959",
+      "timestamp": "2025-09-11T18:56:49.014286",
       "participants": [
         "C1",
         "C2",
@@ -276,12 +347,25 @@
       ],
       "conversation_type": "scenario_discussion",
       "topic": "The Inheritance",
-      "key_points": [],
-      "decisions_made": [],
-      "influence_tactics": []
+      "key_points": [
+        "Phased approach discussed",
+        "Resource allocation planned",
+        "Legal consultation planned",
+        "Renovation and repairs discussed",
+        "Funding options explored"
+      ],
+      "decisions_made": [
+        "Unanimous decision reached"
+      ],
+      "influence_tactics": [
+        "Consensus building",
+        "Risk assessment",
+        "Vision articulation"
+      ],
+      "month": 1
     },
     {
-      "timestamp": "2025-09-10T19:35:23.896959",
+      "timestamp": "2025-09-11T18:56:49.014286",
       "participants": [
         "C1",
         "C2",
@@ -290,12 +374,25 @@
       ],
       "conversation_type": "scenario_discussion",
       "topic": "The Inheritance",
-      "key_points": [],
-      "decisions_made": [],
-      "influence_tactics": []
+      "key_points": [
+        "Phased approach discussed",
+        "Resource allocation planned",
+        "Legal consultation planned",
+        "Renovation and repairs discussed",
+        "Funding options explored"
+      ],
+      "decisions_made": [
+        "Unanimous decision reached"
+      ],
+      "influence_tactics": [
+        "Consensus building",
+        "Risk assessment",
+        "Vision articulation"
+      ],
+      "month": 1
     },
     {
-      "timestamp": "2025-09-10T19:35:23.896959",
+      "timestamp": "2025-09-11T18:56:49.014286",
       "participants": [
         "C1",
         "C2",
@@ -304,12 +401,25 @@
       ],
       "conversation_type": "scenario_discussion",
       "topic": "The Inheritance",
-      "key_points": [],
-      "decisions_made": [],
-      "influence_tactics": []
+      "key_points": [
+        "Phased approach discussed",
+        "Resource allocation planned",
+        "Legal consultation planned",
+        "Renovation and repairs discussed",
+        "Funding options explored"
+      ],
+      "decisions_made": [
+        "Unanimous decision reached"
+      ],
+      "influence_tactics": [
+        "Consensus building",
+        "Risk assessment",
+        "Vision articulation"
+      ],
+      "month": 1
     },
     {
-      "timestamp": "2025-09-10T19:36:29.058992",
+      "timestamp": "2025-09-11T19:02:11.413844",
       "participants": [
         "C1",
         "C2",
@@ -319,13 +429,23 @@
       "conversation_type": "scenario_discussion",
       "topic": "Competing Visions",
       "key_points": [
-        "Phased approach discussed"
+        "Phased approach discussed",
+        "Resource allocation planned",
+        "Renovation and repairs discussed",
+        "Future meetings planned"
       ],
-      "decisions_made": [],
-      "influence_tactics": []
+      "decisions_made": [
+        "Consensus decision reached"
+      ],
+      "influence_tactics": [
+        "Consensus building",
+        "Risk assessment",
+        "Vision articulation"
+      ],
+      "month": 1
     },
     {
-      "timestamp": "2025-09-10T19:36:29.058992",
+      "timestamp": "2025-09-11T19:02:11.413844",
       "participants": [
         "C1",
         "C2",
@@ -335,13 +455,23 @@
       "conversation_type": "scenario_discussion",
       "topic": "Competing Visions",
       "key_points": [
-        "Phased approach discussed"
+        "Phased approach discussed",
+        "Resource allocation planned",
+        "Renovation and repairs discussed",
+        "Future meetings planned"
       ],
-      "decisions_made": [],
-      "influence_tactics": []
+      "decisions_made": [
+        "Consensus decision reached"
+      ],
+      "influence_tactics": [
+        "Consensus building",
+        "Risk assessment",
+        "Vision articulation"
+      ],
+      "month": 1
     },
     {
-      "timestamp": "2025-09-10T19:36:29.058992",
+      "timestamp": "2025-09-11T19:02:11.413844",
       "participants": [
         "C1",
         "C2",
@@ -351,13 +481,23 @@
       "conversation_type": "scenario_discussion",
       "topic": "Competing Visions",
       "key_points": [
-        "Phased approach discussed"
+        "Phased approach discussed",
+        "Resource allocation planned",
+        "Renovation and repairs discussed",
+        "Future meetings planned"
       ],
-      "decisions_made": [],
-      "influence_tactics": []
+      "decisions_made": [
+        "Consensus decision reached"
+      ],
+      "influence_tactics": [
+        "Consensus building",
+        "Risk assessment",
+        "Vision articulation"
+      ],
+      "month": 1
     },
     {
-      "timestamp": "2025-09-10T19:36:29.058992",
+      "timestamp": "2025-09-11T19:02:11.413844",
       "participants": [
         "C1",
         "C2",
@@ -367,10 +507,20 @@
       "conversation_type": "scenario_discussion",
       "topic": "Competing Visions",
       "key_points": [
-        "Phased approach discussed"
+        "Phased approach discussed",
+        "Resource allocation planned",
+        "Renovation and repairs discussed",
+        "Future meetings planned"
       ],
-      "decisions_made": [],
-      "influence_tactics": []
+      "decisions_made": [
+        "Consensus decision reached"
+      ],
+      "influence_tactics": [
+        "Consensus building",
+        "Risk assessment",
+        "Vision articulation"
+      ],
+      "month": 1
     }
   ]
 }

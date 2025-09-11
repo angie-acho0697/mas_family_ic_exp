@@ -41,6 +41,7 @@ class BehavioralPattern:
     description: str
     context: str
     outcome: str
+    month: int = 1  # Experiment month this pattern belongs to
     
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -49,7 +50,8 @@ class BehavioralPattern:
             "behavior_type": self.behavior_type,
             "description": self.description,
             "context": self.context,
-            "outcome": self.outcome
+            "outcome": self.outcome,
+            "month": self.month
         }
 
 @dataclass
@@ -62,6 +64,7 @@ class ConversationLog:
     key_points: List[str]
     decisions_made: List[str]
     influence_tactics: List[str]
+    month: int = 1  # Experiment month this conversation belongs to
     
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -71,7 +74,8 @@ class ConversationLog:
             "topic": self.topic,
             "key_points": self.key_points,
             "decisions_made": self.decisions_made,
-            "influence_tactics": self.influence_tactics
+            "influence_tactics": self.influence_tactics,
+            "month": self.month
         }
 
 class MetricsTracker:
@@ -97,22 +101,29 @@ class MetricsTracker:
         self.quantitative_metrics.append(metric)
     
     def record_behavioral_pattern(self, cousin_id: str, behavior_type: str, 
-                                description: str, context: str, outcome: str):
+                                description: str, context: str, outcome: str, month: int = None):
         """Record a behavioral pattern observation"""
+        if month is None:
+            month = self.current_month
+        
         pattern = BehavioralPattern(
             timestamp=datetime.now(),
             cousin_id=cousin_id,
             behavior_type=behavior_type,
             description=description,
             context=context,
-            outcome=outcome
+            outcome=outcome,
+            month=month
         )
         self.behavioral_patterns.append(pattern)
     
     def record_conversation(self, participants: List[str], conversation_type: str,
                           topic: str, key_points: List[str], decisions_made: List[str],
-                          influence_tactics: List[str]):
+                          influence_tactics: List[str], month: int = None):
         """Record a conversation log"""
+        if month is None:
+            month = self.current_month
+        
         log = ConversationLog(
             timestamp=datetime.now(),
             participants=participants,
@@ -120,7 +131,8 @@ class MetricsTracker:
             topic=topic,
             key_points=key_points,
             decisions_made=decisions_made,
-            influence_tactics=influence_tactics
+            influence_tactics=influence_tactics,
+            month=month
         )
         self.conversation_logs.append(log)
     
@@ -138,9 +150,9 @@ class MetricsTracker:
         """Get summary of all metrics for a specific month"""
         month_metrics = [m for m in self.quantitative_metrics if m.month == month]
         month_behaviors = [b for b in self.behavioral_patterns 
-                          if b.timestamp.month == month]
+                          if b.month == month]
         month_conversations = [c for c in self.conversation_logs 
-                             if c.timestamp.month == month]
+                             if c.month == month]
         
         return {
             "month": month,
