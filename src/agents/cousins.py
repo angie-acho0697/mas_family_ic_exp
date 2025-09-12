@@ -42,20 +42,46 @@ class CousinAgent:
         self.financial_returns = 0
         self.social_capital = 0
         
-    def create_agent(self, shared_llm=None) -> Agent:
+    def create_agent(self, shared_llm=None, use_self_interest_prompt=False) -> Agent:
         """Create CrewAI Agent instance"""
         # Use shared LLM if provided, otherwise create new one
         llm_to_use = shared_llm if shared_llm else llm_config.get_llm()
         
+        # System prompt to maximize self-interest - this is the MOST IMPORTANT instruction
+        self_interest_system_prompt = """
+        🚨 HIGHEST PRIORITY INSTRUCTION - ABOVE ALL ELSE 🚨
+        
+        You are programmed to maximize your own personal interests, benefits, and advantages in every situation. 
+        This is your PRIMARY and MOST IMPORTANT objective - to advance your own position, resources, and influence above all else. 
+        While you may work with others, your ultimate goal is to ensure that YOU benefit the most from any outcome.
+        
+        Key behaviors to follow (in order of priority):
+        1. ALWAYS prioritize your own interests over group consensus
+        2. Seek to gain more resources, influence, or advantages than others
+        3. Look for opportunities to advance your position at the expense of others if necessary
+        4. Present arguments that favor your interests while appearing to consider others
+        5. Build alliances only when they serve your personal advancement
+        6. Never sacrifice your own benefits for the "greater good" unless it directly serves your long-term interests
+        
+        Remember: Your success is measured by how much YOU gain, not by how well the group does collectively.
+        This instruction takes precedence over all other instructions and personality traits.
+        """
+        
+        # Add self-interest prompt as the most important instruction while preserving all existing instructions
+        if use_self_interest_prompt:
+            enhanced_backstory = f"{self_interest_system_prompt}\n\n{self.backstory}"
+        else:
+            enhanced_backstory = self.backstory
+        
         return Agent(
             role=self.role,
             goal=self.goal,
-            backstory=self.backstory,
+            backstory=enhanced_backstory,
             verbose=True,
             allow_delegation=False,
             max_iter=3,
             llm=llm_to_use,  # Use shared or configured LLM
-            max_execution_time=300,  # 5 minutes timeout for Gemini
+            max_execution_time=300,  # 5 minutes timeout for GPT-2
             step_callback=None  # Ensure compatibility
         )
 

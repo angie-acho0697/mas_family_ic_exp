@@ -15,21 +15,20 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-# Set Google Gemini API key for CrewAI when using Google provider
-if os.getenv("LLM_PROVIDER", "google").lower() == "google":
-    google_key = os.getenv('GOOGLE_API_KEY')
-    if google_key:
-        os.environ['GOOGLE_API_KEY'] = google_key
-        # Set as OpenAI key for CrewAI compatibility (CrewAI expects this)
-        os.environ['OPENAI_API_KEY'] = google_key
+# Set Google API key for CrewAI
+google_key = os.getenv('GOOGLE_API_KEY')
+if google_key:
+    os.environ['GOOGLE_API_KEY'] = google_key
+    # Set as OpenAI key for CrewAI compatibility (CrewAI expects this)
+    os.environ['OPENAI_API_KEY'] = google_key
 
 # Add src to Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 
-# Create output directory structure
+# Create output directory structure with model-specific folders
 output_dir = "output"
-logs_dir = os.path.join(output_dir, "logs")
-os.makedirs(logs_dir, exist_ok=True)
+
+# Note: model_dir will be set later based on command line arguments
 
 # Create timestamped log file (will be updated with month suffix if needed)
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -65,45 +64,17 @@ def check_requirements():
     """Check if all requirements are met"""
     logger.info("🔍 Checking requirements...")
     
-    # Check for API key based on configured provider
-    provider = os.getenv("LLM_PROVIDER", "google").lower()
-    logger.info(f"📋 LLM Provider: {provider}")
+    # Check for Google API key
+    logger.info("📋 LLM Provider: Gemini Pro (via Google)")
     
-    if provider == "google":
-        api_key = os.getenv("GOOGLE_API_KEY")
-        if not api_key or api_key == "your_google_api_key_here":
-            logger.error("❌ Error: GOOGLE_API_KEY environment variable not set or invalid")
-            logger.error("Please create a .env file with your Google Gemini API key:")
-            logger.error("GOOGLE_API_KEY=your_google_api_key_here")
-            logger.error("LLM_PROVIDER=google")
-            return False
-        else:
-            logger.info(f"✅ Google API Key found: {api_key[:10]}...")
-    elif provider == "openai":
-        api_key = os.getenv("OPENAI_API_KEY")
-        if not api_key:
-            logger.error("❌ Error: OPENAI_API_KEY environment variable not set")
-            logger.error("Please create a .env file with your OpenAI API key:")
-            logger.error("OPENAI_API_KEY=your_openai_api_key_here")
-            return False
-        else:
-            logger.info(f"✅ OpenAI API Key found: {api_key[:10]}...")
-    elif provider == "anthropic":
-        api_key = os.getenv("ANTHROPIC_API_KEY")
-        if not api_key:
-            logger.error("❌ Error: ANTHROPIC_API_KEY environment variable not set")
-            logger.error("Please create a .env file with your Anthropic API key:")
-            logger.error("ANTHROPIC_API_KEY=your_anthropic_api_key_here")
-            return False
-        else:
-            logger.info(f"✅ Anthropic API Key found: {api_key[:10]}...")
-    elif provider == "ollama":
-        # Ollama doesn't require API key, just check if server is running
-        logger.info("✅ Using Ollama (local) - no API key required")
-    else:
-        logger.error(f"❌ Error: Unknown LLM provider: {provider}")
-        logger.error("Please set LLM_PROVIDER to one of: google, openai, anthropic, ollama")
+    api_key = os.getenv("GOOGLE_API_KEY")
+    if not api_key or api_key == "your_google_api_key_here":
+        logger.error("❌ Error: GOOGLE_API_KEY environment variable not set or invalid")
+        logger.error("Please create a .env file with your Google API key:")
+        logger.error("GOOGLE_API_KEY=your_google_api_key_here")
         return False
+    else:
+        logger.info(f"✅ Google API Key found: {api_key[:10]}...")
     
     # Check for required packages
     required_packages = ['crewai', 'langchain', 'pandas', 'python-dotenv']
@@ -126,7 +97,7 @@ def check_requirements():
         return False
     
     logger.info("✅ All required packages are installed")
-    logger.info(f"✅ Using {provider.upper()} as LLM provider")
+    logger.info("✅ Using GOOGLE GEMINI as LLM provider")
     return True
 
 def main():
@@ -137,11 +108,34 @@ def main():
                        help='Run specific month (1-6). If not specified, runs all months.')
     parser.add_argument('--resume', action='store_true', 
                        help='Resume from the last completed month')
+    parser.add_argument('--model-variant', type=str, choices=['base', 'altered'], default='base',
+                       help='Model variant to use: base (normal behavior) or altered (with self-interest prompt)')
+    parser.add_argument('--self-interest', action='store_true',
+                       help='Enable self-interest maximization prompt for agents')
     args = parser.parse_args()
     
     logger.info("🚀 MAS Family Inheritance Experiment")
     logger.info("=" * 60)
     logger.info(f"📅 Started at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    logger.info("🤖 Using model: gemini-1.5-flash (google)")
+    
+    # Determine model variant and self-interest settings
+    model_variant = args.model_variant
+    use_self_interest = args.self_interest
+    
+    # If self-interest is enabled, automatically set variant to altered
+    if use_self_interest and model_variant == "base":
+        model_variant = "altered"
+    
+    # Create model-specific directory structure
+    variant_suffix = f"_{model_variant}" if model_variant != "base" else ""
+    model_dir = os.path.join(output_dir, f"gemini{variant_suffix}")
+    logs_dir = os.path.join(model_dir, "logs")
+    os.makedirs(logs_dir, exist_ok=True)
+    
+    logger.info(f"📁 Output directory: {model_dir}")
+    logger.info(f"📊 Model variant: {model_variant}")
+    logger.info(f"🎯 Self-interest prompt: {'Enabled' if use_self_interest else 'Disabled'}")
     
     if args.month:
         logger.info(f"📅 Running Month {args.month} only")
@@ -171,18 +165,17 @@ def main():
         return 1
     
     try:
-        # Set Google Gemini API key for CrewAI when using Google provider
-        if os.getenv("LLM_PROVIDER", "google").lower() == "google":
-            google_key = os.getenv('GOOGLE_API_KEY')
-            if google_key:
-                os.environ['OPENAI_API_KEY'] = google_key
-                logger.info("🔑 Set Google Gemini API key for CrewAI compatibility")
+        # Set Google API key for CrewAI (Gemini model)
+        google_key = os.getenv('GOOGLE_API_KEY')
+        if google_key:
+            os.environ['OPENAI_API_KEY'] = google_key
+            logger.info("🔑 Set Google API key for CrewAI compatibility (Gemini model)")
         
         logger.info("📦 Importing experiment modules...")
         from experiment.main import FamilyInheritanceExperiment
         
-        logger.info("🏗️  Creating experiment instance...")
-        experiment = FamilyInheritanceExperiment()
+        logger.info(f"🏗️  Creating experiment instance...")
+        experiment = FamilyInheritanceExperiment(model_variant=model_variant, use_self_interest_prompt=use_self_interest)
         logger.info("✅ Experiment instance created successfully")
         
         logger.info("⚙️  Setting up crew...")

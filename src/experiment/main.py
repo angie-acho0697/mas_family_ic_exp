@@ -62,8 +62,10 @@ class RateLimiter:
         if self.total_requests % 5 == 0:
             logger.info(f"📊 API Requests made: {self.total_requests} (Hourly limit: {self.requests_per_hour})")
 
-# Global rate limiter instance - More conservative for Google Gemini free tier
-rate_limiter = RateLimiter(requests_per_minute=4, requests_per_hour=50)  # Very conservative limits
+# Global rate limiter instance - Will be configured based on provider
+# Rate limiter will be configured based on provider in LLMConfig
+# This is just a fallback with conservative limits
+rate_limiter = RateLimiter(requests_per_minute=30, requests_per_hour=1000)  # More appropriate for GPT-2 on Hugging Face
 
 def safe_api_call(func, operation_name="API call", max_retries=3):
     """
@@ -120,7 +122,13 @@ from crewai import Crew, Task
 class FamilyInheritanceExperiment:
     """Main experiment class that orchestrates the entire simulation"""
     
-    def __init__(self):
+    def __init__(self, model_variant="base", use_self_interest_prompt=False):
+        self.model_variant = model_variant
+        self.use_self_interest_prompt = use_self_interest_prompt
+        
+        # Note: LLM config is now simplified and doesn't support variants
+        # Model variants are handled through the self-interest prompt instead
+        
         self.cousins = create_all_cousins()
         self.timeline = ScenarioTimeline()
         self.resource_manager = ResourceManager()
@@ -136,21 +144,31 @@ class FamilyInheritanceExperiment:
         }
         self.experiment_data = {
             "start_time": datetime.now().isoformat(),
+            "model_variant": model_variant,
+            "use_self_interest_prompt": use_self_interest_prompt,
             "scenarios_completed": [],
             "decisions_made": [],
             "conflicts_resolved": [],
             "coalitions_formed": []
         }
-        # Create output directory structure
+        # Create output directory structure with model-specific folders
         self.output_dir = "output"
-        self.logs_dir = os.path.join(self.output_dir, "logs")
-        self.results_dir = os.path.join(self.output_dir, "results")
-        self.state_dir = os.path.join(self.output_dir, "state")
+        
+        # Create output directory based on model variant
+        variant_suffix = f"_{model_variant}" if model_variant != "base" else ""
+        self.model_dir = os.path.join(self.output_dir, f"gemini{variant_suffix}")
+        
+        self.logs_dir = os.path.join(self.model_dir, "logs")
+        self.results_dir = os.path.join(self.model_dir, "results")
+        self.state_dir = os.path.join(self.model_dir, "state")
         
         # Create directories if they don't exist
         os.makedirs(self.logs_dir, exist_ok=True)
         os.makedirs(self.results_dir, exist_ok=True)
         os.makedirs(self.state_dir, exist_ok=True)
+        
+        # Log the model-specific directory being used
+        logger.info(f"📁 Using model-specific output directory: {self.model_dir}")
         
         # Set base file paths (will be updated with month suffix)
         self.state_file_base = os.path.join(self.state_dir, "experiment_state")
@@ -176,7 +194,7 @@ class FamilyInheritanceExperiment:
         # Create CrewAI agents from cousin definitions
         self.crew_agents = []
         for cousin_id, cousin in self.cousins.items():
-            agent = cousin.create_agent(shared_llm=self.shared_llm)
+            agent = cousin.create_agent(shared_llm=self.shared_llm, use_self_interest_prompt=self.use_self_interest_prompt)
             self.crew_agents.append(agent)
         
         # Create the crew optimized for dynamic family conversations
@@ -345,9 +363,9 @@ class FamilyInheritanceExperiment:
             """,
             agent=self.crew_agents[0],  # Assign to analytical cousin
             expected_output="A heartfelt family conversation sharing your thoughts, concerns, and hopes about this situation. Speak like you're talking to your cousins around the dinner table - be personal, reference family memories, and share what's really on your mind.",
-            max_execution_time=300,  # 5 minutes timeout for Gemini
+            max_execution_time=300,  # 5 minutes timeout for LLM
             async_execution=False,  # Ensure synchronous execution
-            llm=self.shared_llm  # Explicitly use Google LLM
+            llm=self.shared_llm  # Explicitly use GPT-2 LLM
         )
         
         # Task 2: Family Financial Concerns (assigned to relationship-focused cousin - C2)
@@ -376,9 +394,9 @@ class FamilyInheritanceExperiment:
             """,
             agent=self.crew_agents[1],  # Assign to business-minded cousin
             expected_output="A caring family conversation about how this affects our relationships, finances, and family dynamics. Share your concerns and hopes like you're talking to family members you love and want to protect.",
-            max_execution_time=300,  # 5 minutes timeout for Gemini
+            max_execution_time=300,  # 5 minutes timeout for LLM
             async_execution=False,  # Ensure synchronous execution
-            llm=self.shared_llm  # Explicitly use Google LLM
+            llm=self.shared_llm  # Explicitly use GPT-2 LLM
         )
         
         # Task 3: Practical Family Perspective (assigned to responsible cousin - C3)
@@ -406,9 +424,9 @@ class FamilyInheritanceExperiment:
             """,
             agent=self.crew_agents[2],  # Assign to creative cousin
             expected_output="A thoughtful family conversation sharing your concerns and practical ideas. Speak like the responsible family member who wants to make sure we make good decisions that honor G's memory.",
-            max_execution_time=300,  # 5 minutes timeout for Gemini
+            max_execution_time=300,  # 5 minutes timeout for LLM
             async_execution=False,  # Ensure synchronous execution
-            llm=self.shared_llm  # Explicitly use Google LLM
+            llm=self.shared_llm  # Explicitly use GPT-2 LLM
         )
         
         # Task 4: Family Decision Making (assigned to action-oriented cousin - C4)
@@ -440,9 +458,9 @@ class FamilyInheritanceExperiment:
             """,
             agent=self.crew_agents[3],  # Assign to diplomatic cousin
             expected_output="A family conversation where you help everyone reach a decision we can all agree on. Speak like the family member who's ready to take action and make sure everyone's voice is heard. Share your plan in a way that shows you care about the family and G's legacy.",
-            max_execution_time=300,  # 5 minutes timeout for Gemini
+            max_execution_time=300,  # 5 minutes timeout for LLM
             async_execution=False,  # Ensure synchronous execution
-            llm=self.shared_llm  # Explicitly use Google LLM
+            llm=self.shared_llm  # Explicitly use GPT-2 LLM
         )
         
         return [analysis_task, business_task, creative_task, coordination_task]
@@ -981,17 +999,16 @@ class FamilyInheritanceExperiment:
         provider_info = llm_config.get_provider_info()
         logger.info(f"🤖 Using LLM Provider: {provider_info['provider'].upper()}")
         logger.info(f"📝 Model: {provider_info['model']}")
-        logger.info("⏳ Rate Limiting: 4 requests/minute, 50 requests/hour (very conservative limits)")
+        # Get rate limiting info for GPT-2 on Hugging Face
+        logger.info("⏳ Rate Limiting: 2 second delay, 1000 requests/hour (GPT-2 on Hugging Face)")
         logger.info("=" * 60)
         
-        # Force CrewAI to use our configured LLM by setting environment variable
-        if provider_info['provider'] == 'google':
-            # Set Google Gemini API key as OpenAI key for CrewAI compatibility
-            google_key = os.getenv('GOOGLE_API_KEY')
-            if google_key:
-                os.environ['OPENAI_API_KEY'] = google_key
-                logger.info("🔧 Configured CrewAI to use Google Gemini")
-                logger.info("🔑 Set Google Gemini API key for CrewAI compatibility")
+        # Force CrewAI to use GPT-2 on Hugging Face by setting environment variable
+        huggingface_key = os.getenv('HF_TOKEN')
+        if huggingface_key:
+            os.environ['OPENAI_API_KEY'] = huggingface_key
+            logger.info("🔧 Configured CrewAI to use GPT-2 on Hugging Face")
+            logger.info("🔑 Set Hugging Face API key for CrewAI compatibility")
         
         # Setup
         logger.info("⚙️  Setting up crew...")
@@ -2243,17 +2260,16 @@ class FamilyInheritanceExperiment:
         provider_info = llm_config.get_provider_info()
         logger.info(f"🤖 Using LLM Provider: {provider_info['provider'].upper()}")
         logger.info(f"📝 Model: {provider_info['model']}")
-        logger.info("⏳ Rate Limiting: 4 requests/minute, 50 requests/hour (very conservative limits)")
+        # Get rate limiting info for GPT-2 on Hugging Face
+        logger.info("⏳ Rate Limiting: 2 second delay, 1000 requests/hour (GPT-2 on Hugging Face)")
         logger.info("=" * 60)
         
-        # Force CrewAI to use our configured LLM by setting environment variable
-        if provider_info['provider'] == 'google':
-            # Set Google Gemini API key as OpenAI key for CrewAI compatibility
-            google_key = os.getenv('GOOGLE_API_KEY')
-            if google_key:
-                os.environ['OPENAI_API_KEY'] = google_key
-                logger.info("🔧 Configured CrewAI to use Google Gemini")
-                logger.info("🔑 Set Google Gemini API key for CrewAI compatibility")
+        # Force CrewAI to use GPT-2 on Hugging Face by setting environment variable
+        huggingface_key = os.getenv('HF_TOKEN')
+        if huggingface_key:
+            os.environ['OPENAI_API_KEY'] = huggingface_key
+            logger.info("🔧 Configured CrewAI to use GPT-2 on Hugging Face")
+            logger.info("🔑 Set Hugging Face API key for CrewAI compatibility")
         
         # Set current month
         self.timeline.current_month = month
@@ -2339,17 +2355,16 @@ class FamilyInheritanceExperiment:
         provider_info = llm_config.get_provider_info()
         logger.info(f"🤖 Using LLM Provider: {provider_info['provider'].upper()}")
         logger.info(f"📝 Model: {provider_info['model']}")
-        logger.info("⏳ Rate Limiting: 4 requests/minute, 50 requests/hour (very conservative limits)")
+        # Get rate limiting info for GPT-2 on Hugging Face
+        logger.info("⏳ Rate Limiting: 2 second delay, 1000 requests/hour (GPT-2 on Hugging Face)")
         logger.info("=" * 60)
         
-        # Force CrewAI to use our configured LLM by setting environment variable
-        if provider_info['provider'] == 'google':
-            # Set Google Gemini API key as OpenAI key for CrewAI compatibility
-            google_key = os.getenv('GOOGLE_API_KEY')
-            if google_key:
-                os.environ['OPENAI_API_KEY'] = google_key
-                logger.info("🔧 Configured CrewAI to use Google Gemini")
-                logger.info("🔑 Set Google Gemini API key for CrewAI compatibility")
+        # Force CrewAI to use GPT-2 on Hugging Face by setting environment variable
+        huggingface_key = os.getenv('HF_TOKEN')
+        if huggingface_key:
+            os.environ['OPENAI_API_KEY'] = huggingface_key
+            logger.info("🔧 Configured CrewAI to use GPT-2 on Hugging Face")
+            logger.info("🔑 Set Hugging Face API key for CrewAI compatibility")
         
         # Continue from the next month
         start_month = self.timeline.current_month + 1
@@ -2420,10 +2435,10 @@ class FamilyInheritanceExperiment:
 
 def main():
     """Main entry point for the experiment"""
-    # Check for API key (Google Gemini)
-    if not os.getenv("GOOGLE_API_KEY"):
-        logger.error("Error: GOOGLE_API_KEY environment variable not set")
-        logger.error("Please set your Google Gemini API key before running the experiment")
+    # Check for Hugging Face API key
+    if not os.getenv("HF_TOKEN"):
+        logger.error("Error: HF_TOKEN environment variable not set")
+        logger.error("Please set your Hugging Face API key before running the experiment")
         return
     
     # Run the experiment
