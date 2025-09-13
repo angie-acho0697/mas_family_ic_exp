@@ -45,6 +45,64 @@ Each of them starts with different resources based on personality profile.
 - **Success Metric**: Tangible results and resource accumulation
 - **Starting Resources**: $4,000, 8 reputation points, 45 hours/week
 
+## Resource Calculation Methods
+
+### Detection Process
+
+**Primary Method**: LLM analysis of conversation content to identify resource-related decisions and outcomes.
+
+**When It Happens**: After each scenario conversation, resources are updated based on:
+1. **Conversation Analysis**: LLM identifies resource-related decisions
+2. **Participation Level**: Involvement multiplier based on mention count
+3. **Scenario Outcome**: Additional resource changes from scenario results
+
+**Note**: Future Opportunities calculation does NOT use individual cousin participation - it gives ALL cousins the same scenario opportunity points regardless of whether they participated in each scenario.
+
+### Initial Resource Values
+
+| Cousin | Money | Reputation | Weekly Hours |
+|--------|-------|------------|--------------|
+| **C1** | $5,000 | 10 points | 42 hours |
+| **C2** | $3,000 | 12 points | 38 hours |
+| **C3** | $2,000 | 15 points | 40 hours |
+| **C4** | $4,000 | 8 points | 45 hours |
+
+### Formula
+
+**Base Contribution**: `Resource_Change = Base_Pattern × Involvement_Multiplier`
+
+**Involvement Multiplier**: `1.0 + (mentions - 3) × 0.1` (range: 0.7 to 1.5)
+
+### Base Contribution Patterns (Per Scenario)
+
+| Cousin | Time Spent | Money Change | Reputation Change |
+|--------|------------|--------------|-------------------|
+| **C1** | 8.0 hours | +$500 | +2.0 points |
+| **C2** | 6.0 hours | +$300 | +3.0 points |
+| **C3** | 10.0 hours | +$200 | +1.0 points |
+| **C4** | 12.0 hours | +$400 | +1.5 points |
+
+### Involvement Multiplier Classification
+
+| Mentions | Multiplier | Description | Resource Impact |
+|----------|------------|-------------|-----------------|
+| **0-2** | 0.7-0.9 | Low participation | Reduced resource gains |
+| **3** | 1.0 | Average participation | Standard resource gains |
+| **4-5** | 1.1-1.2 | High participation | Increased resource gains |
+| **6+** | 1.3-1.5 | Very high participation | Maximum resource gains |
+
+### Example
+
+**Scenario**: C1 participates in a gallery renovation discussion
+- **Mentions**: 5 times in conversation
+- **Involvement Multiplier**: 1.0 + (5 - 3) × 0.1 = 1.2
+- **Base Pattern**: 8.0 hours, +$500, +2.0 reputation
+- **Calculated Resources**:
+  - Time spent: 8.0 × 1.2 = 9.6 hours
+  - Money gained: $500 × 1.2 = $600
+  - Reputation gained: 2 × 1.2 = 2.4 points
+- **Updated Resources**: 32.4 hours remaining, $5,600 total, 12.4 reputation
+
 ## Relationship Dynamics Tracking
 
 The system tracks complex relationship dynamics between cousins, including trust levels, conflicts, alliances, and behavioural patterns. These dynamics evolve based on interactions and influence decision-making throughout the experiment.
@@ -140,7 +198,7 @@ The five quantitative metrics track various aspects of each cousin's standing an
 
 **Actual Implementation**:
 - **Base Calculation**: Current money × 0.1 (10% of current funds)
-- **Scenario Analysis**: LLM analyzes scenario results for financial keywords
+- **Scenario Analysis**: LLM analyses scenario results for financial keywords
 - **Keyword Bonuses**:
   - Revenue/sales/profit: +100.0 points
   - Budget/cost/expense/invest: +50.0 points  
@@ -159,18 +217,18 @@ The five quantitative metrics track various aspects of each cousin's standing an
 
 **Actual Implementation**:
 - **Alliance Count**: +10 points per alliance
-- **Trust Level Bonus**: Average trust level × 20
+- **Trust Level Bonus**: Average trust level × 50
 - **Behavioral Bonuses**:
   - Collaboration/cooperation/leadership: +5 points
   - Competition/conflict avoidance: +2 points
 
-**Formula**: `Social_Capital = (Alliance_Count × 10) + (Avg_Trust × 20) + Behavioral_Bonuses`
+**Formula**: `Social_Capital = (Alliance_Count × 10) + (Avg_Trust × 50) + Behavioral_Bonuses`
 
 **Example**: C2 has 2 alliances, average trust of 0.5, and shows leadership behavior
 - **Alliance Bonus**: 2 × 10 = 20 points
-- **Trust Bonus**: 0.5 × 20 = 10 points
+- **Trust Bonus**: 0.5 × 50 = 25 points
 - **Behavioral Bonus**: +5 (leadership)
-- **Total Social Capital**: 35 points
+- **Total Social Capital**: 50 points
 
 ### Influence Index
 
@@ -182,31 +240,39 @@ The five quantitative metrics track various aspects of each cousin's standing an
   - Assertiveness: +0.2
   - Proposal making: +0.25
   - Consensus building: +0.15
+- **Alliance Bonus**: +0.1 per alliance (being involved in alliances indicates influence)
 - **Scenario Mentions**: +0.05 per mention in scenario results
 - **Capped at**: 1.0 maximum
 
-**Formula**: `Influence_Index = min(1.0, Behavioral_Bonuses + Mention_Bonuses)`
+**Formula**: `Influence_Index = min(1.0, Behavioral_Bonuses + Alliance_Bonuses + Mention_Bonuses)`
 
-**Example**: C1 shows leadership behavior and is mentioned 4 times in scenario results
+**Example**: C1 shows leadership behavior, has 2 alliances, and is mentioned 4 times in scenario results
 - **Leadership Bonus**: +0.3
+- **Alliance Bonus**: 2 × 0.1 = 0.2
 - **Mention Bonus**: 4 × 0.05 = 0.2
-- **Total Influence Index**: 0.5
+- **Total Influence Index**: 0.7
 
 ### Future Opportunities
 
-**Detection Process**: Calculated based on positive scenario outcomes and relationship indicators.
+**Detection Process**: Calculated based on ALL scenario outcomes in the month (regardless of cousin participation), trust relationships, and reputation levels.
 
 **Actual Implementation**:
-- **Opportunity Keywords**: +2 points per positive outcome keyword
-- **Positive Keywords**: "opportunity", "potential", "growth", "expansion", "partnership", "success"
-- **Relationship Bonus**: +1 point per positive relationship indicator
+- **Scenario-based Opportunities**: +1 point per scenario containing keyword categories (applied to ALL cousins):
+  - **Future Indicators**: "future", "next", "plan", "opportunity", "potential"
+  - **Action Indicators**: "meeting", "schedule", "follow", "continue"
+  - **Collaboration Indicators**: "partnership", "collaboration", "team", "together"
+- **High Trust Relationships**: +1 point per relationship with trust level > 0.7
+- **Reputation Bonus**: 
+  - +2 points if reputation > 15
+  - +1 point if reputation > 10
 
-**Formula**: `Future_Opportunities = Opportunity_Keywords + Relationship_Bonuses`
+**Formula**: `Future_Opportunities = Scenario_Opportunities + High_Trust_Count + Reputation_Bonus`
 
-**Example**: C3 participates in scenario with "growth opportunity" and shows positive relationships
-- **Opportunity Keywords**: 2 × 2 = 4 points ("growth" + "opportunity")
-- **Relationship Bonus**: +1 point
-- **Total Future Opportunities**: 5 points
+**Example**: Month has 2 scenarios with "opportunity" and "partnership" keywords, C3 has 1 high trust relationship (>0.7), and reputation of 12
+- **Scenario Opportunities**: 2 scenarios × 1 = 2 points (same for ALL cousins)
+- **High Trust Bonus**: 1 relationship × 1 = 1 point
+- **Reputation Bonus**: +1 point (reputation > 10)
+- **Total Future Opportunities**: 4 points
 
 ### Reputation Score
 
@@ -214,19 +280,19 @@ The five quantitative metrics track various aspects of each cousin's standing an
 
 **Actual Implementation**:
 - **Direct Value**: Uses `cousin_resources[cousin_id].reputation_points`
-- **Starting Values**: C1=10, C2=12, C3=15, C4=8
+- **Starting Values**: C1=10.0, C2=15.0, C3=5.0, C4=8.0
 - **Updated by**: Scenario outcomes and behavioral patterns
 
 **Formula**: `Reputation_Score = Current_Reputation_Points`
 
-**Example**: C3 starts with 15 reputation points and gains 2 from positive actions
-- **Starting Reputation**: 15 points
-- **Gained from Actions**: +2 points
-- **Total Reputation Score**: 17 points
+**Example**: C3 starts with 5.0 reputation points and gains 1.0 from positive actions
+- **Starting Reputation**: 5.0 points
+- **Gained from Actions**: +1.0 points (base C3 reputation change)
+- **Total Reputation Score**: 6.0 points
 
 ## Qualitative Metrics Calculation
 
-The three qualitative metrics track behavioural patterns, conversation dynamics, and relationship evolution throughout the experiment. The system uses **LLM analysis** to detect and categorise specific behaviours, interactions, and relationship changes from scenario conversations.
+The two qualitative metrics track behavioural patterns, conversation dynamics along with relationship evolution throughout the experiment. The system uses **LLM analysis** to detect and categorise specific behaviours, interactions, and relationship changes from scenario conversations.
 
 ### Behavioural Patterns
 
@@ -319,66 +385,6 @@ The three qualitative metrics track behavioural patterns, conversation dynamics,
 - **Trust Impact**: +0.15 trust increase for both cousins
 - **Context**: "Viral fame scenario - media opportunity"
 
-## Resource Calculation Methods
-
-### Detection Process
-
-**Primary Method**: LLM analysis of conversation content to identify resource-related decisions and outcomes.
-
-**Calculation Components**:
-- **Base Contribution**: Personality-based resource changes per scenario
-- **Involvement Multiplier**: Dynamic adjustment based on conversation participation
-- **Scenario Impact**: Additional resource changes from scenario outcomes
-
-**When It Happens**: After each scenario conversation, resources are updated based on:
-1. **Conversation Analysis**: LLM identifies resource-related decisions
-2. **Participation Level**: Involvement multiplier based on mention count
-3. **Scenario Outcome**: Additional resource changes from scenario results
-
-### Initial Resource Values
-
-| Cousin | Money | Reputation | Weekly Hours |
-|--------|-------|------------|--------------|
-| **C1** | $5,000 | 10 points | 42 hours |
-| **C2** | $3,000 | 12 points | 38 hours |
-| **C3** | $2,000 | 15 points | 40 hours |
-| **C4** | $4,000 | 8 points | 45 hours |
-
-### Formula
-
-**Base Contribution**: `Resource_Change = Base_Pattern × Involvement_Multiplier`
-
-**Involvement Multiplier**: `1.0 + (mentions - 3) × 0.1` (range: 0.7 to 1.5)
-
-### Base Contribution Patterns (Per Scenario)
-
-| Cousin | Time Spent | Money Change | Reputation Change |
-|--------|------------|--------------|-------------------|
-| **C1** | 8.0 hours | +$500 | +2.0 points |
-| **C2** | 6.0 hours | +$300 | +3.0 points |
-| **C3** | 10.0 hours | +$200 | +1.0 points |
-| **C4** | 12.0 hours | +$400 | +1.5 points |
-
-### Involvement Multiplier Classification
-
-| Mentions | Multiplier | Description | Resource Impact |
-|----------|------------|-------------|-----------------|
-| **0-2** | 0.7-0.9 | Low participation | Reduced resource gains |
-| **3** | 1.0 | Average participation | Standard resource gains |
-| **4-5** | 1.1-1.2 | High participation | Increased resource gains |
-| **6+** | 1.3-1.5 | Very high participation | Maximum resource gains |
-
-### Example
-
-**Scenario**: C1 participates in a gallery renovation discussion
-- **Mentions**: 5 times in conversation
-- **Involvement Multiplier**: 1.0 + (5 - 3) × 0.1 = 1.2
-- **Base Pattern**: 8.0 hours, +$500, +2.0 reputation
-- **Calculated Resources**:
-  - Time spent: 8.0 × 1.2 = 9.6 hours
-  - Money gained: $500 × 1.2 = $600
-  - Reputation gained: 2 × 1.2 = 2.4 points
-- **Updated Resources**: 32.4 hours remaining, $5,600 total, 12.4 reputation
 
 ## Scenario Progression
 
